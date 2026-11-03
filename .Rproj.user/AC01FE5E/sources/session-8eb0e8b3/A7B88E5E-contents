@@ -1,0 +1,71 @@
+---
+title: "ACS: Analisis de correspondencias simple"
+---
+
+```{r}
+library(here)
+datos  <- read.csv(here("data", "petfinder_enriquecido_final.csv"))
+```
+
+<!-- Este comentario no se verá en la página renderizada analizar la descipcion entre dos variables cualitativas, entre las variables fila y columna atravez de sus perfiles -->
+
+## Seleccion de las variables cualitativas
+
+Para seleccionar nuestra variables tenemos que pensar primero que sean de interes, que prosiblemente encontremos una relaicon interesante entre las dos, y segundo que tengan categorias suficientes para relizar el analisis.
+
+Tenemos primero Adoption speed, que para este data set y el objetivo inicial del mismo, es una variable principal, recordemos un poco de las estadisitcas univariadas de la misma.
+
+```{r}
+
+tabla_frecuencias <- function(x, etiqueta = "Categoría", n_top = 10) {
+  v <- as.character(x); tb <- sort(table(v), decreasing = TRUE); n <- length(tb); tot <- sum(tb)
+  if (n > n_top) {
+    tab <- tibble::tibble(
+      Categoría = c(names(tb)[1:(n_top - 1)], sprintf("Otras (%d categorías)", n - n_top + 1)),
+      Frecuencia = c(as.integer(tb[1:(n_top - 1)]), tot - sum(tb[1:(n_top - 1)])))
+  } else {
+    tab <- tibble::tibble(Categoría = names(tb), Frecuencia = as.integer(tb))
+  }
+  tab |>
+    mutate(`Frecuencia relativa` = 100*Frecuencia/sum(Frecuencia),
+           # `Frecuencia acumulada` = cumsum(`Frecuencia relativa`)) |>
+    mutate(Frecuencia = ent(Frecuencia),
+           `Frecuencia relativa` = pct(`Frecuencia relativa`),
+           `Frecuencia acumulada` = pct(`Frecuencia acumulada`)) |>
+    knitr::kable(col.names = c(etiqueta, "Frecuencia absoluta", "Frecuencia relativa",
+                               "Frecuencia acumulada"), align = c("l", "r", "r", "r"))
+}
+
+graficos_cuali <- function(x, etiqueta, pastel = FALSE, n_top = 10) {
+  v <- as.character(x); tb <- sort(table(v), decreasing = TRUE); n <- length(tb); tot <- sum(tb)
+  d <- if (n > n_top) {
+    tibble::tibble(cat = c(names(tb)[1:(n_top - 1)], sprintf("Otras (%d)", n - n_top + 1)),
+                   n = c(as.integer(tb[1:(n_top - 1)]), tot - sum(tb[1:(n_top - 1)])))
+  } else tibble::tibble(cat = names(tb), n = as.integer(tb))
+  d <- d |> mutate(cat = factor(cat, levels = rev(cat)),
+                   pct = 100*n/sum(n))
+  p1 <- ggplot(d, aes(x = pct, y = cat)) +
+    geom_col(fill = "#2e7d9a", width = 0.7) +
+    geom_text(aes(label = sprintf("%.1f %%", pct)), hjust = -0.15, size = 3, colour = "#1f2937") +
+    scale_x_continuous(expand = expansion(mult = c(0, 0.22))) +
+    labs(title = "Distribución de frecuencias", x = "Porcentaje de anuncios", y = etiqueta) + tema_u()
+  if (!pastel) { print(p1); return(invisible(NULL)) }
+  p2 <- ggplot(d, aes(x = "", y = n, fill = cat)) +
+    geom_col(width = 1, colour = "white") + coord_polar("y") +
+    labs(title = "Composición porcentual", x = NULL, y = NULL) +
+    theme_minimal(base_size = 11.5) +
+    theme(plot.background = element_rect(fill = "white", colour = NA),
+          plot.title = element_text(colour = "#1a3a5c", face = "bold", size = 11.5),
+          legend.title = element_blank(), legend.text = element_text(size = 9),
+          legend.position = "right", axis.text = element_blank(), panel.grid = element_blank())
+  print(p1); print(p2)
+  invisible(NULL)
+}
+
+
+tabla_frecuencias(datos$AdoptionSpeed, "Velocidad de adopción")
+
+graficos_cuali(datos$AdoptionSpeed, "Velocidad de adopción", pastel = TRUE, n_top = 10)
+```
+
+Ahora para nuestra segunda variable, no tenemos cualitativas con muchas categorias, por ello, se va a realizar el ACS, con 3 de las mismas, que resulten interesantes, 
