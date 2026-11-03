@@ -179,3 +179,7 @@ tabla_frecuencias(datos$Vaccinated, "Estado de vacunacion")
 tabla_frecuencias(datos$Gender, "Genero")
 ```
 
+Como se puede ver es necesario realizar un agrupamiento de categorias tanto para color, como para breed
+
+## Preparacion de variables
+

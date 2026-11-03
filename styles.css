@@ -1,1 +1,1524 @@
-/* css styles */
+/* ===========================================================================
+   EDM_PetFinder — hoja de estilos del sitio
+   ---------------------------------------------------------------------------
+   Organización:
+     1. Variables de diseño (tema claro / oscuro)
+     2. Base tipográfica y layout
+     3. Barra de navegación
+     4. Barra lateral y tabla de contenido
+     5. Títulos, encabezados y banner
+     6. Código, tablas, callouts, citas
+     7. Componentes propios: hero, tarjetas, KPI, chips, cronograma
+     8. Pie de página, utilidades y animaciones
+     9. Responsive
+    10. Impresión / exportar a PDF
+   =========================================================================== */
+
+/* ---------------------------------------------------------------- 1. Variables */
+:root {
+  /* Paleta institucional */
+  --color-primary: #1a3a5c;         /* Azul académico profundo */
+  --color-secondary: #2e7d9a;       /* Azul petróleo */
+  --color-accent: #d97706;          /* Ámbar para acentos */
+  --color-accent-2: #0f766e;        /* Verde teal estadístico */
+  --color-danger: #dc2626;
+
+  /* Superficies y texto */
+  --color-bg: #fafbfc;
+  --color-bg-alt: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f8fafc;
+  --color-text: #1f2937;
+  --color-text-soft: #4b5563;
+  --color-border: #e2e8f0;
+  --color-code-bg: #f6f8fa;         /* fondo claro: el código siempre se lee */
+  --color-code-text: #1a1a1a;
+
+  /* Tipografía */
+  --font-serif: "Source Serif Pro", "Georgia", "Cambria", serif;
+  --font-sans: "Inter", "Segoe UI", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+
+  /* Elevación, radios y transiciones */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 30px rgba(26, 58, 92, 0.15);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --navbar-height: 62px;
+}
+
+/* ------------------------------------------------------- Tema oscuro (Quarto) */
+html[data-bs-theme="dark"],
+body.quarto-dark {
+  --color-bg: #0f172a;
+  --color-bg-alt: #131f38;
+  --color-surface: #16233d;
+  --color-surface-soft: #1b2a47;
+  --color-text: #e5ecf6;
+  --color-text-soft: #a9b8cf;
+  --color-border: #2a3c5c;
+  --color-code-bg: #0b1220;      /* en oscuro, fondo oscuro y tokens claros */
+  --color-code-text: #e8eef7;
+  --color-primary: #c7dcf5;
+  --color-secondary: #6fb6d1;
+  --color-accent: #f0ab4b;
+  --color-accent-2: #4fd1c0;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+/* --------------------------------------------------------------- 2. Base */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.7;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Halo decorativo sutil detrás del contenido */
+body::before {
+  content: "";
+  position: fixed;
+  top: -120px;
+  right: -80px;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(46, 125, 154, 0.10), transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+html[data-bs-theme="dark"] body::before,
+body.quarto-dark::before {
+  background: radial-gradient(circle, rgba(111, 182, 209, 0.12), transparent 70%);
+}
+
+main,
+#quarto-document-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Desplazamiento correcto al saltar a un ancla (navbar fija) */
+:target,
+h1, h2, h3, h4 {
+  scroll-margin-top: calc(var(--navbar-height) + 12px);
+}
+
+/* Foco visible para navegación con teclado */
+a:focus-visible,
+button:focus-visible,
+.quarto-navigation-tool:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------------- 3. Navbar */
+.navbar {
+  background: linear-gradient(135deg, #14304d, #1a3a5c 45%, var(--color-secondary)) !important;
+  box-shadow: var(--shadow-md);
+  padding: 0.55rem 1.5rem;
+  border-bottom: 3px solid var(--color-accent);
+}
+
+.navbar-brand,
+.navbar-nav .nav-link,
+.navbar .quarto-navigation-tool {
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: var(--transition);
+}
+
+.navbar-brand {
+  font-size: 1.18rem;
+  border-bottom: none !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-brand::before {
+  content: "🐾";
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.navbar-brand:hover {
+  color: var(--color-accent) !important;
+  transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link {
+  padding: 0.45rem 0.9rem !important;
+  border-radius: var(--radius-sm);
+  border-bottom: none !important;
+  position: relative;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active,
+.navbar-nav .show > .nav-link {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-accent) !important;
+}
+
+.navbar .dropdown-menu {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.navbar .dropdown-item {
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.7rem;
+  font-weight: 500;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+  background: rgba(46, 125, 154, 0.14);
+  color: var(--color-primary);
+}
+
+.quarto-search-button .aa-Form,
+.aa-DetachedSearchButton {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #ffffff !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+/* --------------------------------------------------- 4. Sidebar y TOC */
+.sidebar {
+  background: var(--color-bg-alt);
+  border-right: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.sidebar-title {
+  color: var(--color-primary);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.sidebar-item {
+  border-radius: var(--radius-sm);
+  margin-bottom: 2px;
+}
+
+.sidebar-item-text {
+  color: var(--color-text-soft);
+  font-size: 0.94rem;
+  transition: var(--transition);
+}
+
+.sidebar-item-text:hover {
+  color: var(--color-secondary);
+}
+
+.sidebar-item-container .active .sidebar-item-text {
+  color: var(--color-accent) !important;
+  font-weight: 700;
+}
+
+.sidebar-item-container .active {
+  background: rgba(217, 119, 6, 0.10);
+}
+
+#TOC {
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-surface-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1rem 1rem 1rem 1.2rem;
+  margin-bottom: 2rem;
+  font-size: 0.92rem;
+}
+
+#TOC a {
+  color: var(--color-text-soft);
+  border-bottom: none;
+  display: block;
+  padding: 0.15rem 0;
+}
+
+#TOC a:hover {
+  color: var(--color-secondary);
+  padding-left: 4px;
+}
+
+#TOC a.active {
+  color: var(--color-accent);
+  font-weight: 700;
+  border-left: 2px solid var(--color-accent);
+  padding-left: 6px;
+}
+
+/* --------------------------------------------------- 5. Títulos y banner */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-serif);
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: 0.4em;
+  margin-bottom: 1em;
+}
+
+h2 {
+  font-size: 1.85rem;
+  position: relative;
+  padding-left: 0.9em;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.35em;
+}
+
+h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 6px;
+  height: 1.1em;
+  background: linear-gradient(180deg, var(--color-secondary), var(--color-accent));
+  border-radius: 3px;
+}
+
+h3 {
+  font-size: 1.38rem;
+  color: var(--color-secondary);
+}
+
+h4 {
+  font-size: 1.05rem;
+  color: var(--color-accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: var(--font-sans);
+  font-weight: 700;
+}
+
+.subtitle,
+.quarto-title .subtitle {
+  color: var(--color-text-soft);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.quarto-title-block .title {
+  font-family: var(--font-serif);
+  color: var(--color-primary);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.quarto-title-meta {
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+}
+
+.quarto-title-banner {
+  background: linear-gradient(135deg, #14304d, #1a3a5c 45%, var(--color-secondary)) !important;
+  padding: 3.2rem 2rem;
+  border-bottom: 4px solid var(--color-accent);
+}
+
+.quarto-title-banner .title,
+.quarto-title-banner .subtitle,
+.quarto-title-banner .quarto-title-meta,
+.quarto-title-banner .quarto-title-meta-heading,
+.quarto-title-banner .quarto-title-meta-contents p {
+  color: #ffffff !important;
+}
+
+.quarto-title-banner .subtitle {
+  font-style: italic;
+  opacity: 0.92;
+}
+
+/* ----------------------------------------------------- 6. Texto y elementos */
+p {
+  margin-bottom: 1.1em;
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+em {
+  color: var(--color-accent-2);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 2.2rem 0;
+}
+
+ul, ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.2em;
+}
+
+li {
+  margin-bottom: 0.4em;
+  color: var(--color-text);
+}
+
+ul li::marker {
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+ol li::marker {
+  color: var(--color-secondary);
+  font-weight: 700;
+}
+
+blockquote {
+  border-left: 4px solid var(--color-accent);
+  background: var(--color-bg-alt);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--color-text-soft);
+  font-style: italic;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ------------------------------------------------------------- 7. Código */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: rgba(46, 125, 154, 0.12);
+  color: var(--color-primary);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+html[data-bs-theme="dark"] code,
+body.quarto-dark code {
+  background: rgba(111, 182, 209, 0.16);
+}
+
+pre {
+  background: var(--color-code-bg) !important;
+  color: var(--color-code-text) !important;
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+pre code {
+  background: transparent !important;
+  color: inherit;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* --- Resaltado de sintaxis con contraste garantizado ---------------------
+   Tema claro: palabras clave en azul oscuro, comentarios en verde oscuro,
+   cadenas en vino, números en azul petróleo. Fondo claro y texto oscuro.  */
+body:not(.quarto-dark) pre code span.kw,
+body:not(.quarto-dark) pre code span.im { color: #1a3a5c !important; font-weight: 700; }
+body:not(.quarto-dark) pre code span.co { color: #0f5132 !important; font-style: italic; }
+body:not(.quarto-dark) pre code span.st,
+body:not(.quarto-dark) pre code span.ss,
+body:not(.quarto-dark) pre code span.vs { color: #8a2f2f !important; }
+body:not(.quarto-dark) pre code span.fu,
+body:not(.quarto-dark) pre code span.kf { color: #6b21a8 !important; }
+body:not(.quarto-dark) pre code span.dv,
+body:not(.quarto-dark) pre code span.fl,
+body:not(.quarto-dark) pre code span.cn,
+body:not(.quarto-dark) pre code span.bn,
+body:not(.quarto-dark) pre code span.sc { color: #0e7490 !important; }
+body:not(.quarto-dark) pre code span.op { color: #374151 !important; }
+body:not(.quarto-dark) pre code span.va,
+body:not(.quarto-dark) pre code span.ot,
+body:not(.quarto-dark) pre code span.er { color: #1f2937 !important; }
+body:not(.quarto-dark) pre code span.at,
+body:not(.quarto-dark) pre code span.an { color: #0f766e !important; }
+
+/* Tema oscuro: mismos roles con tonos claros sobre el fondo oscuro */
+body.quarto-dark pre code span.kw,
+body.quarto-dark pre code span.im { color: #7cc4e8 !important; font-weight: 700; }
+body.quarto-dark pre code span.co { color: #86c99a !important; font-style: italic; }
+body.quarto-dark pre code span.st,
+body.quarto-dark pre code span.ss,
+body.quarto-dark pre code span.vs { color: #f0ab4b !important; }
+body.quarto-dark pre code span.fu,
+body.quarto-dark pre code span.kf { color: #c9a6ff !important; }
+body.quarto-dark pre code span.dv,
+body.quarto-dark pre code span.fl,
+body.quarto-dark pre code span.cn,
+body.quarto-dark pre code span.bn,
+body.quarto-dark pre code span.sc { color: #7fd1c0 !important; }
+body.quarto-dark pre code span.op { color: #cbd5e1 !important; }
+body.quarto-dark pre code span.va,
+body.quarto-dark pre code span.ot,
+body.quarto-dark pre code span.er { color: #e8eef7 !important; }
+body.quarto-dark pre code span.at,
+body.quarto-dark pre code span.an { color: #6fb6d1 !important; }
+
+.sourceCode {
+  background: transparent;
+}
+
+code.sourceCode > span {
+  display: inline-block;
+  width: 100%;
+}
+
+.code-copy-button {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.18) !important;
+  color: #1a1a1a !important;
+  border-radius: var(--radius-sm);
+}
+
+.code-copy-button:hover {
+  background: var(--color-accent) !important;
+}
+
+/* Panel de código (code-fold) */
+details.code-fold {
+  border-left: 4px solid var(--color-secondary);
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+  padding: 0.35rem 0.6rem;
+  margin-bottom: 1.2rem;
+}
+
+details.code-fold > summary {
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.35rem 0.2rem;
+}
+
+details.code-fold > summary:hover {
+  color: var(--color-accent);
+}
+
+/* ------------------------------------------------------------- Tablas */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.94rem;
+}
+
+thead {
+  background: linear-gradient(135deg, #14304d, var(--color-secondary));
+  color: #ffffff;
+}
+
+th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+
+td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  vertical-align: top;
+}
+
+tbody tr:nth-child(even) {
+  background: var(--color-bg-alt);
+}
+
+tbody tr:hover {
+  background: rgba(46, 125, 154, 0.08);
+  transition: var(--transition);
+}
+
+/* Las tablas anchas generadas por R pueden desplazarse en horizontal */
+.cell-output-display {
+  overflow-x: auto;
+}
+
+.table-caption,
+caption {
+  color: var(--color-text-soft);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------- Callouts */
+.callout {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border-left: 5px solid var(--color-secondary);
+  background: var(--color-surface);
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0;
+  /* Solo se anima la sombra: animar el color de fondo hace que el cambio de
+     tema (claro/oscuro) se quede a medio camino en algunos navegadores. */
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.callout:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.callout.callout-note {
+  border-left-color: var(--color-secondary);
+}
+
+.callout.callout-tip {
+  border-left-color: var(--color-accent-2);
+}
+
+.callout.callout-warning {
+  border-left-color: var(--color-accent);
+}
+
+.callout.callout-important {
+  border-left-color: var(--color-danger);
+}
+
+.callout.callout-important .callout-title {
+  color: var(--color-danger);
+}
+
+.callout-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+/* ------------------------------------------------- Matemáticas y figuras */
+.katex-display,
+.math.display {
+  background: var(--color-surface-soft);
+  border-left: 4px solid var(--color-accent-2);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.katex {
+  font-size: 1.08em !important;
+  color: var(--color-primary);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+img:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+figcaption,
+.figure-caption {
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.6rem;
+  font-family: var(--font-sans);
+}
+
+/* ------------------------------------------- 8. Componentes del proyecto */
+.hero {
+  background: linear-gradient(135deg, rgba(20, 48, 77, 0.96), rgba(46, 125, 154, 0.92));
+  color: #ffffff;
+  border-radius: var(--radius);
+  padding: 2.6rem 2.2rem;
+  margin: 0 0 2rem 0;
+  box-shadow: var(--shadow-lg);
+  border-bottom: 4px solid var(--color-accent);
+}
+
+.hero h1,
+.hero h2,
+.hero h3,
+.hero h4,
+.hero h5 {
+  color: #ffffff;
+  border: none;
+  padding: 0;
+}
+
+/* El texto interno del hero necesita contraste sobre el degradado oscuro */
+.hero strong {
+  color: #ffffff;
+}
+
+.hero em {
+  color: #f3c37a;
+}
+
+.hero code {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+.hero a {
+  color: #ffffff;
+  border-bottom: none;
+}
+
+.hero .btn-print {
+  background: var(--color-accent);
+  color: #1b1b1b !important;
+  border-bottom: none !important;
+}
+
+.hero .btn-print:hover {
+  background: #f0ab4b;
+  color: #1b1b1b !important;
+}
+
+.hero .btn-ghost {
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+}
+
+.hero .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #ffffff !important;
+}
+
+.hero h1 {
+  font-size: 2.3rem;
+  margin-bottom: 0.35rem;
+}
+
+.hero h1::before,
+.hero h2::before {
+  display: none;
+}
+
+.hero p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.06rem;
+  max-width: 62ch;
+}
+
+.hero .chip-group {
+  margin-top: 1.2rem;
+}
+
+.chip {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  margin: 0 0.4rem 0.4rem 0;
+}
+
+.chip.chip-accent {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #1b1b1b;
+}
+
+.chip.chip-soft {
+  background: var(--color-bg-alt);
+  border-color: var(--color-border);
+  color: var(--color-text-soft);
+}
+
+/* Rejilla de tarjetas enlazadas */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.2rem;
+  margin: 1.6rem 0;
+}
+
+.card-grid > div,
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--color-border);
+  border-top: 4px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-grid > div:hover,
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-top-color: var(--color-secondary);
+}
+
+.card-grid h3,
+.card h3 {
+  margin-top: 0.2rem;
+  font-size: 1.15rem;
+  color: var(--color-primary);
+}
+
+.card-grid p,
+.card p {
+  font-size: 0.95rem;
+  color: var(--color-text-soft);
+  margin-bottom: 0.5rem;
+}
+
+.card-grid a,
+.card a {
+  font-weight: 600;
+}
+
+/* Indicadores numéricos (KPI) */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1.4rem 0;
+}
+
+.kpi {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--color-secondary);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.kpi .kpi-value {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.kpi .kpi-label {
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-soft);
+  margin-top: 0.2rem;
+  font-weight: 600;
+}
+
+/* Cronograma como línea de tiempo */
+.timeline {
+  border-left: 3px solid var(--color-border);
+  margin: 1.5rem 0 1.5rem 0.6rem;
+  padding-left: 1.4rem;
+}
+
+.timeline .hito {
+  position: relative;
+  margin-bottom: 1.1rem;
+}
+
+.timeline .hito::before {
+  content: "";
+  position: absolute;
+  left: -1.95rem;
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  border: 3px solid var(--color-bg);
+}
+
+.timeline .hito.destacado::before {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.18);
+}
+
+.timeline .hito strong {
+  color: var(--color-primary);
+}
+
+/* Botón de impresión / exportar a PDF */
+/* Fila autores + botón PDF */
+.autor-pdf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 2rem 0;
+  padding: 0.9rem 1.1rem;
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius);
+}
+
+.autor-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.95rem;
+}
+
+.autor-info p {
+  margin: 0.15rem 0 0 0;
+}
+
+.autor-info strong {
+  display: block;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-soft);
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+}
+
+.action-bar {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+button.btn-print,
+a.btn-print {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  border: none;
+  border-bottom: none !important;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button.btn-print:hover,
+a.btn-print:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: #ffffff !important;
+}
+
+.btn-ghost {
+  display: inline-block;
+  background: transparent;
+  color: var(--color-secondary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-secondary) !important;
+  background: rgba(46, 125, 154, 0.08);
+}
+
+/* Ficha de datos / definición */
+.ficha {
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.3rem;
+  margin: 1.4rem 0;
+}
+
+.ficha dl {
+  margin: 0;
+}
+
+.ficha dt {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ficha dd {
+  margin: 0 0 0.6rem 0;
+  color: var(--color-text);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+html[data-bs-theme="dark"] .text-gradient,
+body.quarto-dark .text-gradient {
+  background: linear-gradient(135deg, #c7dcf5, #6fb6d1, #f0ab4b);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.highlight-box {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 5px solid var(--color-secondary);
+  border-radius: var(--radius);
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ------------------------------------------------- 9. Pie, utilidades, animación */
+.nav-footer,
+.footer,
+.page-footer {
+  background: #14304d;
+  color: #ffffff;
+  padding: 1.5rem 2rem;
+  margin-top: 3rem;
+  border-top: 4px solid var(--color-accent);
+  font-size: 0.9rem;
+}
+
+.nav-footer a,
+.footer a,
+.page-footer a {
+  color: var(--color-accent) !important;
+  border-bottom: none;
+}
+
+.page-navigation .page-link {
+  color: var(--color-secondary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-alt);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-secondary), var(--color-primary));
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-alt);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+::selection {
+  background: rgba(217, 119, 6, 0.25);
+  color: var(--color-primary);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------------------------------- Ajustes finos del tema oscuro (Quarto) */
+/* Quarto cambia de tema intercambiando hojas de estilo, así que algunos
+   componentes con fondo propio (Bootstrap: tarjetas y callouts) conservan el
+   blanco del tema claro. Se fuerzan aquí, con ámbito de tema oscuro. */
+body.quarto-dark .card,
+body.quarto-dark .card-grid > div,
+html[data-bs-theme="dark"] .card,
+html[data-bs-theme="dark"] .card-grid > div,
+body.quarto-dark .callout,
+body.quarto-dark .callout.callout-style-default,
+html[data-bs-theme="dark"] .callout,
+html[data-bs-theme="dark"] .callout.callout-style-default {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text) !important;
+}
+
+body.quarto-dark .callout .callout-body,
+body.quarto-dark .callout .callout-body-container,
+html[data-bs-theme="dark"] .callout .callout-body,
+html[data-bs-theme="dark"] .callout .callout-body-container {
+  color: var(--color-text) !important;
+}
+
+body.quarto-dark .callout .callout-title,
+html[data-bs-theme="dark"] .callout .callout-title {
+  color: #ffffff !important;
+}
+
+body.quarto-dark .ficha,
+body.quarto-dark .highlight-box,
+body.quarto-dark .kpi,
+body.quarto-dark table,
+html[data-bs-theme="dark"] .ficha,
+html[data-bs-theme="dark"] .highlight-box,
+html[data-bs-theme="dark"] .kpi,
+html[data-bs-theme="dark"] table {
+  background-color: var(--color-surface) !important;
+}
+
+body.quarto-dark tbody tr:nth-child(even),
+html[data-bs-theme="dark"] tbody tr:nth-child(even) {
+  background-color: var(--color-bg-alt) !important;
+}
+
+body.quarto-dark thead,
+html[data-bs-theme="dark"] thead {
+  background: linear-gradient(135deg, #1b3350, #245f78) !important;
+  color: #ffffff !important;
+}
+
+/* ------------------- 9.b Pantallas anchas: aprovechar todo el ancho disponible
+   Quarto deja el espacio sobrante en una sola pista al final (5fr), lo que
+   produce una banda vacía a la derecha en monitores anchos. Aquí el sobrante se
+   reparte entre una pista elástica a cada lado: el bloque (barra lateral +
+   contenido + tabla de contenidos) queda centrado, con márgenes simétricos, y
+   las columnas laterales ganan ancho. */
+@media (min-width: 1500px) {
+  body.docked .page-columns,
+  body.docked.fullcontent .page-columns,
+  body.docked.slimcontent .page-columns,
+  body.docked.listing .page-columns {
+    grid-template-columns:
+      minmax(0, 0.55fr)
+      [screen-start] 1.4rem
+      [screen-start-inset page-start] minmax(58px, 240px)
+      [page-start-inset] 58px
+      [body-start-outset] 58px
+      [body-start] 1.4rem
+      [body-content-start] minmax(500px, calc(1160px - 2.8rem))
+      [body-content-end] 1.4rem
+      [body-end] 62px
+      [body-end-outset] minmax(62px, 292px)
+      [page-end-inset] 62px
+      [page-end] minmax(0, 0.55fr)
+      [screen-end-inset] 1.4rem
+      [screen-end];
+  }
+}
+
+/* ------------------------------------------------------------- 10. Responsive */
+@media (max-width: 991px) {
+  .navbar-nav .nav-link {
+    padding: 0.55rem 0.6rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  .hero {
+    padding: 1.8rem 1.3rem;
+  }
+
+  .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .quarto-title-banner {
+    padding: 2rem 1rem;
+  }
+
+  .kpi-grid,
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  pre {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* ------------------------------------------- 11. Impresión / exportar a PDF */
+/* ------------------------------------------- 11. Impresión / exportar a PDF */
+@media print {
+  /* Fuera los elementos de navegación: el PDF debe leerse como documento */
+  .navbar,
+  .sidebar,
+  #quarto-sidebar,
+  #quarto-margin-sidebar,
+  #quarto-header,
+  #TOC,
+  .quarto-title-banner,
+  .page-navigation,
+  .action-bar,
+  .nav-footer,
+  .page-footer,
+  .back-to-top,
+  #quarto-search,
+  .code-tools-button,
+  .code-copy-button {
+    display: none !important;
+  }
+
+  /* ===== Ancho completo: deshacer la rejilla de columnas de Quarto ===== */
+  .page-columns,
+  body.docked .page-columns,
+  body.docked.fullcontent .page-columns,
+  body.docked.slimcontent .page-columns,
+  body.docked.listing .page-columns {
+    display: block !important;
+    grid-template-columns: none !important;
+  }
+
+  .page-columns > *,
+  .page-columns > main,
+  .page-columns .column-body,
+  .page-columns .column-page,
+  .page-columns .column-screen-inset {
+    grid-column: auto !important;
+  }
+
+  body.nav-fixed,
+  body.docked {
+    padding-top: 0 !important;
+    margin: 0 !important;
+  }
+
+  #quarto-content,
+  .content,
+  main.content,
+  main,
+  #quarto-document-content {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Figuras y widgets (plotly) al ancho de la página */
+  .html-widget,
+  .plotly.html-widget,
+  .js-plotly-plot,
+  .cell-output-display {
+    max-width: 100% !important;
+  }
+
+  /* ============================ Base de impresión ====================== */
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10.5pt;
+    line-height: 1.5;
+  }
+
+  body::before {
+    display: none;
+  }
+
+  main {
+    animation: none;
+  }
+
+  h1, h2, h3, h4 {
+    color: #14304d !important;
+    page-break-after: avoid;
+  }
+
+  h1 {
+    font-size: 19pt;
+  }
+
+  h2 {
+    font-size: 14pt;
+    page-break-before: auto;
+  }
+
+  h3 {
+    font-size: 12pt;
+  }
+
+  p, li, td, th {
+    color: #000000 !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  a {
+    color: #14304d !important;
+    text-decoration: underline;
+  }
+
+  /* Muestra la URL destino de los enlaces externos */
+  a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-size: 8pt;
+    color: #555555;
+  }
+
+  /* Nota: los enlaces internos del sitio no se expanden */
+  a[href^="#"]::after {
+    content: "";
+  }
+
+  /* En la bibliografía el propio texto del enlace ya es la URL: no duplicar */
+  .csl-entry a[href^="http"]::after {
+    content: "";
+  }
+
+  /* ================================ Código ============================= */
+  pre {
+    background: #f6f8fa !important;
+    color: #111111 !important;
+    border: 1px solid #cccccc;
+    border-left: 4px solid var(--color-accent);
+    box-shadow: none;
+    white-space: pre-wrap;
+    page-break-inside: avoid;
+    font-size: 8.5pt;
+  }
+
+  pre code {
+    color: #111111 !important;
+  }
+
+  code {
+    background: #f2f4f7 !important;
+    color: #111111 !important;
+  }
+
+  /* ======================== Callouts, tablas, figuras ================== */
+  .callout,
+  table,
+  figure,
+  .ficha,
+  .highlight-box,
+  .timeline .hito {
+    page-break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .callout {
+    background: #ffffff !important;
+    border: 1px solid #cccccc;
+    border-left: 5px solid var(--color-secondary);
+  }
+
+  thead {
+    background: #14304d !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  table {
+    font-size: 9pt;
+    border: 1px solid #cccccc;
+  }
+
+  /* ============================ Componentes ============================ */
+  .hero {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc;
+    border-bottom: 4px solid var(--color-accent);
+    box-shadow: none;
+  }
+
+  .hero h1,
+  .hero h2,
+  .hero h3,
+  .hero h4,
+  .hero p,
+  .hero strong,
+  .hero em,
+  .hero a,
+  .hero code,
+  .hero .btn-ghost {
+    color: #000000 !important;
+  }
+
+  .hero code {
+    background: #f2f4f7 !important;
+  }
+
+  .hero .btn-print {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #999999 !important;
+  }
+
+  .chip {
+    border: 1px solid #999999;
+    color: #333333 !important;
+    background: #f2f4f7 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ======================= panel-tabset en el PDF ====================== */
+  /* Mostrar TODOS los paneles, no solo el activo */
+  .panel-tabset .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .panel-tabset .tab-content > .tab-pane:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* Ocultar la barra de pestañas (no tiene sentido sin interacción) */
+  .panel-tabset > .nav-tabs,
+  .panel-tabset > .nav,
+  .panel-tabset .nav-tabs {
+    display: none !important;
+  }
+
+  /* Mostrar el primer h3 de cada panel como título de la variable.
+     En pantalla está oculto; al imprimir aparece. */
+  .panel-tabset .tab-pane > h3:first-child {
+    display: block !important;
+    font-family: var(--font-serif);
+    font-size: 15pt;
+    color: #14304d !important;
+    margin: 0 0 0.7em 0;
+    padding-bottom: 0.3em;
+    border-bottom: 2px solid var(--color-accent);
+    page-break-after: avoid;
+  }
+
+  @page {
+    margin: 1.8cm 1.6cm;
+  }
+}
+
+/* El primer h3 de cada panel solo sirve para el PDF: en pantalla se oculta */
+.panel-tabset .tab-pane > h3:first-child {
+  display: none;
+}
+
+/* El primer h3 de cada panel solo sirve para el PDF: en pantalla se oculta */
+.panel-tabset .tab-pane > h3:first-child {
+  display: none;
+}

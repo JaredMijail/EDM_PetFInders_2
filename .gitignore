@@ -1,0 +1,39 @@
+# ---------------------------------------------------------------------------
+# Datos: la base enriquecida pesa varios MB y no se versiona.
+# ---------------------------------------------------------------------------
+/data/
+
+# ---------------------------------------------------------------------------
+# Caché de ejecución de Quarto (_freeze): guarda los resultados ya calculados
+# de cada bloque de código. SÍ se versiona, para poder renderizar el sitio sin
+# los datos crudos en disco.
+# ---------------------------------------------------------------------------
+/.quarto/
+
+# Documentos generados a partir de .qmd
+**/*.quarto_ipynb
+**/*.nb.html
+**/*.knit.md
+**/*.knit.html
+
+# Estado local de RStudio / R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Sistema
+.DS_Store
+Thumbs.db
+.quarto/
+*_files/
+*_site/
+
+# Temporales del editor visual de RStudio
+.vdoc.*
+
+# Recursos generados por Quarto en la raíz
+/site_libs/
+
+# Repositorio de referencia anidado (se conserva en disco, no en este repo)
+/EDM_PetFInder/

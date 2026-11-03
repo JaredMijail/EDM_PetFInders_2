@@ -1,0 +1,54 @@
+---
+title: "EACS: Analisis de correspondencias simple"
+---
+
+::: autor-pdf-row
+::: autor-info
+**AUTORES**
+
+Jared Mijail Ramírez Escalante · María Paula Silva Capera
+:::
+
+<div class="action-bar">
+<button class="btn-print" onclick="window.print()">PDF</button>
+</div>
+:::
+
+```{r}
+#| label: setup
+#| echo: false
+#| include: false
+# Carga de datos y ayudantes comunes del sitio
+source(here::here("_setup.R"))
+```
+
+<!-- Este comentario no se verá en la página renderizada analizar la descipcion entre dos variables cualitativas, entre las variables fila y columna atravez de sus perfiles -->
+
+## Seleccion de las variables cualitativas
+
+Para seleccionar nuestra variables tenemos que pensar primero que sean de interes, que prosiblemente encontremos una relaicon interesante entre las dos, y segundo que tengan categorias suficientes para relizar el analisis.
+
+Tenemos primero Adoption speed, que para este data set y el objetivo inicial del mismo, es una variable principal, recordemos un poco de las estadisitcas univariadas de la misma.
+
+```{r}
+
+tabla_frecuencias(datos$AdoptionSpeed, "Velocidad de adopción")
+
+graficos_cuali(datos$AdoptionSpeed, "Velocidad de adopción", pastel = TRUE, n_top = 10)
+```
+Ahora tenemos que elegir una segunda variable, la primera solo tiene 5 categorias de las cuales agruparemos las ultimas dos para no tener baja frecuencia.
+
+Al ser variables relativamente pequenas en numero de categorias escogeremos otras 4 variables con las cuales realizar el ACS vs adoption speed. 
+
+De estas 3 variables tomaremos, Breed1, Color1, Vaccinated y Gender, que apriori podemos pensar que puedan existir relaciones interesantes.
+
+```{r}
+tabla_frecuencias(datos$Breed1, "Velocidad de adopción")
+tabla_frecuencias(datos$Color1, "Primer Color")
+tabla_frecuencias(datos$Vaccinated, "Estado de vacunacion")
+tabla_frecuencias(datos$Gender, "Genero")
+```
+
+Como se puede ver es necesario realizar un agrupamiento de categorias tanto para color, como para breed
+
+## Preparacion de variables
