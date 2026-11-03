@@ -1,0 +1,5 @@
+"0",""
+"0","tabla_frecuencias(datos$AdoptionSpeed, ""Velocidad de adopción"")"
+"2","Error en mutate(mutate(tab, `Frecuencia relativa` = 100 * Frecuencia/sum(Frecuencia), : 
+  no se pudo encontrar la función ""mutate""
+"

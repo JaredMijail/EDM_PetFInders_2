@@ -1,0 +1,2 @@
+"0","library(here)"
+"0","datos  <- read.csv(here(""data"", ""petfinder_enriquecido_final.csv""))"
