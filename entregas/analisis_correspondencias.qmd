@@ -2,17 +2,21 @@
 title: "EACS: Analisis de correspondencias simple"
 ---
 
-::: autor-pdf-row
+::::: autor-pdf-row
 ::: autor-info
 **AUTORES**
 
 Jared Mijail Ramírez Escalante · María Paula Silva Capera
 :::
 
-<div class="action-bar">
-<button class="btn-print" onclick="window.print()">PDF</button>
-</div>
+::: action-bar
+<button class="btn-print" onclick="window.print()">
+
+PDF
+
+</button>
 :::
+:::::
 
 ```{r}
 #| label: setup
@@ -36,9 +40,10 @@ tabla_frecuencias(datos$AdoptionSpeed, "Velocidad de adopción")
 
 graficos_cuali(datos$AdoptionSpeed, "Velocidad de adopción", pastel = TRUE, n_top = 10)
 ```
+
 Ahora tenemos que elegir una segunda variable, la primera solo tiene 5 categorias de las cuales agruparemos las ultimas dos para no tener baja frecuencia.
 
-Al ser variables relativamente pequenas en numero de categorias escogeremos otras 4 variables con las cuales realizar el ACS vs adoption speed. 
+Al ser variables relativamente pequenas en numero de categorias escogeremos otras 4 variables con las cuales realizar el ACS vs adoption speed.
 
 De estas 3 variables tomaremos, Breed1, Color1, Vaccinated y Gender, que apriori podemos pensar que puedan existir relaciones interesantes.
 
@@ -52,3 +57,165 @@ tabla_frecuencias(datos$Gender, "Genero")
 Como se puede ver es necesario realizar un agrupamiento de categorias tanto para color, como para breed
 
 ## Preparacion de variables
+
+```{r}
+library(forcats)
+```
+
+```{r}
+datos$AdoptionSpeed_agrupada <- fct_lump_n(as.factor(datos$AdoptionSpeed), n = 3, other_level = "1–7 días")
+```
+
+Realizamos esta agruplacion pues 1 dia tiene una frecuencia realtiva muy pequena, ademas que tiene sentido agrupar esta con 1-7 dias
+
+```{r}
+datos$Breed1_agrupada <- fct_lump_n(as.factor(datos$Breed1), n = 3, other_level = "Otros")
+```
+
+Lo realizamos de esta manera para que nos queden 4 categorias, asi como en adoption speed, cabe resaltar que en breed como en color, no tiene sentido crear varias categorias de agrupacion pues tomar todas las menos frecuentes y llamarlas otras tiene sentido, pero no crear varios otros vazado solo en frecuencia pues noo se sabria que se esta agrupando realmente y seria casi del azar que puede representar cada agrupacion.
+
+```{r}
+datos$Color1_agrupada <- fct_lump_n(as.factor(datos$Color1), n = 3, other_level = "Otros")
+```
+
+Igualmente como en la anterior nos es combeniente dejar 4 categorias y el punto de corte para las mismas es una frecuencia relativa significativa aunque en esta variable si seria posible dejar mas categorias pues desde la tercera la frecuencia es parecida.
+
+## Visualizacion perfiles fila y columna
+
+Primero que todo realizaremos pruebas chi cuadrado que como vimos en clase no es un requisito e igualmente para ver si son independientes las dos variables aleatoria lo podemos ver en los perfiles fila y columna, sin embargo tambien es util ver los datos cualitativos antes de realizar cualquier grafico.
+
+Tambien veremos nuevamente los perfiles fila y columna, entre estas variables que ya vimos en el analisis bivariado, pero es bueno recordarlas y analizarlas un poco mas.
+
+```{r}
+library(FactoClass)
+
+# ---- Tabla de contingencia ----
+tabla <- table(datos$AdoptionSpeed_agrupada, datos$Breed1_agrupada)
+
+# ---- Prueba chi-cuadrado ----
+resultado <- chisq.test(tabla)
+print(resultado)
+
+# ---- Perfiles fila y columna (numéricos) ----
+perfil_fila <- prop.table(tabla, margin = 1) * 100
+print(round(perfil_fila, 2))
+
+perfil_columna <- prop.table(tabla, margin = 2) * 100
+print(round(perfil_columna, 2))
+
+# ---- Gráficos con plotct ----
+# Ajustamos los colores al número real de filas de cada tabla
+n_filas_tc  <- nrow(tabla)          # filas de tc
+n_filas_ttc <- ncol(tabla)          # filas de t(tc) = columnas de tc
+
+par(mfrow = c(2, 1), mai = c(0.4, 1, 0.3, 0.1))
+
+# Perfil fila de t(tc): cada fila suma 100%
+plotct(t(tabla), "row",
+       col = 2:(n_filas_ttc + 1),
+       main = "Perfil fila (t(tc))")
+
+# Perfil fila de tc
+plotct(tabla, "row",
+       col = 2:(n_filas_tc + 1),
+       main = "Perfil fila (tc)")
+
+# Restaurar parámetros gráficos
+par(mfrow = c(1, 1))
+```
+
+```{r}
+tabla <- table(datos$AdoptionSpeed_agrupada, datos$Color1_agrupada)
+resultado <- chisq.test(tabla)
+print(resultado)
+
+perfil_fila <- prop.table(tabla, margin = 1) * 100
+round(perfil_fila, 2)
+
+perfil_columna <- prop.table(tabla, margin = 2) * 100
+round(perfil_columna)
+
+# ---- Gráficos con plotct ----
+# Ajustamos los colores al número real de filas de cada tabla
+n_filas_tc  <- nrow(tabla)          # filas de tc
+n_filas_ttc <- ncol(tabla)          # filas de t(tc) = columnas de tc
+
+par(mfrow = c(2, 1), mai = c(0.4, 1, 0.3, 0.1))
+
+# Perfil fila de t(tc): cada fila suma 100%
+plotct(t(tabla), "row",
+       col = 2:(n_filas_ttc + 1),
+       main = "Perfil fila (t(tc))")
+
+# Perfil fila de tc
+plotct(tabla, "row",
+       col = 2:(n_filas_tc + 1),
+       main = "Perfil fila (tc)")
+
+# Restaurar parámetros gráficos
+par(mfrow = c(1, 1))
+```
+
+```{r}
+tabla <- table(datos$AdoptionSpeed_agrupada, datos$Vaccinated)
+resultado <- chisq.test(tabla)
+print(resultado)
+
+perfil_fila <- prop.table(tabla, margin = 1) * 100
+round(perfil_fila, 2)
+
+perfil_columna <- prop.table(tabla, margin = 2) * 100
+round(perfil_columna)
+
+# ---- Gráficos con plotct ----
+# Ajustamos los colores al número real de filas de cada tabla
+n_filas_tc  <- nrow(tabla)          # filas de tc
+n_filas_ttc <- ncol(tabla)          # filas de t(tc) = columnas de tc
+
+par(mfrow = c(2, 1), mai = c(0.4, 1, 0.3, 0.1))
+
+# Perfil fila de t(tc): cada fila suma 100%
+plotct(t(tabla), "row",
+       col = 2:(n_filas_ttc + 1),
+       main = "Perfil fila (t(tc))")
+
+# Perfil fila de tc
+plotct(tabla, "row",
+       col = 2:(n_filas_tc + 1),
+       main = "Perfil fila (tc)")
+
+# Restaurar parámetros gráficos
+par(mfrow = c(1, 1))
+```
+
+```{r}
+tabla <- table(datos$AdoptionSpeed_agrupada , datos$Gender)
+resultado <- chisq.test(tabla)
+print(resultado)
+
+perfil_fila <- prop.table(tabla, margin = 1) * 100
+round(perfil_fila, 2)
+
+perfil_columna <- prop.table(tabla, margin = 2) * 100
+round(perfil_columna)
+
+# ---- Gráficos con plotct ----
+# Ajustamos los colores al número real de filas de cada tabla
+n_filas_tc  <- nrow(tabla)          # filas de tc
+n_filas_ttc <- ncol(tabla)          # filas de t(tc) = columnas de tc
+
+par(mfrow = c(2, 1), mai = c(0.4, 1, 0.3, 0.1))
+
+# Perfil fila de t(tc): cada fila suma 100%
+plotct(t(tabla), "row",
+       col = 2:(n_filas_ttc + 1),
+       main = "Perfil fila (t(tc))")
+
+# Perfil fila de tc
+plotct(tabla, "row",
+       col = 2:(n_filas_tc + 1),
+       main = "Perfil fila (tc)")
+
+# Restaurar parámetros gráficos
+par(mfrow = c(1, 1))
+```
