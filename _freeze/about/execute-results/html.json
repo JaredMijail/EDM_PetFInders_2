@@ -1,9 +1,11 @@
 {
-  "hash": "8f6071f013263bc6e5dbd9e3626719ae",
+  "hash": "54dfc1beed07c0dfee0265257b4f981e",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"Acerca de\"\n---\n\nAbout this site\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n",
-    "supporting": [],
+    "markdown": "---\ntitle: \"Acerca de\"\n---\n\nAcerca de este sitio\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n",
+    "supporting": [
+      "about_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

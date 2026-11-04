@@ -1,5 +1,5 @@
 ---
-title: "EACS: Analisis de correspondencias simple"
+title: "EACS: Análisis de correspondencias simple"
 ---
 
 ::::: autor-pdf-row
@@ -26,13 +26,13 @@ PDF
 source(here::here("_setup.R"))
 ```
 
-<!-- Este comentario no se verá en la página renderizada analizar la descipcion entre dos variables cualitativas, entre las variables fila y columna atravez de sus perfiles -->
+<!-- Este comentario no se verá en la página renderizada: analizar la descripción entre dos variables cualitativas, entre las variables fila y columna a través de sus perfiles -->
 
-## Seleccion de las variables cualitativas
+## Selección de las variables cualitativas
 
-Para seleccionar nuestra variables tenemos que pensar primero que sean de interes, que prosiblemente encontremos una relaicon interesante entre las dos, y segundo que tengan categorias suficientes para relizar el analisis.
+Para seleccionar nuestras variables tenemos que pensar, primero, en que sean de interés y en que posiblemente encontremos una relación interesante entre las dos; y segundo, en que tengan categorías suficientes para realizar el análisis.
 
-Tenemos primero Adoption speed, que para este data set y el objetivo inicial del mismo, es una variable principal, recordemos un poco de las estadisitcas univariadas de la misma.
+Tenemos primero `AdoptionSpeed`, que, para este conjunto de datos y su objetivo inicial, es una variable principal; recordemos un poco de sus estadísticas univariadas.
 
 ```{r}
 
@@ -41,22 +41,22 @@ tabla_frecuencias(datos$AdoptionSpeed, "Velocidad de adopción")
 graficos_cuali(datos$AdoptionSpeed, "Velocidad de adopción", pastel = TRUE, n_top = 10)
 ```
 
-Ahora tenemos que elegir una segunda variable, la primera solo tiene 5 categorias de las cuales agruparemos las ultimas dos para no tener baja frecuencia.
+Ahora tenemos que elegir una segunda variable. La primera solo tiene cinco categorías, de las cuales agruparemos las últimas dos para evitar frecuencias bajas.
 
-Al ser variables relativamente pequenas en numero de categorias escogeremos otras 4 variables con las cuales realizar el ACS vs adoption speed.
+Como son variables con relativamente pocas categorías, escogeremos otras cuatro variables con las cuales realizar el ACS frente a la velocidad de adopción.
 
-De estas 3 variables tomaremos, Breed1, Color1, Vaccinated y Gender, que apriori podemos pensar que puedan existir relaciones interesantes.
+De estas cuatro variables tomaremos `Breed1`, `Color1`, `Vaccinated` y `Gender`, en las que a priori podemos pensar que existan relaciones interesantes.
 
 ```{r}
-tabla_frecuencias(datos$Breed1, "Velocidad de adopción")
-tabla_frecuencias(datos$Color1, "Primer Color")
-tabla_frecuencias(datos$Vaccinated, "Estado de vacunacion")
-tabla_frecuencias(datos$Gender, "Genero")
+tabla_frecuencias(datos$Breed1, "Raza principal")
+tabla_frecuencias(datos$Color1, "Color principal")
+tabla_frecuencias(datos$Vaccinated, "Estado de vacunación")
+tabla_frecuencias(datos$Gender, "Género")
 ```
 
-Como se puede ver es necesario realizar un agrupamiento de categorias tanto para color, como para breed
+Como se puede ver, es necesario agrupar categorías tanto para color como para raza.
 
-## Preparacion de variables
+## Preparación de variables
 
 ```{r}
 library(forcats)
@@ -66,25 +66,25 @@ library(forcats)
 datos$AdoptionSpeed_agrupada <- fct_lump_n(as.factor(datos$AdoptionSpeed), n = 3, other_level = "1–7 días")
 ```
 
-Realizamos esta agruplacion pues 1 dia tiene una frecuencia realtiva muy pequena, ademas que tiene sentido agrupar esta con 1-7 dias
+Realizamos esta agrupación porque «mismo día» tiene una frecuencia relativa muy pequeña y tiene sentido agruparla con «1–7 días».
 
 ```{r}
 datos$Breed1_agrupada <- fct_lump_n(as.factor(datos$Breed1), n = 3, other_level = "Otros")
 ```
 
-Lo realizamos de esta manera para que nos queden 4 categorias, asi como en adoption speed, cabe resaltar que en breed como en color, no tiene sentido crear varias categorias de agrupacion pues tomar todas las menos frecuentes y llamarlas otras tiene sentido, pero no crear varios otros vazado solo en frecuencia pues noo se sabria que se esta agrupando realmente y seria casi del azar que puede representar cada agrupacion.
+Lo realizamos de esta manera para que nos queden cuatro categorías, igual que en `AdoptionSpeed`. Cabe resaltar que, tanto en raza como en color, no tiene sentido crear varias categorías de agrupación: tomar todas las menos frecuentes y llamarlas «Otras» tiene sentido, pero no crear varios «otros» basados solo en la frecuencia, pues no se sabría qué se está agrupando realmente y sería casi del azar lo que puede representar cada agrupación.
 
 ```{r}
 datos$Color1_agrupada <- fct_lump_n(as.factor(datos$Color1), n = 3, other_level = "Otros")
 ```
 
-Igualmente como en la anterior nos es combeniente dejar 4 categorias y el punto de corte para las mismas es una frecuencia relativa significativa aunque en esta variable si seria posible dejar mas categorias pues desde la tercera la frecuencia es parecida.
+Igual que en la anterior, nos conviene dejar cuatro categorías, y el punto de corte para ellas es una frecuencia relativa significativa, aunque en esta variable sí sería posible dejar más categorías, pues desde la tercera la frecuencia es parecida.
 
-## Visualizacion perfiles fila y columna
+## Visualización de perfiles fila y columna
 
-Primero que todo realizaremos pruebas chi cuadrado que como vimos en clase no es un requisito e igualmente para ver si son independientes las dos variables aleatoria lo podemos ver en los perfiles fila y columna, sin embargo tambien es util ver los datos cualitativos antes de realizar cualquier grafico.
+Primero que todo realizaremos pruebas de chi cuadrado que, como vimos en clase, no son un requisito; igualmente, para ver si las dos variables aleatorias son independientes podemos fijarnos en los perfiles fila y columna. Sin embargo, también es útil ver los datos cualitativos antes de realizar cualquier gráfico.
 
-Tambien veremos nuevamente los perfiles fila y columna, entre estas variables que ya vimos en el analisis bivariado, pero es bueno recordarlas y analizarlas un poco mas.
+También veremos nuevamente los perfiles fila y columna entre estas variables, que ya vimos en el análisis bivariado, pero es bueno recordarlas y analizarlas un poco más.
 
 ```{r}
 library(FactoClass)
