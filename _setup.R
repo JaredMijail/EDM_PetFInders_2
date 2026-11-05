@@ -12,7 +12,24 @@
 library(here)
 library(tidyverse)
 
-datos <- read.csv(here("data", "petfinder_enriquecido_final.csv"))
+datos <- read.csv(here("data", "petfinder_enriquecido_final.csv")) |>
+  dplyr::mutate(
+    AdoptionSpeed = factor(
+      AdoptionSpeed,
+      levels = c("SameDay", "1-7d", "8-30d", "31-90d", "NoAdoption"),
+      labels = c("Mismo día", "1–7 días", "8–30 días", "31–90 días", "Sin adopción")
+    ),
+    Gender = factor(
+      Gender,
+      levels = c("Male", "Female", "Mixed"),
+      labels = c("Macho", "Hembra", "Mixto")
+    ),
+    Vaccinated = factor(
+      Vaccinated,
+      levels = c("Yes", "No", "NotSure"),
+      labels = c("Sí", "No", "No está seguro")
+    )
+  )
 
 # --- Formateo de cifras en español ---
 
@@ -28,6 +45,13 @@ fmt <- function(x, d = 2) {
 # Función pct(): Formatea valores como porcentaje
 pct <- function(x, d = 1) {
   paste0(format(round(x, d), nsmall = d, decimal.mark = ",", scientific = FALSE, trim = TRUE), "%")
+}
+
+# Función pval(): Formatea valores p con el umbral habitual
+pval <- function(p, d = 3) {
+  if (is.na(p)) return("NA")
+  if (p < 0.001) return("< 0,001")
+  fmt(p, d)
 }
 
 # --- Estadísticos ---
@@ -204,4 +228,115 @@ graficos_cuali <- function(x, etiqueta, pastel = FALSE, n_top = 10) {
           legend.position = "right", axis.text = element_blank(), panel.grid = element_blank())
   print(p1); print(p2)
   invisible(NULL)
+}
+
+# ===========================================================================
+# Análisis de correspondencias simple (ACS)
+# ===========================================================================
+# `acs()` recibe una tabla de contingencia y devuelve las coordenadas,
+# contribuciones e inercia de filas y columnas. El eje 1 se orienta para que
+# la categoría de fila con mayor coordenada absoluta quede del lado positivo;
+# así los planos de distintas variables se pueden comparar entre sí.
+acs <- function(tabla) {
+  tabla <- as.matrix(tabla)
+  n <- sum(tabla)
+  P <- tabla / n
+  r <- rowSums(P)
+  c <- colSums(P)
+
+  S <- diag(1 / sqrt(r)) %*% (P - outer(r, c)) %*% diag(1 / sqrt(c))
+  des <- svd(S)
+  k <- sum(des$d > 1e-10)
+  d <- des$d[seq_len(k)]
+  U <- des$u[, seq_len(k), drop = FALSE]
+  V <- des$v[, seq_len(k), drop = FALSE]
+
+  F <- diag(1 / sqrt(r)) %*% U %*% diag(d, nrow = k)
+  G <- diag(1 / sqrt(c)) %*% V %*% diag(d, nrow = k)
+
+  # Orientación estable de los ejes
+  if (F[which.max(abs(F[, 1])), 1] < 0) {
+    F[, 1] <- -F[, 1]; G[, 1] <- -G[, 1]
+  }
+  if (k >= 2 && F[which.max(abs(F[, 2])), 2] < 0) {
+    F[, 2] <- -F[, 2]; G[, 2] <- -G[, 2]
+  }
+
+  eig <- d^2
+  pct <- 100 * eig / sum(eig)
+
+  filas <- tibble::tibble(
+    categoria = rownames(tabla),
+    masa = r,
+    dim1 = F[, 1],
+    dim2 = if (k >= 2) F[, 2] else 0,
+    contrib1 = 100 * r * F[, 1]^2 / eig[1],
+    contrib2 = if (k >= 2) 100 * r * F[, 2]^2 / eig[2] else 0
+  )
+
+  columnas <- tibble::tibble(
+    categoria = colnames(tabla),
+    masa = c,
+    dim1 = G[, 1],
+    dim2 = if (k >= 2) G[, 2] else 0,
+    contrib1 = 100 * c * G[, 1]^2 / eig[1],
+    contrib2 = if (k >= 2) 100 * c * G[, 2]^2 / eig[2] else 0
+  )
+
+  chi <- suppressWarnings(chisq.test(tabla))
+
+  list(
+    tabla = tabla,
+    n = n,
+    chi = chi,
+    cramer = unname(sqrt(chi$statistic / (n * (min(dim(tabla)) - 1)))),
+    inercia = sum(eig),
+    eig = eig,
+    pct = pct,
+    filas = filas,
+    columnas = columnas
+  )
+}
+
+# Tabla con la inercia explicada por cada dimensión del ACS
+tabla_acs <- function(res, caption = NULL) {
+  tibble::tibble(
+    Dimensión = seq_along(res$eig),
+    `Valor propio` = fmt(res$eig, 4),
+    `% de inercia` = pct(res$pct, 1),
+    `% acumulado` = pct(cumsum(res$pct), 1)
+  ) |>
+    knitr::kable(align = c("c", "r", "r", "r"), caption = caption)
+}
+
+# Biplot del ACS: filas y columnas en el mismo plano
+grafico_acs <- function(res, titulo, etiqueta_filas = "AdoptionSpeed",
+                        etiqueta_columnas = "Variable") {
+  d <- dplyr::bind_rows(
+    dplyr::mutate(res$filas, grupo = etiqueta_filas),
+    dplyr::mutate(res$columnas, grupo = etiqueta_columnas)
+  ) |>
+    dplyr::mutate(grupo = factor(grupo, levels = c(etiqueta_filas, etiqueta_columnas)))
+
+  ggplot(d, aes(x = dim1, y = dim2, colour = grupo, shape = grupo)) +
+    geom_hline(yintercept = 0, linetype = "dashed", colour = "grey75") +
+    geom_vline(xintercept = 0, linetype = "dashed", colour = "grey75") +
+    geom_segment(aes(xend = dim1, yend = dim2), x = 0, y = 0,
+                 alpha = 0.45,
+                 arrow = grid::arrow(length = grid::unit(0.15, "cm"))) +
+    geom_point(size = 3) +
+    ggrepel::geom_text_repel(aes(label = categoria), size = 3,
+                             max.overlaps = Inf, seed = 1, show.legend = FALSE) +
+    scale_colour_manual(values = c("#1a3a5c", "#d97706")) +
+    scale_shape_manual(values = c(16, 17)) +
+    scale_x_continuous(labels = function(x) format(x, decimal.mark = ",", trim = TRUE)) +
+    scale_y_continuous(labels = function(x) format(x, decimal.mark = ",", trim = TRUE)) +
+    labs(
+      title = titulo,
+      x = paste0("Dimensión 1 (", pct(res$pct[1]), ")"),
+      y = paste0("Dimensión 2 (", pct(res$pct[2]), ")"),
+      colour = NULL, shape = NULL
+    ) +
+    tema_u() +
+    theme(legend.position = "bottom")
 }
