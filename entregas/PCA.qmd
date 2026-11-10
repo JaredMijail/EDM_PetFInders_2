@@ -37,8 +37,6 @@ execute:
 
 A continuación se presenta el análisis de componentes principales implementado sobre las variables cuantitativas del conjunto de datos PetFinder.
 
-## Preparación de los datos
-
 ### Carga de librerías y datos
 
 ```{r}
@@ -50,6 +48,7 @@ library(plotly)
 library(ggrepel)
 library(factoextra)
 library(FactoMineR)
+library(naniar)
 
 # Cargamos la tabla de datos enriquecida
 petfinder_enriquecido_final <- read.csv(
@@ -120,7 +119,12 @@ Se identificó que *total_labels*, *total_colors*, *sentiment_score* y *sentimen
 mcar_test(petfinder_cuantis)
 ```
 
+Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugiere que sí esxiste una aparición sistemática de los valores faltantes, por lo tanto es pertinente realizar una verificación de cómo son estos posibles patrones.
 
+```{r}
+# Patrones de ocurrencia
+gg_miss_upset(petfinder_cuantis[, vars_na])
+```
 
 
 
