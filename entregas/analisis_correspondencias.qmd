@@ -43,7 +43,7 @@ graficos_cuali(datos$AdoptionSpeed, "Velocidad de adopción", pastel = TRUE, n_t
 
 Ahora tenemos que elegir una segunda variable. La primera solo tiene cinco categorías, de las cuales agruparemos las últimas dos para evitar frecuencias bajas.
 
-Como son variables con relativamente pocas categorías, escogeremos otras cuatro variables para explorar su relación con la velocidad de adopción; el ACS se aplicará a tres de ellas.
+Como son variables con relativamente pocas categorías, escogeremos otras cuatro variables para explorar su relación con la velocidad de adopción; el ACS se aplicará a las cuatro.
 
 De estas cuatro variables exploraremos `Breed1`, `Color1`, `Vaccinated` y `Gender`, en las que a priori podemos pensar que existan relaciones interesantes.
 
@@ -124,6 +124,8 @@ plotct(tabla, "row",
 par(mfrow = c(1, 1))
 ```
 
+En estos gráficos podemos destacar que la raza 307 tiene una alta tasa de no adopción, y que «Otros» y la 265 presentan mayor adopción, lo que nos indica que, probablemente, mientras menos común sea una raza, más probable es que sea adoptada, aunque esta es una suposición débil.
+
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada, datos$Color1_agrupada)
 resultado <- chisq.test(tabla)
@@ -155,6 +157,8 @@ plotct(tabla, "row",
 # Restaurar parámetros gráficos
 par(mfrow = c(1, 1))
 ```
+
+En estos gráficos podemos ver, en los perfiles fila, que todos son muy similares al marginal, excepto «Hasta 7 días», que presenta más de «Otros». Esto también nos puede indicar que, mientras menos común sea un color, la adopción va a ser más rápida; igualmente, en «Sin adopción» podemos ver que la categoría más pequeña es la de «Otros».
 
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada, datos$Vaccinated)
@@ -188,6 +192,8 @@ plotct(tabla, "row",
 par(mfrow = c(1, 1))
 ```
 
+En este caso los datos son muy interesantes, pues parecería que los no vacunados se adoptan más rápido y los que están en «No está seguro», menos.
+
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada , datos$Gender)
 resultado <- chisq.test(tabla)
@@ -220,15 +226,11 @@ plotct(tabla, "row",
 par(mfrow = c(1, 1))
 ```
 
+En este podemos ver que los machos son adoptados más rápido y con más seguridad que las hembras, y que «Mixto» parece tener también adopciones menos rápidas y menos seguras.
+
 ## Análisis de correspondencias simple {#sec-acs}
 
-### Variables incluidas y excluidas
-
-El ACS se aplica a una tabla de contingencia de **dos** variables cualitativas. Por eso no se construye un único ACS con todas las variables del anuncio: combinarlas en un solo plano sería un **análisis de correspondencias múltiples (ACM)**, que responde otra pregunta y no permite aislar la relación de `AdoptionSpeed` con cada atributo. Se hace entonces un ACS por par y se comparan los planos.
-
-Se incluyen `Breed1`, `Color1` y `Vaccinated` porque son atributos del animal (o de su estado sanitario) con categorías exhaustivas después del agrupamiento y con tablas 4×4, 4×4 y 4×3, sin celdas vacías. El agrupamiento previo —las tres categorías más frecuentes y «Otros»— evita celdas con frecuencias muy bajas, que inflan la inercia de categorías raras y vuelven inestable el plano. `Color1` es la asociación más débil de las tres y se interpreta con cautela, pero se conserva porque es un atributo físico medido en toda la base y completa el contraste entre atributos del animal.
-
-Se excluye `Gender`: aunque su prueba de independencia es significativa, la categoría «Mixto» no describe el sexo de un animal sino los anuncios con varios animales de distinto sexo (`Quantity > 1`), así que un eje de sexo quedaría confundido con el tipo de anuncio. También quedan fuera las variables cuantitativas (no son insumo de un ACS), los identificadores (`PetID`, `RescuerID`), el texto libre (`Description`, `Name`) y las variables de altísima cardinalidad (la versión sin agrupar de `Breed1` y `State`), porque producirían tablas dispersas y ejes dominados por categorías raras.
+### Resumen del ACS
 
 ```{r}
 #| label: acs-calculo
@@ -258,7 +260,7 @@ resumen <- tibble::tibble(
                         res_vac$pct[1], res_gender$pct[1])),
   `Dim. 2 (%)` = pct(c(res_breed$pct[2], res_color$pct[2],
                         res_vac$pct[2], res_gender$pct[2])),
-  ACS = c("Sí", "Sí", "Sí", "No (confusión)")
+  ACS = c("Sí", "Sí", "Sí", "Sí")
 )
 knitr::kable(resumen, align = c("l", "r", "r", "r", "r", "r", "r", "r", "l"),
              caption = "Contraste de independencia y resumen del ACS para las variables candidatas")
@@ -275,7 +277,11 @@ grafico_acs(res_breed, "ACS: velocidad de adopción y raza (Breed1)",
             "Velocidad de adopción", "Raza (código)")
 ```
 
-**Lectura.** El primer eje explica el `r pct(res_breed$pct[1])` de la inercia, así que el plano se lee casi en una sola dirección. Hacia el lado positivo quedan «Hasta 7 días» (`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Hasta 7 días"], 3)`) y, en las columnas, «Otros» (`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "Otros"], 3)`) y el código 265; hacia el lado negativo quedan «Sin adopción» (`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Sin adopción"], 3)`) y el código 307 (`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "307"], 3)`). «Hasta 7 días» aporta el `r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Hasta 7 días"])` de la inercia del eje y «Sin adopción» el `r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Sin adopción"])`; entre las columnas, el código 307 aporta el `r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "307"])` y «Otros» el `r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "Otros"])`. La lectura es que la adopción rápida se asocia con las razas agrupadas en «Otros» y con el código 265, mientras que la no adopción se asocia con el código 307; el código 266 queda cerca del centro y apenas discrimina. Es la asociación más fuerte de las tres (V = `r fmt(res_breed$cramer, 3)`), aunque su magnitud sigue siendo baja.
+**Lectura.** El primer eje explica el `r pct(res_breed$pct[1])` de la inercia, así que el plano se lee casi en una sola dirección. Hacia el lado positivo quedan «Hasta 7 días» (`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Hasta 7 días"], 3)`) y, en las columnas, «Otros» (`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "Otros"], 3)`) y el código 265; hacia el lado negativo quedan «Sin adopción» (`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Sin adopción"], 3)`) y el código 307 (`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "307"], 3)`). «Hasta 7 días» aporta el `r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Hasta 7 días"])` de la inercia del eje y «Sin adopción» el `r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Sin adopción"])`; entre las columnas, el código 307 aporta el `r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "307"])` y «Otros» el `r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "Otros"])`. La lectura es que la adopción rápida se asocia con las razas agrupadas en «Otros» y con el código 265, mientras que la no adopción se asocia con el código 307; el código 266 queda cerca del centro y apenas discrimina. Es la asociación más fuerte de las cuatro (V = `r fmt(res_breed$cramer, 3)`), aunque su magnitud sigue siendo baja.
+
+De forma que efectivamente podríamos pensar que, mientras menos común sea una raza, más fácil es la adopción de la misma, como se supuso en la sección de perfiles fila y columna, pero aquí podemos ver esta suposición con más claridad. O, sin ir tan lejos, es claro que la raza 307 queda en el eje 1 casi en el mismo punto que «Sin adopción».
+
+Respecto a la interpretación de los ejes, tendríamos que el eje 1 es la velocidad de adopción y el eje 2 separa «8–30 días» y «31–90 días», pero, como se dijo, el segundo eje tiene muy poca inercia y su interpretación no es muy clara.
 
 ### AdoptionSpeed × Color1
 
@@ -288,6 +294,10 @@ grafico_acs(res_color, "ACS: velocidad de adopción y color (Color1)",
 
 **Lectura.** El primer eje concentra el `r pct(res_color$pct[1])` de la inercia y el segundo el `r pct(res_color$pct[2])`, por lo que el plano necesita dos direcciones para leerse completo. En el eje 1, «Hasta 7 días» (`r fmt(res_color$filas$dim1[res_color$filas$categoria == "Hasta 7 días"], 3)`) se opone a «Sin adopción» (`r fmt(res_color$filas$dim1[res_color$filas$categoria == "Sin adopción"], 3)`) y a «31–90 días» (`r fmt(res_color$filas$dim1[res_color$filas$categoria == "31–90 días"], 3)`); en las columnas, «Otros» (`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "Otros"], 3)`) y el código 3 (`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "3"], 3)`) quedan del lado de la adopción rápida, mientras que el código 2 (`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "2"], 3)`) queda del lado de la adopción lenta o nula. Las contribuciones del eje 1 son `r pct(res_color$filas$contrib1[res_color$filas$categoria == "Hasta 7 días"])` para «Hasta 7 días», `r pct(res_color$filas$contrib1[res_color$filas$categoria == "Sin adopción"])` para «Sin adopción», `r pct(res_color$columnas$contrib1[res_color$columnas$categoria == "Otros"])` para «Otros» y `r pct(res_color$columnas$contrib1[res_color$columnas$categoria == "2"])` para el código 2. El eje 2 separa sobre todo «8–30 días» y el código 3 del resto; es un eje secundario. La asociación es débil (V = `r fmt(res_color$cramer, 3)`; inercia `r fmt(res_color$inercia, 4)`), así que la lectura es descriptiva y no permite concluir que el color sea un factor determinante.
 
+Dicho lo anterior, el eje 1 representa la velocidad de adopción: podemos ver que «Sin adopción» y el color 2 son muy cercanos, igual que «Otros» y «Hasta 7 días», de forma que sería posible interpretar que, mientras más raro un color, más rápida es la adopción en general, pues vemos que el color 2 se relaciona mucho con la no adopción.
+
+Por otro lado, el eje 2, que tiene un porcentaje considerable de la inercia, casi que separa el color 3 de los demás y, un poco, el 1, así como «8–30 días»; la interpretación de este eje es difícil, más allá de pensar que el color 3 y «8–30 días» están relacionados.
+
 ### AdoptionSpeed × Vaccinated
 
 ```{r}
@@ -299,10 +309,19 @@ grafico_acs(res_vac, "ACS: velocidad de adopción y estado de vacunación",
 
 **Lectura.** El primer eje explica el `r pct(res_vac$pct[1])` de la inercia. Del lado positivo quedan «Hasta 7 días» (`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "Hasta 7 días"], 3)`) y «8–30 días» (`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "8–30 días"], 3)`), junto con «No» vacunado (`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "No"], 3)`); del lado negativo quedan «Sin adopción» (`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "Sin adopción"], 3)`) y «31–90 días» (`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "31–90 días"], 3)`), junto con «Sí» (`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "Sí"], 3)`) y «No está seguro» (`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "No está seguro"], 3)`). «Sin adopción» aporta el `r pct(res_vac$filas$contrib1[res_vac$filas$categoria == "Sin adopción"])` y «Hasta 7 días» el `r pct(res_vac$filas$contrib1[res_vac$filas$categoria == "Hasta 7 días"])`; en las columnas, «No» aporta el `r pct(res_vac$columnas$contrib1[res_vac$columnas$categoria == "No"])` y «Sí» el `r pct(res_vac$columnas$contrib1[res_vac$columnas$categoria == "Sí"])`. La lectura es que los anuncios de animales no vacunados se asocian con adopciones más rápidas, y los vacunados o con estado incierto con la no adopción. Es una asociación descriptiva y podría estar confundida con la edad, la salud o el tipo de rescatista; no implica causalidad.
 
-### Gender: variable excluida
+Más allá de esto, la dimensión 2 aporta muy poca inercia y parece, tal vez, separar «No está seguro» de las demás categorías.
 
-El ACS de `Gender` no se incluye en la comparación. Su tabla también es significativa (χ² = `r fmt(res_gender$chi$statistic, 2)`, gl = `r res_gender$chi$parameter`, p = `r pval(res_gender$chi$p.value)`) y su primer eje explica el `r pct(res_gender$pct[1])`, pero V = `r fmt(res_gender$cramer, 3)` y la inercia (`r fmt(res_gender$inercia, 4)`) son de las más bajas. Además, «Mixto» agrupa anuncios con varios animales de distinto sexo (`Quantity > 1`), no el sexo de un animal; un plano de sexo, por tanto, mezclaría sexo y tipo de anuncio. Se deja fuera para no forzar una interpretación que la variable no sostiene.
+### AdoptionSpeed × Gender
 
-### Lectura conjunta
+```{r}
+#| label: acs-gender
+tabla_acs(res_gender, "Inercia del ACS — velocidad de adopción y Gender")
+grafico_acs(res_gender, "ACS: velocidad de adopción y género",
+            "Velocidad de adopción", "Género")
+```
 
-En los tres planos el eje 1 concentra entre el `r pct(min(c(res_breed$pct[1], res_color$pct[1], res_vac$pct[1])))` y el `r pct(max(c(res_breed$pct[1], res_color$pct[1], res_vac$pct[1])))` de la inercia, y se orientó con la adopción rápida («Hasta 7 días») del lado positivo. Ese eje opone de forma consistente la adopción rápida a la no adopción: en `Breed1` separa «Otros» y el código 265 del código 307; en `Color1`, «Otros» y el código 3 del código 2; en `Vaccinated`, «No» de «Sí» y «No está seguro». `Breed1` y `Vaccinated` son las asociaciones más fuertes (`V ≈ 0,10`), mientras que `Color1` es claramente más débil (V = `r fmt(res_color$cramer, 3)`). Como la inercia total es baja (`r fmt(min(c(res_breed$inercia, res_color$inercia, res_vac$inercia)), 4)`–`r fmt(max(c(res_breed$inercia, res_color$inercia, res_vac$inercia)), 4)`), las asociaciones son estadísticamente detectables pero de magnitud pequeña: el ACS describe la estructura de cada tabla, no demuestra causalidad ni garantiza capacidad predictiva.
+**Lectura.** El primer eje explica el `r pct(res_gender$pct[1])` de la inercia. Del lado positivo quedan «Hasta 7 días» (`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "Hasta 7 días"], 3)`) y «8–30 días» (`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "8–30 días"], 3)`), junto con «Macho» (`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Macho"], 3)`); del lado negativo quedan «Sin adopción» (`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "Sin adopción"], 3)`) y «31–90 días» (`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "31–90 días"], 3)`), junto con «Hembra» (`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Hembra"], 3)`) y «Mixto» (`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Mixto"], 3)`). «Hasta 7 días» aporta el `r pct(res_gender$filas$contrib1[res_gender$filas$categoria == "Hasta 7 días"])` de la inercia del eje y «Sin adopción» el `r pct(res_gender$filas$contrib1[res_gender$filas$categoria == "Sin adopción"])`; entre las columnas, «Macho» aporta el `r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Macho"])`, «Hembra» el `r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Hembra"])` y «Mixto» el `r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Mixto"])`. La lectura es que los anuncios de machos se asocian con adopciones más rápidas, mientras que los de hembras y mixtos se asocian con adopciones más lentas o sin adopción. Es una asociación débil (V = `r fmt(res_gender$cramer, 3)`; inercia `r fmt(res_gender$inercia, 4)`), así que la lectura es descriptiva. Conviene recordar que «Mixto» agrupa anuncios con varios animales, de modo que parte de la asociación puede reflejar el tipo de anuncio y no solo el sexo.
+
+Como también se pudo leer aproximadamente en los perfiles fila y columna, parece que hay una asociación fuerte entre «Macho» y una adopción más rápida, y que «Hembra» y «Mixto» son muy similares en adopciones más lentas, pero «Mixto» tiene una relación más fuerte con «Sin adopción».
+
+Se resalta que «Macho» es básicamente el eje 1, y que «Hembra» y «Mixto» quedan casi en el mismo punto de ese eje, de forma que podemos pensar que el eje 2 separa a hembras de mixto.
