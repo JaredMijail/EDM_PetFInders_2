@@ -1,0 +1,15 @@
+{
+  "hash": "33c0bf326a76a2b92e63a6eab1925cb1",
+  "result": {
+    "engine": "knitr",
+    "markdown": "::::: autor-pdf-row\n---\ntitle: \"PCA: Análisis de Componentes Principales\"\n---\n\n::: autor-info\n**AUTORES**\n\nJared Mijail Ramírez Escalante · María Paula Silva Capera\n:::\n\n::: action-bar\n<button class=\"btn-print\" onclick=\"window.print()\">\n\nPDF\n\n</button>\n:::\n:::::\n\n---\ntitle: \"Análisis de Componentes Principales\"\nauthor: \"María P. Silva\"\nformat:\n  html:\n    toc: true\n    toc-depth: 3\n    number-sections: true\n    code-fold: true\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n# Introducción\n\n<!-- \nEscribe aquí una breve introducción al análisis.\n\nPuedes incluir:\n- El contexto del conjunto de datos.\n- El objetivo general del análisis.\n- La razón para utilizar un Análisis de Componentes Principales (PCA).\n-->\n\n**[Escribe aquí la introducción.]**\n\n\n# Preparación de los datos\n\n## Carga de librerías y datos\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(here)\nlibrary(ggplot2)\nlibrary(plotly)\nlibrary(ggrepel)\nlibrary(factoextra)\nlibrary(FactoMineR)\n\n# Cargamos la tabla de datos enriquecida\npetfinder_enriquecido_final <- read.csv(\n  file.path(here(), \"data\", \"petfinder_enriquecido_final.csv\")\n)\n\nn <- nrow(petfinder_enriquecido_final)\n```\n:::\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -28,7 +28,9 @@ website:
         href: index.qmd
       - text: "Entrega 02"
         menu:
-          - text: "Análisis de correspondencias simple"
+          - text: "Análisis de Componentes Principales"
+            href: entregas/PCA.qmd
+          - text: "Análisis de Correspondencias Simple"
             href: entregas/analisis_correspondencias.qmd
       - text: "Acerca de"
         href: about.qmd
@@ -43,6 +45,7 @@ website:
       - section: "Entrega 02"
         contents:
           - entregas/analisis_correspondencias.qmd
+          - entregas/PCA.qmd
       - section: "Información"
         contents:
           - about.qmd

@@ -1,0 +1,95 @@
+::::: autor-pdf-row
+---
+title: "PCA: Análisis de Componentes Principales"
+---
+
+::: autor-info
+**AUTORES**
+
+Jared Mijail Ramírez Escalante · María Paula Silva Capera
+:::
+
+::: action-bar
+<button class="btn-print" onclick="window.print()">
+
+PDF
+
+</button>
+:::
+:::::
+
+---
+title: "Análisis de Componentes Principales"
+author: "María P. Silva"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# Introducción
+
+<!-- 
+Escribe aquí una breve introducción al análisis.
+
+Puedes incluir:
+- El contexto del conjunto de datos.
+- El objetivo general del análisis.
+- La razón para utilizar un Análisis de Componentes Principales (PCA).
+-->
+
+**[Escribe aquí la introducción.]**
+
+
+# Preparación de los datos
+
+## Carga de librerías y datos
+
+```{r}
+#| label: setup
+
+library(here)
+library(ggplot2)
+library(plotly)
+library(ggrepel)
+library(factoextra)
+library(FactoMineR)
+
+# Cargamos la tabla de datos enriquecida
+petfinder_enriquecido_final <- read.csv(
+  file.path(here(), "data", "petfinder_enriquecido_final.csv")
+)
+
+n <- nrow(petfinder_enriquecido_final)
+```
+
+# Selección de variables activas y suplementarias
+## Variables activas
+
+```{r}
+vars_activas <- c(
+  'PhotoAmt',
+  'sentiment_score',
+  'sentiment_magnitude',
+  'total_labels',
+  'total_colors',
+  'desc_char_len',
+  'desc_word_count'
+)
+```
+
+Las variables elegidas para ser partícipes de la construcción de los ejes del plano factorial nuevo fueron *PhotoAmt*, *sentiment_score*, *sentiment_magnitude*, *total_labels*, *total_colors*, *desc_char_len*, *desc_word_count*.
+
+## Variables suplementarias
+
+
+```{r}
+vars_sup <- c('Age', 'Quantity', 'Fee')
+cuantitativas <- c(vars_activas, vars_sup)
+```
