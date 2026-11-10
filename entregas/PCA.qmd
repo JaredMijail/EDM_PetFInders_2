@@ -88,6 +88,8 @@ Las variables suplementarias *Age*, *Quantity* y *Fee* representan característi
 
 ## Tratamiento de los valores faltantes
 
+Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es immportante darles un tratamiento adecuado para que la matriz numérica esté completa. Dentro de nuestras variables cuantitativas, se identificó que *total_labels*, *total_colors*
+
 ```{r}
 # Identificadores de las mascotas
 ids <- petfinder_enriquecido_final$PetID
@@ -100,11 +102,9 @@ petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
 sum(is.na(petfinder_enriquecido_final))
 
 # Variables con valores faltantes
-vars_na <- names(
-  which(colSums(is.na(petfinder_cuantis)) > 0)
-)
-
-vars_na
+as.data.frame(colSums(is.na(petfinder_cuantis)))
 ```
+
+
 
 
