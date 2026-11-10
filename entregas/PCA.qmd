@@ -34,8 +34,8 @@ execute:
 ---
 
 ## Introducción
-A continuación se presenta el análisis de componentes principales implementado sobre las variables cuantitativas del conjunto de datos PetFinder.
 
+A continuación se presenta el análisis de componentes principales implementado sobre las variables cuantitativas del conjunto de datos PetFinder.
 
 ## Preparación de los datos
 
@@ -60,6 +60,7 @@ n <- nrow(petfinder_enriquecido_final)
 ```
 
 ## Selección de variables activas y suplementarias
+
 ### Variables activas
 
 ```{r}
@@ -105,3 +106,4 @@ vars_na <- names(
 
 vars_na
 ```
+
