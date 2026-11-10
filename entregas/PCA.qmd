@@ -94,3 +94,24 @@ cuantitativas <- c(vars_activas, vars_sup)
 ```
 
 Las variables suplementarias *Age*, *Quantity* y *Fee* representan características externas a la construcción del anuncio, son propias del animal o de las condiciones de adopción y se proyectan posteriormente para evaluar su relación con la estructura identificada.
+
+# Tratamiento de los valores faltantes
+
+```{r}
+# Identificadores de las mascotas
+ids <- petfinder_enriquecido_final$PetID
+rownames(petfinder_enriquecido_final) <- ids
+
+# Conjunto de datos con las variables cuantitativas
+petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
+
+# Número total de valores faltantes
+sum(is.na(petfinder_enriquecido_final))
+
+# Variables con valores faltantes
+vars_na <- names(
+  which(colSums(is.na(petfinder_cuantis)) > 0)
+)
+
+vars_na
+```
