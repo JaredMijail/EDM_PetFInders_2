@@ -101,6 +101,10 @@ petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
 sum(is.na(petfinder_enriquecido_final))
 
 # Variables con valores faltantes
+vars_na <- names(
+  which(colSums(is.na(petfinder_cuantis)) > 0)
+)
+
 na_df <- data.frame(
   variable = names(petfinder_cuantis),
   n_na     = colSums(is.na(petfinder_cuantis)),
