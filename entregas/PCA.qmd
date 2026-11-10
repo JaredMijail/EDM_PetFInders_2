@@ -102,12 +102,6 @@ petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
 sum(is.na(petfinder_enriquecido_final))
 
 # Variables con valores faltantes
-as.data.frame(colSums(is.na(petfinder_cuantis)))
-```
-
-```{r}
-#| label: tbl-na
-#| tbl-cap: "Valores faltantes por variable"
 na_df <- data.frame(
   variable = names(petfinder_cuantis),
   n_na     = colSums(is.na(petfinder_cuantis)),
@@ -115,6 +109,7 @@ na_df <- data.frame(
 )
 knitr::kable(na_df, col.names = c("Variable", "Valores faltantes"))
 ```
+
 
 
 
