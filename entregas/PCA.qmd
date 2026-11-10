@@ -81,6 +81,13 @@ Las variables elegidas para ser partícipes de la construcción de los ejes del 
 ```{r}
 vars_sup <- c('Age', 'Quantity', 'Fee')
 cuantitativas <- c(vars_activas, vars_sup)
+
+# Identificadores de las mascotas
+ids <- petfinder_enriquecido_final$PetID
+rownames(petfinder_enriquecido_final) <- ids
+
+# Conjunto de datos con las variables cuantitativas
+petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
 ```
 
 Las variables suplementarias *Age*, *Quantity* y *Fee* representan características externas a la construcción del anuncio, son propias del animal o de las condiciones de adopción y se proyectan posteriormente para evaluar su relación con la estructura identificada.
@@ -90,13 +97,6 @@ Las variables suplementarias *Age*, *Quantity* y *Fee* representan característi
 Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es importante darles un tratamiento adecuado para que la matriz numérica esté completa. Dentro de nuestras variables cuantitativas.
 
 ```{r}
-# Identificadores de las mascotas
-ids <- petfinder_enriquecido_final$PetID
-rownames(petfinder_enriquecido_final) <- ids
-
-# Conjunto de datos con las variables cuantitativas
-petfinder_cuantis <- petfinder_enriquecido_final[, cuantitativas]
-
 # Número total de valores faltantes
 sum(is.na(petfinder_enriquecido_final))
 
@@ -130,6 +130,8 @@ Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugi
 gg_miss_upset(petfinder_cuantis[, vars_na])
 ```
 
-Se observa que el par de variables *total_labels* y *total_colors* comparten 341 valores faltantes mientras que el par *sentiment_score* y *sentiment_magnitude* comparten 551. Hay 331 individuos que carecen de observaciones para las variables *total_labels* y *total_colors*, 541 que no tienen valores en *sentiment_score* y *sentiment_magnitude* y 10 individuos que no tienen un valor asignado para ninguna de estas 4 variables.
+Se observa que el par de variables *total_labels* y *total_colors* comparten 341 individuos con valores faltantes mientras que el par *sentiment_score* y *sentiment_magnitude* comparten 551. Hay 331 individuos que carecen de observaciones para las variables *total_labels* y *total_colors*, 541 que no tienen valores en *sentiment_score* y *sentiment_magnitude* y 10 individuos que no tienen un valor asignado para ninguna de estas 4 variables. Esto es consistente con el hecho de que las variables *total_labels* y *total_colors* dependen del enriquecimiento de imagen, mientras que las variables *sentiment_socre* y *sentiment_magnitude* dependen del enriquecimiento de texto. Lo anterior sugiere que hubo individuos cuyas imágenes y/o texto no fueron correctamente procesados por la API de Google Cloud. Para verificarlo se visualizó la tabla de los individuos que presentan valores faltantes para estos pares de variables.
+
+
 
 
