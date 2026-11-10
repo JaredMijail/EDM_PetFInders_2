@@ -88,7 +88,7 @@ Las variables suplementarias *Age*, *Quantity* y *Fee* representan característi
 
 ## Tratamiento de los valores faltantes
 
-Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es immportante darles un tratamiento adecuado para que la matriz numérica esté completa. Dentro de nuestras variables cuantitativas, se identificó que *total_labels*, *total_colors*
+Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es importante darles un tratamiento adecuado para que la matriz numérica esté completa. Dentro de nuestras variables cuantitativas.
 
 ```{r}
 # Identificadores de las mascotas
@@ -109,6 +109,18 @@ na_df <- data.frame(
 )
 knitr::kable(na_df, col.names = c("Variable", "Valores faltantes"))
 ```
+
+Se identificó que *total_labels*, *total_colors*, *sentiment_score* y *sentiment_magnitude* presentan valores faltantes. Todas las anteriores son variables derivadas del enriquecimiento de imágen y de texto realizado con la API de Google Cloud. Para indagar sobre la ocurrencia de estos valores faltantes y posibles patrones, primero se realiza la prueba estadística de Little para poner a prueba la hipótesis nula H0: los datos faltantes son MCAR (Missing Completely At Random) versus la alternativa Ha: los datos faltantes no son MCAR.
+
+```{r}
+# Prueba de Little
+# H0: los datos son MCAR
+# H1: los datos no son MCAR
+
+mcar_test(petfinder_cuantis)
+```
+
+
 
 
 
