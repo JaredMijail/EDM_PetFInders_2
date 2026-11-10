@@ -84,12 +84,13 @@ vars_activas <- c(
 )
 ```
 
-Las variables elegidas para ser partícipes de la construcción de los ejes del plano factorial nuevo fueron *PhotoAmt*, *sentiment_score*, *sentiment_magnitude*, *total_labels*, *total_colors*, *desc_char_len*, *desc_word_count*.
+Las variables elegidas para ser partícipes de la construcción de los ejes del plano factorial nuevo fueron *PhotoAmt*, *sentiment_score*, *sentiment_magnitude*, *total_labels*, *total_colors*, *desc_char_len* y *desc_word_count*. Todas las anteriores tienen en común que son métricas asociadas al anuncio elaborado por los rescatistas sobre las mascotas que ofrecen en adopción mediante la plataforma PetFinder. La razón por la cual se decide emplear esta agrupación de variables, es porque las variables *PhotoAmt*, *total_labels* y *total_colors* se refieren a las características de las fotos que subieron los rescatistas al anuncio, mientras que las variables *sentiment_score*, *sentiment_magnitude*, *desc_char_len* y *desc_word_count* están relacionadas con el texto que escribieron. Las 7 variables se relacionan con la elaboración y contenido del anuncio, características que reflejan la cantidad y el tipo de información que los rescatistas incorporaron en la elaboración del anuncio.
 
 ## Variables suplementarias
-
 
 ```{r}
 vars_sup <- c('Age', 'Quantity', 'Fee')
 cuantitativas <- c(vars_activas, vars_sup)
 ```
+
+Las variables suplementarias *Age*, *Quantity* y *Fee* representan características externas a la construcción del anuncio, son propias del animal o de las condiciones de adopción y se proyectan posteriormente para evaluar su relación con la estructura identificada.
