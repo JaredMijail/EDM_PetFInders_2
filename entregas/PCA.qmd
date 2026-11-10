@@ -123,14 +123,13 @@ Se identificó que *total_labels*, *total_colors*, *sentiment_score* y *sentimen
 mcar_test(petfinder_cuantis)
 ```
 
-Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugiere que sí esxiste una aparición sistemática de los valores faltantes, por lo tanto es pertinente realizar una verificación de cómo son estos posibles patrones.
+Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugiere que sí esxiste una aparición sistemática de los valores faltantes, por lo tanto es pertinente realizar una verificación de cómo son estos posibles patrones. Para ello es útil visualizar cuántos valores faltantes existen en cada una de las variables respecto a las otras y respecto al total, y cuántos valores faltantes comparten entre ellas 
 
 ```{r}
 # Patrones de ocurrencia
 gg_miss_upset(petfinder_cuantis[, vars_na])
 ```
 
-
-
+Se observa que el par de variables *total_labels* y *total_colors* comparten 341 valores faltantes mientras que el par *sentiment_score* y *sentiment_magnitude* comparten 551. Hay 331 individuos que carecen de observaciones para las variables *total_labels* y *total_colors*, 541 que no tienen valores en *sentiment_score* y *sentiment_magnitude* y 10 individuos que no tienen un valor asignado para ninguna de estas 4 variables.
 
 
