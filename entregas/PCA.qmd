@@ -1,8 +1,8 @@
-::::: autor-pdf-row
 ---
-title: "PCA: Análisis de Componentes Principales"
+title: "ACP: Análisis de Componentes Principales"
 ---
 
+::::: autor-pdf-row
 ::: autor-info
 **AUTORES**
 
@@ -17,21 +17,6 @@ PDF
 </button>
 :::
 :::::
-
----
-title: "Análisis de Componentes Principales"
-author: "María P. Silva"
-format:
-  html:
-    toc: true
-    toc-depth: 3
-    number-sections: true
-    code-fold: true
-execute:
-  echo: true
-  warning: false
-  message: false
----
 
 ## Introducción
 
@@ -49,6 +34,10 @@ library(ggrepel)
 library(factoextra)
 library(FactoMineR)
 library(naniar)
+library(knitr)
+library(kableExtra)
+library(stringr)
+library(dplyr)
 
 # Cargamos la tabla de datos enriquecida
 petfinder_enriquecido_final <- read.csv(
@@ -132,6 +121,54 @@ gg_miss_upset(petfinder_cuantis[, vars_na])
 
 Se observa que el par de variables *total_labels* y *total_colors* comparten 341 individuos con valores faltantes mientras que el par *sentiment_score* y *sentiment_magnitude* comparten 551. Hay 331 individuos que carecen de observaciones para las variables *total_labels* y *total_colors*, 541 que no tienen valores en *sentiment_score* y *sentiment_magnitude* y 10 individuos que no tienen un valor asignado para ninguna de estas 4 variables. Esto es consistente con el hecho de que las variables *total_labels* y *total_colors* dependen del enriquecimiento de imagen, mientras que las variables *sentiment_socre* y *sentiment_magnitude* dependen del enriquecimiento de texto. Lo anterior sugiere que hubo individuos cuyas imágenes y/o texto no fueron correctamente procesados por la API de Google Cloud. Para verificarlo se visualizó la tabla de los individuos que presentan valores faltantes para estos pares de variables.
 
+### Individuos con valores faltantes de enriquecimiento de texto
+
+```{r}
+#| label: tbl-na-sentiment
+#| tbl-cap: "Descripciones sin valores de `sentiment_score` y `sentiment_magnitude` (primeras seis observaciones)."
+#| echo: false
+#| message: false
+
+na_sentiment_score_magnitude <- petfinder_enriquecido_final |> filter(is.na(sentiment_score)) |> select(Description, sentiment_score, sentiment_magnitude)
+
+na_sentiment_score_magnitude |>
+  tibble::rownames_to_column("PetID") |>
+  head() |>
+  mutate(Description = str_trunc(Description, width = 50, ellipsis = "...")) |>
+  kbl(
+    booktabs  = TRUE,
+    align     = c("l", "l", "c", "c"),
+    col.names = c("PetID", "Descripción", "Puntaje", "Magnitud")
+  ) |>
+  kable_styling(latex_options = c("hold_position", "scale_down"), font_size = 9) |>
+  column_spec(2, width = "6cm")
+```
+
+```{r}
+#| label: tbl-resumen-na
+#| tbl-cap: "Resumen de las 551 observaciones con `sentiment_score` faltante."
+#| echo: false
+
+tibble(
+  Variable = c("sentiment_score", "sentiment_magnitude", "Description"),
+  `n`      = nrow(na_sentiment_score_magnitude),
+  `NA`     = c(sum(is.na(na_sentiment_score_magnitude$sentiment_score)),
+               sum(is.na(na_sentiment_score_magnitude$sentiment_magnitude)),
+               sum(is.na(na_sentiment_score_magnitude$Description))),
+  Detalle  = c("Todos faltantes",
+               "Todos faltantes",
+               sprintf("%d únicas; longitud %d–%d caracteres",
+                       n_distinct(na_sentiment_score_magnitude$Description),
+                       min(nchar(na_sentiment_score_magnitude$Description)),
+                       max(nchar(na_sentiment_score_magnitude$Description))))
+) |>
+  kbl(booktabs = TRUE, align = c("l", "r", "r", "l")) |>
+  kable_styling(latex_options = "hold_position")
+```
+
+Al indagar sobre la estructura de estas descripciones con valores faltantes, se encontró que algunas tenían caracteres especiales. A continuación se muestran las descripciones con y sin caracteres especiales.
+
+### Descripciones con caracteres especiales
 
 
 

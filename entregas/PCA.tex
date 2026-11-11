@@ -1,0 +1,457 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  spanish,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Tabla de contenidos}
+\else
+  \newcommand\contentsname{Tabla de contenidos}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Listado de Figuras}
+\else
+  \newcommand\listfigurename{Listado de Figuras}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Listado de Tablas}
+\else
+  \newcommand\listtablename{Listado de Tablas}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figura}
+\else
+  \newcommand\figurename{Figura}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabla}
+\else
+  \newcommand\tablename{Tabla}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listado}
+\newcommand*\listoflistings{\listof{codelisting}{Listado de Listados}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={ACP: Análisis de Componentes Principales},
+  pdflang={es},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{ACP: Análisis de Componentes Principales}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+
+\textbf{AUTORES}
+
+Jared Mijail Ramírez Escalante · María Paula Silva Capera
+
+PDF
+
+\subsection{Introducción}\label{introducciuxf3n}
+
+A continuación se presenta el análisis de componentes principales
+implementado sobre las variables cuantitativas del conjunto de datos
+PetFinder.
+
+\subsubsection{Carga de librerías y
+datos}\label{carga-de-libreruxedas-y-datos}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(here)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(plotly)}
+\FunctionTok{library}\NormalTok{(ggrepel)}
+\FunctionTok{library}\NormalTok{(factoextra)}
+\FunctionTok{library}\NormalTok{(FactoMineR)}
+\FunctionTok{library}\NormalTok{(naniar)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(stringr)}
+
+\CommentTok{\# Cargamos la tabla de datos enriquecida}
+\NormalTok{petfinder\_enriquecido\_final }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}
+  \FunctionTok{file.path}\NormalTok{(}\FunctionTok{here}\NormalTok{(), }\StringTok{"data"}\NormalTok{, }\StringTok{"petfinder\_enriquecido\_final.csv"}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(petfinder\_enriquecido\_final)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Selección de variables activas y
+suplementarias}\label{selecciuxf3n-de-variables-activas-y-suplementarias}
+
+\subsubsection{Variables activas}\label{variables-activas}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vars\_activas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{\textquotesingle{}PhotoAmt\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}sentiment\_score\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}sentiment\_magnitude\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}total\_labels\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}total\_colors\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}desc\_char\_len\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}desc\_word\_count\textquotesingle{}}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Las variables elegidas para ser partícipes de la construcción de los
+ejes del plano factorial nuevo fueron \emph{PhotoAmt},
+\emph{sentiment\_score}, \emph{sentiment\_magnitude},
+\emph{total\_labels}, \emph{total\_colors}, \emph{desc\_char\_len} y
+\emph{desc\_word\_count}. Todas las anteriores tienen en común que son
+métricas asociadas al anuncio elaborado por los rescatistas sobre las
+mascotas que ofrecen en adopción mediante la plataforma PetFinder. La
+razón por la cual se decide emplear esta agrupación de variables, es
+porque las variables \emph{PhotoAmt}, \emph{total\_labels} y
+\emph{total\_colors} se refieren a las características de las fotos que
+subieron los rescatistas al anuncio, mientras que las variables
+\emph{sentiment\_score}, \emph{sentiment\_magnitude},
+\emph{desc\_char\_len} y \emph{desc\_word\_count} están relacionadas con
+el texto que escribieron. Las 7 variables se relacionan con la
+elaboración y contenido del anuncio, características que reflejan la
+cantidad y el tipo de información que los rescatistas incorporaron en la
+elaboración del anuncio.
+
+\subsubsection{Variables suplementarias}\label{variables-suplementarias}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vars\_sup }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}Age\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Quantity\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Fee\textquotesingle{}}\NormalTok{)}
+\NormalTok{cuantitativas }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(vars\_activas, vars\_sup)}
+
+\CommentTok{\# Identificadores de las mascotas}
+\NormalTok{ids }\OtherTok{\textless{}{-}}\NormalTok{ petfinder\_enriquecido\_final}\SpecialCharTok{$}\NormalTok{PetID}
+\FunctionTok{rownames}\NormalTok{(petfinder\_enriquecido\_final) }\OtherTok{\textless{}{-}}\NormalTok{ ids}
+
+\CommentTok{\# Conjunto de datos con las variables cuantitativas}
+\NormalTok{petfinder\_cuantis }\OtherTok{\textless{}{-}}\NormalTok{ petfinder\_enriquecido\_final[, cuantitativas]}
+\end{Highlighting}
+\end{Shaded}
+
+Las variables suplementarias \emph{Age}, \emph{Quantity} y \emph{Fee}
+representan características externas a la construcción del anuncio, son
+propias del animal o de las condiciones de adopción y se proyectan
+posteriormente para evaluar su relación con la estructura identificada.
+
+\subsection{Tratamiento de los valores
+faltantes}\label{tratamiento-de-los-valores-faltantes}
+
+Como se evidenció en el diagnóstico univariado de la entrega 01, hay
+variables que presentan valores faltantes. Para poder ejecutar el
+análisis de componentes principales, es importante darles un tratamiento
+adecuado para que la matriz numérica esté completa. Dentro de nuestras
+variables cuantitativas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Número total de valores faltantes}
+\FunctionTok{sum}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(petfinder\_enriquecido\_final))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 3382
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Variables con valores faltantes}
+\NormalTok{vars\_na }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(}
+  \FunctionTok{which}\NormalTok{(}\FunctionTok{colSums}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(petfinder\_cuantis)) }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{na\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{variable =} \FunctionTok{names}\NormalTok{(petfinder\_cuantis),}
+  \AttributeTok{n\_na     =} \FunctionTok{colSums}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(petfinder\_cuantis)),}
+  \AttributeTok{row.names =} \ConstantTok{NULL}
+\NormalTok{)}
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(na\_df, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Variable"}\NormalTok{, }\StringTok{"Valores faltantes"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Variable & Valores faltantes \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+PhotoAmt & 0 \\
+sentiment\_score & 551 \\
+sentiment\_magnitude & 551 \\
+total\_labels & 341 \\
+total\_colors & 341 \\
+desc\_char\_len & 0 \\
+desc\_word\_count & 0 \\
+Age & 0 \\
+Quantity & 0 \\
+Fee & 0 \\
+\end{longtable}
+}
+
+Se identificó que \emph{total\_labels}, \emph{total\_colors},
+\emph{sentiment\_score} y \emph{sentiment\_magnitude} presentan valores
+faltantes. Todas las anteriores son variables derivadas del
+enriquecimiento de imágen y de texto realizado con la API de Google
+Cloud. Para indagar sobre la ocurrencia de estos valores faltantes y
+posibles patrones, primero se realiza la prueba estadística de Little
+para poner a prueba la hipótesis nula H0: los datos faltantes son MCAR
+(Missing Completely At Random) versus la alternativa Ha: los datos
+faltantes no son MCAR.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Prueba de Little}
+\CommentTok{\# H0: los datos son MCAR}
+\CommentTok{\# H1: los datos no son MCAR}
+
+\FunctionTok{mcar\_test}\NormalTok{(petfinder\_cuantis)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 4
+  statistic    df p.value missing.patterns
+      <dbl> <dbl>   <dbl>            <int>
+1     1264.    22       0                4
+\end{verbatim}
+
+Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR.
+Esto sugiere que sí esxiste una aparición sistemática de los valores
+faltantes, por lo tanto es pertinente realizar una verificación de cómo
+son estos posibles patrones. Para ello es útil visualizar cuántos
+valores faltantes existen en cada una de las variables respecto a las
+otras y respecto al total, y cuántos valores faltantes comparten entre
+ellas
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Patrones de ocurrencia}
+\FunctionTok{gg\_miss\_upset}\NormalTok{(petfinder\_cuantis[, vars\_na])}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{PCA_files/figure-pdf/unnamed-chunk-5-1.pdf}}
+
+Se observa que el par de variables \emph{total\_labels} y
+\emph{total\_colors} comparten 341 individuos con valores faltantes
+mientras que el par \emph{sentiment\_score} y
+\emph{sentiment\_magnitude} comparten 551. Hay 331 individuos que
+carecen de observaciones para las variables \emph{total\_labels} y
+\emph{total\_colors}, 541 que no tienen valores en
+\emph{sentiment\_score} y \emph{sentiment\_magnitude} y 10 individuos
+que no tienen un valor asignado para ninguna de estas 4 variables. Esto
+es consistente con el hecho de que las variables \emph{total\_labels} y
+\emph{total\_colors} dependen del enriquecimiento de imagen, mientras
+que las variables \emph{sentiment\_socre} y \emph{sentiment\_magnitude}
+dependen del enriquecimiento de texto. Lo anterior sugiere que hubo
+individuos cuyas imágenes y/o texto no fueron correctamente procesados
+por la API de Google Cloud. Para verificarlo se visualizó la tabla de
+los individuos que presentan valores faltantes para estos pares de
+variables.
+
+
+
+
+\end{document}
