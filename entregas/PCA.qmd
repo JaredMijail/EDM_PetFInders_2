@@ -144,31 +144,79 @@ na_sentiment_score_magnitude |>
   column_spec(2, width = "6cm")
 ```
 
-```{r}
-#| label: tbl-resumen-na
-#| tbl-cap: "Resumen de las 551 observaciones con `sentiment_score` faltante."
-#| echo: false
-
-tibble(
-  Variable = c("sentiment_score", "sentiment_magnitude", "Description"),
-  `n`      = nrow(na_sentiment_score_magnitude),
-  `NA`     = c(sum(is.na(na_sentiment_score_magnitude$sentiment_score)),
-               sum(is.na(na_sentiment_score_magnitude$sentiment_magnitude)),
-               sum(is.na(na_sentiment_score_magnitude$Description))),
-  Detalle  = c("Todos faltantes",
-               "Todos faltantes",
-               sprintf("%d únicas; longitud %d–%d caracteres",
-                       n_distinct(na_sentiment_score_magnitude$Description),
-                       min(nchar(na_sentiment_score_magnitude$Description)),
-                       max(nchar(na_sentiment_score_magnitude$Description))))
-) |>
-  kbl(booktabs = TRUE, align = c("l", "r", "r", "l")) |>
-  kable_styling(latex_options = "hold_position")
-```
-
 Al indagar sobre la estructura de estas descripciones con valores faltantes, se encontró que algunas tenían caracteres especiales. A continuación se muestran las descripciones con y sin caracteres especiales.
 
 ### Descripciones con caracteres especiales
 
+```{r}
+#| label: setup-tablas
+#| include: false
 
+# Convierte los nombres de fila en columna PetID, normaliza los espacios
+# (hay saltos de línea y espacios múltiples) y trunca la descripción.
+tabla_descripciones <- function(df, n = 6, ancho = 50, cap = NULL) {
+  df |>
+    tibble::rownames_to_column("PetID") |>
+    select(PetID, Description) |>
+    head(n) |>
+    mutate(Description = str_trunc(str_squish(Description), width = ancho)) |>
+    kbl(
+      booktabs  = TRUE,
+      caption   = cap,
+      col.names = c("PetID", "Descripción"),
+      align     = c("l", "l")
+    ) |>
+    kable_styling(latex_options = "hold_position", font_size = 9) |>
+    column_spec(2, width = "7cm")
+}
+```
 
+```{r}
+#| label: tbl-na-especiales
+#| tbl-cap: "Descripciones sin puntaje de sentimiento que contienen caracteres especiales (primeras seis observaciones)."
+#| echo: false
+# Descripciones con caracteres especiales (sin contar puntuación)
+patron <- "[^a-zA-Z0-9\\s\\p{P}]"
+idx_special <- str_detect(na_sentiment_score_magnitude$Description, patron)
+
+# Con caracteres especiales
+na_special_ch <- na_sentiment_score_magnitude[which(idx_special), ]
+
+tabla_descripciones(na_special_ch)
+```
+
+```{r}
+#| label: tbl-frec-especiales
+#| tbl-cap: "Diez caracteres especiales más frecuentes entre las descripciones sin puntaje de sentimiento."
+#| echo: false
+
+frec_especiales <- na_special_ch$Description |>
+  str_extract_all(patron) |>
+  unlist() |>
+  table() |>
+  sort(decreasing = TRUE) |>
+  head(10) |>
+  as.data.frame(stringsAsFactors = FALSE) |>
+  setNames(c("Carácter", "Apariciones")) |>
+  mutate(
+    Descripciones = vapply(
+      Carácter,
+      \(ch) sum(str_detect(na_special_ch$Description, fixed(ch))),
+      integer(1)
+    )
+  )
+
+frec_especiales |>
+  kbl(booktabs = TRUE, align = c("c", "r", "r")) |>
+  kable_styling(latex_options = "hold_position", full_width = FALSE)
+```
+
+### Descripciones sin caracteres especiales
+
+```{r}
+#| label: tbl-na-otros
+#| tbl-cap: "Descripciones sin puntaje de sentimiento y sin caracteres especiales (primeras seis observaciones)."
+#| echo: false
+
+tabla_descripciones(na_other_ch)
+```
