@@ -24,7 +24,7 @@ datos$Color3_agrupada <- fct_lump_n(as.factor(datos$Color3), n = 2, other_level 
 
 # ACM Condicion Fisica
 
-Para esta tabla igualmente sera de interes la variable adoption speed, asi que tomaremos como variables activas AdoptionSpeed, Vaccinated, Deworned, Sterilized, Health.
+Para esta tabla igualmente sera de interes la variable adoption speed, asi que tomaremos como variables activas AdoptionSpeed, Vaccinated, Deworned, Sterilized. Se intento usar Health pero esta es una variable que concentra demasiada masa en sano, y danaba los analisis.
 
 Type, Gender, FurLenght, MaturitySized, Color1, Color2, Color3, Breed1, Breed2, State, seran usadas como variables suplementarias. De las cuantitaticas como suplementarias usaremos seitment_score, sentiment_magnitude, desc_char_len.
 
@@ -34,7 +34,7 @@ library(factoextra)
 library(ggplot2)
 
 
-vars_activas <- c("AdoptionSpeed_agrupada", "Vaccinated","Dewormed", "Sterilized", "Health")
+vars_activas <- c("AdoptionSpeed_agrupada", "Vaccinated","Dewormed", "Sterilized")
 
 datos_acm <- datos[, vars_activas]
 
@@ -103,6 +103,10 @@ ggplot(df_cos2, aes(x = Dimension, y = Categoria, fill = cos2)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+Tenemos un problema de representacion, pues nuestros dos primeros ejes conservan un buen porcentaje de la varianza, pero como vemos en cos2, solo mente representan bien las variables de estado de salud, y nuestra variable de interes no se ve bien representanda en ningun eje, se ven en Dim3, Dim4 y Dim5. Asi que si queremos ver bien las relaciones entre adoption speed y salud, necesitariamos 5 ejes.
+
+Miremos primero las dos primeras dimensiones, y despues la dim1 con la dim3 y dim 4, y la dim 1 con la dim 2 y dim 3, donde podriamos ver las mejores representacion de nuestro interes.
+
 ```{r}
 # 5. Gráfico adicional solo por individuos
 fviz_mca_ind(res_acm, 
@@ -117,4 +121,74 @@ fviz_mca_var(res_acm,
 
 
 
+```
+
+```{r}
+library(plotly)
+
+# 1. Preparar los dataframes con coordenadas de individuos y clases (categorías)
+ind_df <- as.data.frame(res_acm$ind$coord)
+ind_df$AdoptionSpeed <- datos_acm$AdoptionSpeed  # Para colorear los individuos
+
+cat_df <- as.data.frame(res_acm$var$coord)
+cat_df$Clase <- rownames(cat_df)
+cat_df$Variable <- rep(colnames(datos_acm), sapply(datos_acm, nlevels))
+
+# ==============================================================================
+# REPRESENTACIÓN 1: Dim 1, Dim 3 y Dim 4
+# ==============================================================================
+
+# 1A. Por individuos (Dim 1, Dim 3, Dim 4)
+plot_ly(ind_df, 
+        x = ~`Dim 1`, y = ~`Dim 3`, z = ~`Dim 4`,
+        color = ~AdoptionSpeed,
+        type = "scatter3d", mode = "markers",
+        marker = list(size = 3, opacity = 0.5)) %>%
+  layout(title = "Individuos 3D: Dim 1, Dim 5 y Dim 3",
+         scene = list(xaxis = list(title = "Dim 1"),
+                      yaxis = list(title = "Dim 3"),
+                      zaxis = list(title = "Dim 4")))
+
+# 1B. Por clases / categorías (Dim 1, Dim 3, Dim 4)
+plot_ly(cat_df, 
+        x = ~`Dim 1`, y = ~`Dim 3`, z = ~`Dim 4`,
+        color = ~Variable,
+        text = ~Clase,
+        type = "scatter3d", mode = "markers+text",
+        marker = list(size = 6),
+        textposition = "top center") %>%
+  layout(title = "Clases 3D: Dim 1, Dim 3 y Dim 4",
+         scene = list(xaxis = list(title = "Dim 1"),
+                      yaxis = list(title = "Dim 3"),
+                      zaxis = list(title = "Dim 4")))
+```
+
+```{r}
+# ==============================================================================
+# REPRESENTACIÓN 2: Dim 1, Dim 2 y Dim 5
+# ==============================================================================
+
+# 2A. Por individuos (Dim 1, Dim 2, Dim 3)
+plot_ly(ind_df, 
+        x = ~`Dim 1`, y = ~`Dim 2`, z = ~`Dim 5`,
+        color = ~AdoptionSpeed,
+        type = "scatter3d", mode = "markers",
+        marker = list(size = 3, opacity = 0.5)) %>%
+  layout(title = "Individuos 3D: Dim 1, Dim 2 y Dim 5",
+         scene = list(xaxis = list(title = "Dim 1"),
+                      yaxis = list(title = "Dim 2"),
+                      zaxis = list(title = "Dim 3")))
+
+# 2B. Por clases / categorías (Dim 1, Dim 2, Dim 3)
+plot_ly(cat_df, 
+        x = ~`Dim 1`, y = ~`Dim 2`, z = ~`Dim 3`,
+        color = ~Variable,
+        text = ~Clase,
+        type = "scatter3d", mode = "markers+text",
+        marker = list(size = 6),
+        textposition = "top center") %>%
+  layout(title = "Clases 3D: Dim 1, Dim 2 y Dim 3",
+         scene = list(xaxis = list(title = "Dim 1"),
+                      yaxis = list(title = "Dim 2"),
+                      zaxis = list(title = "Dim 3")))
 ```
