@@ -11,6 +11,7 @@ No necesariamente se utilizaran estos analisis para realizar la entrega 3, eso s
 Como realizamos en el ACS, es necesario agrupa ciertas categorias por falta de frecuencia relativa
 
 ```{r}
+library(forcats)
 datos$Breed2_agrupada <- fct_lump_n(as.factor(datos$Breed2), n = 2, other_level = "Otros")
 ```
 
@@ -20,6 +21,10 @@ datos$Color2_agrupada <- fct_lump_n(as.factor(datos$Color2), n = 3, other_level 
 
 ```{r}
 datos$Color3_agrupada <- fct_lump_n(as.factor(datos$Color3), n = 2, other_level = "Otros")
+```
+
+```{r}
+datos$MaturitySize_agrupada <- fct_lump_n(as.factor(datos$MaturitySize), n = 2, other_level = "Grande")
 ```
 
 # ACM Condicion Fisica
@@ -191,4 +196,83 @@ plot_ly(cat_df,
          scene = list(xaxis = list(title = "Dim 1"),
                       yaxis = list(title = "Dim 2"),
                       zaxis = list(title = "Dim 3")))
+```
+
+# ACM caracteristicas fisicas
+
+Para este ACM tomaremos com variables activas a MaturitySize, FurLenght, Color1, Color2, Color3, Breed1, Breed2.
+
+Como variable iluestrativa tomaremos Type y Gender
+
+Ademas despues dividiremos el ACM para Type, uno para gatos y otro para perros, para poder ver si dependiendo del tipo de animal existen diferncias.
+
+```{r}
+vars_activas <- c("MaturitySize_agrupada", "MaturitySize_agrupada","FurLength", "Color1_agrupada", "Color2_agrupada", "Color3_agrupada", "Breed1_agrupada", "Breed2_agrupada")
+
+
+datos_acm <- datos[, vars_activas]
+
+# 2. Convertir todas las columnas a factor
+datos_acm[] <- lapply(datos_acm, as.factor)
+
+# 3. Ejecutar el ACM
+res_acm <- MCA(datos_acm, ncp = Inf, graph = FALSE)
+
+fviz_eig(res_acm, 
+         ncp = nrow(res_acm$eig),                 # Incluye todas las dimensiones
+         addlabels = TRUE, 
+         xlab = "Dimensiones", 
+         ylab = "% de varianza explicada",
+         main = "Varianza explicada por todas las dimensiones")
+
+### Mapa de calor con valores test ###
+# 1. Extraer la matriz completa de test-values
+vtest_mat <- res_acm$var$v.test
+
+# 2. Convertir a formato largo usando R base
+df_vtest <- as.data.frame(as.table(vtest_mat))
+colnames(df_vtest) <- c("Categoria", "Dimension", "v_test")
+
+# 3. Mapa de calor con todos los valores impresos
+ggplot(df_vtest, aes(x = Dimension, y = Categoria, fill = v_test)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(v_test, 1),
+                fontface = ifelse(abs(v_test) >= 1.96, "bold", "plain")),
+            size = 3) +
+  scale_fill_gradient2(low = "#2b83ba", mid = "white", high = "#d7191c",
+                       midpoint = 0, name = "v-test") +
+  scale_y_discrete(limits = rev(levels(df_vtest$Categoria))) +
+  labs(title = "Test-values (v-test) por categoría y dimensión",
+       subtitle = "En negrita: valores estadísticamente significativos (|v-test| >= 1.96)",
+       x = "Dimensiones",
+       y = "Categorías") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+### Mapa de calos segun Cos2 ###
+
+# 1. Extraer la matriz completa de cos2
+cos2_mat <- res_acm$var$cos2
+
+# 2. Convertir a formato largo usando R base
+df_cos2 <- as.data.frame(as.table(cos2_mat))
+colnames(df_cos2) <- c("Categoria", "Dimension", "cos2")
+
+# 3. Mapa de calor con todos los valores impresos
+ggplot(df_cos2, aes(x = Dimension, y = Categoria, fill = cos2)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(cos2, 2),
+                fontface = ifelse(cos2 >= 0.20, "bold", "plain")),
+            size = 3) +
+  scale_fill_gradient(low = "white", high = "#3182bd",
+                      limits = c(0, max(df_cos2$cos2)),
+                      name = "cos²") +
+  scale_y_discrete(limits = rev(levels(df_cos2$Categoria))) +
+  labs(title = "Calidad de representación (cos²) por categoría y dimensión",
+       subtitle = "En negrita: dimensiones con cos² >= 0.20 (cada fila suma 1.00 en total)",
+       x = "Dimensiones",
+       y = "Categorías") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
