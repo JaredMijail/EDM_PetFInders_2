@@ -325,3 +325,7 @@ grafico_acs(res_gender, "ACS: velocidad de adopción y género",
 Como también se pudo leer aproximadamente en los perfiles fila y columna, parece que hay una asociación fuerte entre «Macho» y una adopción más rápida, y que «Hembra» y «Mixto» son muy similares en adopciones más lentas, pero «Mixto» tiene una relación más fuerte con «Sin adopción».
 
 Se resalta que «Macho» es básicamente el eje 1, y que «Hembra» y «Mixto» quedan casi en el mismo punto de ese eje, de forma que podemos pensar que el eje 2 separa a hembras de mixto.
+
+```{r}
+write.csv(datos, file = "../data/datos_afterACS.csv", row.names = TRUE)
+```
