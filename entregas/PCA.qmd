@@ -224,6 +224,9 @@ Identificada la causa de la ocurrencia de los valores faltantes, es claro que no
 
 
 ```{r}
+#| label: número-de-individuos-descartados
+#| echo: false
+
 # Todos los individuos que contienen al menos un valor faltante para las 4 variables de interés
 na_ind <- petfinder_cuantis %>%
   filter(is.na(sentiment_score) | is.na(total_labels))
@@ -240,6 +243,7 @@ Se estarían descartando un total de 882 individuos que representan aproximadame
 # ACP: Análisis de Componentes Principales
 
 ```{r}
+#| label: implementación pca sobre matriz limpia
 # Conjunto de datos sin individuos con valores faltantes
 petfinder_cuantis_clean <- petfinder_cuantis[
   !rownames(petfinder_cuantis) %in% na_ids,
@@ -256,6 +260,8 @@ pca <- prcomp(
 **Valores propios asociados a la matriz de varianzas y covarianzas**
 
 ```{r}
+#| label: valores propios
+
 eigenvalues <- pca$sdev^2
 # Número de variables activas
 p <- length(vars_activas)
@@ -265,6 +271,8 @@ eigenvalues
 **Proporción de varianza explicada por cada componente**
 
 ```{r}
+#| label: varianza explicada por cada componente
+
 var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
 var_exp
 ```
@@ -272,6 +280,8 @@ var_exp
 **Proporción de varianza explicada acumulada**
 
 ```{r}
+#| label: varianza acumulada
+
 # Proporción de varianza explicada por cada componente
 var_acum <- (cumsum(eigenvalues) / p) * 100
 var_acum
@@ -318,6 +328,11 @@ fviz_screeplot(
 ```{r}
 # Puntuaciones de cada observación
 scores <- as.data.frame(pca$x)
+head(scores)
+```
+
+```{r}
+
 
 # Visualización de los datos utilizando los dos primeros componentes
 ggplot(scores, aes(x = PC1, y = PC2)) +
