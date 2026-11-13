@@ -240,7 +240,8 @@ n_na/n
 
 Se estarían descartando un total de 882 individuos que representan aproximadamente el 5,8% del total de individuos. En ese orden de ideas, los ejes del nuevo plano factorial se construyen con la información de 1411 individuos.
 
-# ACP: Análisis de Componentes Principales
+# ACP normado
+una vez filtrada la matriz numérica, se realiza la respectiva implementación del algoritmo para la construcción de los siete ejes. Como se cuenta con variables cuantitativas medidas en diferentes escalas, fue necesario hacer la respectiva estandarización de la matriz numérica. En ese orden de ideas, los valores y vectores propios se calculan a partir de la matriz correlaciones.
 
 ```{r}
 #| label: implementación pca sobre matriz limpia
@@ -249,42 +250,30 @@ petfinder_cuantis_clean <- petfinder_cuantis[
   !rownames(petfinder_cuantis) %in% na_ids,
 ]
 
-# Implementación de ACP
+# Implementación de ACP normado
 pca <- prcomp(
   petfinder_cuantis_clean[, vars_activas],
   center = TRUE,
   scale. = TRUE
 )
-```
 
-**Valores propios asociados a la matriz de varianzas y covarianzas**
-
-```{r}
-#| label: valores propios
-
+# Valores propios
 eigenvalues <- pca$sdev^2
+
 # Número de variables activas
 p <- length(vars_activas)
-eigenvalues
-```
-
-**Proporción de varianza explicada por cada componente**
-
-```{r}
-#| label: varianza explicada por cada componente
-
-var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
-var_exp
-```
-
-**Proporción de varianza explicada acumulada**
-
-```{r}
-#| label: varianza acumulada
 
 # Proporción de varianza explicada por cada componente
+var_exp <- (eigenvalues / p) * 100
+
+# Proporción de varianza explicada acumulada
 var_acum <- (cumsum(eigenvalues) / p) * 100
-var_acum
+
+names(eigenvalues) <- paste("lambda_", 1:p)
+res <- data.frame(var = eigenvalues, perc = var_exp)
+res <- cbind(res, acum = var_acum)
+res <- rbind(res, Total = c(colSums(res[,1:2]), NA))
+kable(res, digits = 2)
 ```
 
 ```{r}
@@ -322,7 +311,6 @@ fviz_screeplot(
     x = "Componentes principales"
   ) +
   theme_minimal()
-
 ```
 
 ```{r}
