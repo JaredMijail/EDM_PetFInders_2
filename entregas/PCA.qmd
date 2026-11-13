@@ -63,7 +63,7 @@ vars_activas <- c(
 )
 ```
 
-Las variables elegidas para ser partícipes de la construcción de los ejes del plano factorial nuevo fueron *PhotoAmt*, *sentiment_score*, *sentiment_magnitude*, *total_labels*, *total_colors*, *desc_char_len* y *desc_word_count*. Todas las anteriores tienen en común que son métricas asociadas al anuncio elaborado por los rescatistas sobre las mascotas que ofrecen en adopción mediante la plataforma PetFinder. La razón por la cual se decide emplear esta agrupación de variables, es porque las variables *PhotoAmt*, *total_labels* y *total_colors* se refieren a las características de las fotos que subieron los rescatistas al anuncio, mientras que las variables *sentiment_score*, *sentiment_magnitude*, *desc_char_len* y *desc_word_count* están relacionadas con el texto que escribieron. Las 7 variables se relacionan con la elaboración y contenido del anuncio, características que reflejan la cantidad y el tipo de información que los rescatistas incorporaron en la elaboración del anuncio.
+Las variables elegidas para ser partícipes de la construcción de los ejes del plano factorial nuevo fueron *PhotoAmt*, *sentiment_score*, *sentiment_magnitude*, *total_labels*, *total_colors*, *desc_char_len* y *desc_word_count*. Las 7 variables se relacionan con la elaboración y contenido del anuncio, características que reflejan la cantidad y el tipo de información que los rescatistas incorporaron en la elaboración del anuncio.
 
 ### Variables suplementarias
 
@@ -120,7 +120,7 @@ Se observa que el par de variables *total_labels* y *total_colors* comparten 341
 
 **Individuos con valores faltantes en sentiment_score y sentiment_magnitude**
 
-Se visualizó la matriz de individuos con las columnas *Description*, *sentiment_score* y *sentiment_magnitude* ya que estas dos últimas tienen una relación de dependencia con la primera.
+Se visualizó la matriz de individuos con las columnas *Description*, *sentiment_score* y *sentiment_magnitude* ya que estas dos últimas son función de la primera.
 
 ```{r}
 #| label: tbl-na-sentiment
@@ -179,7 +179,7 @@ frec_especiales |>
 
 **Individuos con valores faltantes en total_labels y total_colors**
 
-Se visualizó la matriz de individuos con las variables *PhotoAmt*, *total_colors* y *total_labels* ya que estas dos últimas tienen una relación de dependencia con la primera.
+Se visualizó la matriz de individuos con las variables *PhotoAmt*, *total_colors* y *total_labels* ya que estas dos últimas son una función de la primera.
 
 ```{r}
 #| label: tbl-na-labels-colors
@@ -220,7 +220,7 @@ En la tabla resumen se evidencia que los individuos con valores faltantes en las
 
 ## Decisión 
 
-Identificada la causa de la ocurrencia de los valores faltantes, es claro que no es viable realizar una imputación de los mismos. Por lo tanto, para la construcción de los ejes del nuevo plano factorial solo se tendrán en consideración los individuos asociados con descripciones correctamente procesadas por la API de Google y con imágenes.
+Identificada la causa de la ocurrencia de los valores faltantes, es claro que no es viable realizar una imputación de los mismos. Por lo tanto, para la construcción de los ejes del nuevo plano factorial solo se tendrán en consideración los individuos asociados con descripciones correctamente procesadas por la API de Google y con imágenes disponibles.
 
 
 ```{r}
@@ -241,10 +241,12 @@ n_na/n
 Se estarían descartando un total de 882 individuos que representan aproximadamente el 5,8% del total de individuos. En ese orden de ideas, los ejes del nuevo plano factorial se construyen con la información de 1411 individuos.
 
 # ACP normado
-una vez filtrada la matriz numérica, se realiza la respectiva implementación del algoritmo para la construcción de los siete ejes. Como se cuenta con variables cuantitativas medidas en diferentes escalas, fue necesario hacer la respectiva estandarización de la matriz numérica. En ese orden de ideas, los valores y vectores propios se calculan a partir de la matriz correlaciones.
+Una vez filtrada la matriz numérica, se realiza la respectiva implementación del algoritmo para la construcción de los siete ejes. Como se cuenta con variables cuantitativas medidas en diferentes escalas, fue necesario hacer la respectiva estandarización de la matriz numérica. En ese orden de ideas, los valores y vectores propios se calculan a partir de la matriz correlaciones.
 
+::: {layout-ncol=2}
 ```{r}
-#| label: implementación pca sobre matriz limpia
+#| label: implementación pca sobre matriz limpia, calculo de valores propios
+#| tbl-cap: "Valores propios calculados y su proporción de varianza explicada y varianza explicada acumulada"
 # Conjunto de datos sin individuos con valores faltantes
 petfinder_cuantis_clean <- petfinder_cuantis[
   !rownames(petfinder_cuantis) %in% na_ids,
@@ -277,6 +279,8 @@ kable(res, digits = 2)
 ```
 
 ```{r}
+#| label: grafico de varianza explicada por los valores propios
+#| fig-cap: 'Gráfico de varianza explicada y varianza explicada acumulada por cada uno de los ejes construidos'
 # Gráfico de varianza explicada y acumulada
 fviz_screeplot(
   pca,
@@ -306,75 +310,440 @@ fviz_screeplot(
   ) +
   labs(
     title = "Varianza explicada por los componentes principales",
-    subtitle = "La línea punteada representa la varianza acumulada",
+    subtitle = "Línea punteada: varianza acumulada",
     y = "Porcentaje de varianza explicada",
     x = "Componentes principales"
   ) +
   theme_minimal()
 ```
+:::
+
+Se tiene que los tres primeros valores propios son mayores que uno. La proporción de varianza explicada por los primeros tres componentes principales es de 53.4%, 29,8% y 14,5%. La proporción de varianza acumulada por los primeros dos componentes principales es de 83,15%, mientras que para los primeros tres es de 97,6%. Esto sugiere que se podría continuar el análisis con dos o tres componentes principales, ya que acumulan una proporción de varianza superior al 80%.
+
+**Coordenadas de las variables en los tres primeros componentes principales**
 
 ```{r}
-# Puntuaciones de cada observación
-scores <- as.data.frame(pca$x)
+#| label: tbl-coord-variables
+#| tbl-cap: "Coordenadas de las variables en las tres primeras componentes principales."
+#| echo: false
+coord_variables <- t(t(pca$rotation) * pca$sdev)[,1:3]
+coord_variables |>
+  kbl(
+    booktabs  = TRUE,
+    digits    = 3,
+    align     = c("l", "r", "r", "r"),
+    col.names = c("Variable", "PC1", "PC2", "PC3")
+  ) |>
+  kable_styling(latex_options = "hold_position", full_width = FALSE)
+```
 
-# Visualización de los datos utilizando los dos primeros componentes
-ggplot(scores, aes(x = PC1, y = PC2)) +
-  geom_point(size = 2, alpha = 0.7) +
+Las coordenadas de las variables sobre los ejes principales representan su correlación con estos. Se observa que para el componente principal uno, las variables *PhotoAmt*, *total_labels* y *total_colors* predominan con una correlación de 0,828. En cambio, en el componente principal dos, las variables *desc_char_len* y *desc_word_count* destacan con unas correlaciones de 0,622 y 0,627 respectivamente. Por otro lado, en el último eje la variable *sentiment_score* es la mayormente correlacionada con una correlación de -0,982.
+
+**Contribución porcentual de las variables a los componentes principales**
+
+
+```{r}
+#| label: tbl-contrib-porcentaje
+#| tbl-cap: "Contribución porcentual de cada variable a las componentes principales."
+#| echo: false
+# Extraer los autovectores (rotation)
+vectores <- pca$rotation
+
+# Elevar al cuadrado para obtener la contribución proporcional (0 a 1)
+contrib_prop <- vectores^2
+
+# Multiplicar por 100 para verlo en porcentaje
+contrib_porcentaje <- round(contrib_prop * 100, 2)[, 1:3]
+
+contrib_porcentaje |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Variable") |>
+  kbl(
+    booktabs = TRUE,
+    digits   = 2,
+    align    = c("l", rep("r", 3))
+  ) |>
+  kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE)
+```
+
+**Contribución absoluta de las variables a cada componente principal**
+
+
+```{r}
+contrib_absoluta <- coord_variables^2
+contrib_absoluta |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Variable") |>
+  kbl(
+    booktabs = TRUE,
+    digits   = 2,
+    align    = c("l", rep("r", 3))
+  ) |>
+  kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE)
+```
+
+**Círculo de correlaciones y contribución de las variables en los componentes uno y dos**
+
+::: {layout-ncol=2}
+```{r}
+plot1 <- fviz_pca_var(
+  pca,
+  axes = c(1, 2),
+  col.var = "cos2",
+  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  repel = TRUE
+) +
   labs(
-    title = "Individuos en el plano factorial PC1-PC2",
+    title = "Círculo de correlaciones: PC1 y PC2",
     x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
     y = paste0("PC2 (", round(var_exp[2], 2), "%)")
-  ) +
-  theme_minimal()
+  )
+
+plot1
 ```
 
-
 ```{r}
-# Agregamos color según la variable categórica velocidad de adopción
-petfinder_clean <- petfinder_enriquecido_final[
-  !rownames(petfinder_cuantis) %in% na_ids,
-]
-
-adoption_speed <- petfinder_clean$AdoptionSpeed
-scores$grupo <- as.factor(adoption_speed)
-
-ggplot(scores, aes(x = PC1, y = PC2, color = grupo)) +
-  geom_point(size = 3, alpha = 0.8) +
+# Para PC1
+fviz_contrib(
+  pca,
+  choice = "var",
+  axes = 1,
+  top = 10
+) +
   labs(
-    title = "Individuos en el plano factorial según velocidad de adopción",
-    x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
-    y = paste0("PC2 (", round(var_exp[2], 2), "%)"),
-    color = "Grupo"
-  ) +
-  theme_minimal()
+    title = "Contribución de las variables al PC1",
+    x = "Variables",
+    y = "Contribución (%)"
+  )
 ```
+
+```{r}
+# Para PC2
+fviz_contrib(
+  pca,
+  choice = "var",
+  axes = 2,
+  top = 10
+) +
+  labs(
+    title = "Contribución de las variables al PC2",
+    x = "Variables",
+    y = "Contribución (%)"
+  )
+```
+:::
+
+**Proyección de las variables suplementarias `Age`, `Quantity` y `Fee`**
 
 
 ```{r}
-# Visualización de los individuos según los tres primeros componentes principales
-plot_ly(
-  data = scores,
-  x = ~PC1,
-  y = ~PC2,
-  z = ~PC3,
-  color = ~grupo,
-  type = "scatter3d",
-  mode = "markers",
-  marker = list(size = 4, opacity = 0.8)
-) %>%
+scaled_petfinder_cuantis <- scale(petfinder_cuantis_clean)
+
+# Scores de los dos primeros componentes
+scores <- pca$x[, 1:2]
+
+# Variables suplementarias
+sup <- scaled_petfinder_cuantis[, vars_sup]
+
+# Correlaciones con los componentes
+cor_sup <- cor(
+  sup,
+  scores
+)
+
+plot1 + geom_segment(
+    data = as.data.frame(cor_sup),
+    aes(
+      x = 0,
+      y = 0,
+      xend = PC1,
+      yend = PC2
+    ),
+    inherit.aes = FALSE,
+    color = "#D18B28",
+    linetype = "dashed",
+    arrow = arrow(length = unit(0.18, "cm"))
+  ) +
+  geom_text_repel(
+    data = data.frame(
+      Variable = rownames(cor_sup),
+      PC1 = cor_sup[, 1],
+      PC2 = cor_sup[, 2]
+    ),
+    aes(x = PC1, y = PC2, label = Variable),
+    inherit.aes = FALSE,
+    color = "#D18B28",
+    size = 3.5
+  )
+```
+
+**Círculo de correlaciones de las variables sobre los primeros tres componentes principales**
+
+
+```{r}
+esfera_vars <- data.frame(
+  Variable = rownames(coord_variables),
+  PC1 = coord_variables[, 1],
+  PC2 = coord_variables[, 2],
+  PC3 = coord_variables[, 3]
+)
+
+# 3. Construcción de la esfera unitaria
+theta <- seq(0, 2*pi, length.out = 60)
+phi <- seq(0, pi, length.out = 60)
+
+x_sphere <- outer(sin(phi), cos(theta))
+y_sphere <- outer(sin(phi), sin(theta))
+z_sphere <- outer(cos(phi), rep(1, length(theta)))
+
+# 4. Inicializar gráfico
+fig <- plot_ly()
+
+# 5. Agregar esfera
+fig <- fig %>%
+  add_surface(
+    x = x_sphere,
+    y = y_sphere,
+    z = z_sphere,
+    opacity = 0.15,
+    showscale = FALSE,
+    colorscale = list(
+      c(0, 1),
+      c("#D8C4DD", "#D8C4DD")
+    ),
+    hoverinfo = "skip"
+  )
+
+# 6. Agregar cada vector desde el origen
+for (i in seq_len(nrow(esfera_vars))) {
+
+  fig <- fig %>%
+    add_trace(
+      x = c(0, esfera_vars$PC1[i]),
+      y = c(0, esfera_vars$PC2[i]),
+      z = c(0, esfera_vars$PC3[i]),
+      type = "scatter3d",
+      mode = "lines",
+      line = list(
+        color = "#6B1969",
+        width = 5
+      ),
+      showlegend = FALSE,
+      hoverinfo = "skip"
+    ) %>%
+    add_trace(
+      x = esfera_vars$PC1[i],
+      y = esfera_vars$PC2[i],
+      z = esfera_vars$PC3[i],
+      type = "scatter3d",
+      mode = "markers+text",
+      text = esfera_vars$Variable[i],
+      textposition = "top center",
+      marker = list(
+        color = "#6B1969",
+        size = 3
+      ),
+      showlegend = FALSE,
+      hovertemplate = paste0(
+        "<b>", esfera_vars$Variable[i], "</b><br>",
+        "PC1: ", round(esfera_vars$PC1[i], 3), "<br>",
+        "PC2: ", round(esfera_vars$PC2[i], 3), "<br>",
+        "PC3: ", round(esfera_vars$PC3[i], 3),
+        "<extra></extra>"
+      )
+    )
+}
+
+# 7. Varianza explicada
+var_exp <- pca$sdev^2 / sum(pca$sdev^2) * 100
+
+# 8. Configuración final
+fig <- fig %>%
   layout(
-    title = "Individuos en los tres primeros componentes principales",
+    title = "Esfera de correlaciones - ACP",
     scene = list(
       xaxis = list(
-        title = paste0("PC1 (", round(var_exp[1], 2), "%)")
+        title = paste0("PC1 (", round(var_exp[1], 2), "%)"),
+        range = c(-1, 1)
       ),
       yaxis = list(
-        title = paste0("PC2 (", round(var_exp[2], 2), "%)")
+        title = paste0("PC2 (", round(var_exp[2], 2), "%)"),
+        range = c(-1, 1)
       ),
       zaxis = list(
-        title = paste0("PC3 (", round(var_exp[3], 2), "%)")
-      )
+        title = paste0("PC3 (", round(var_exp[3], 2), "%)"),
+        range = c(-1, 1)
+      ),
+      aspectmode = "cube"
     )
   )
 
+fig
+
+```
+
+**Proyección de las variables suplementarias sobre los tres componentes principales**
+
+
+```{r}
+scores <- pca$x[, 1:3]
+
+# Correlaciones con los tres componentes
+cor_sup <- cor(
+  sup,
+  scores
+)
+
+esfera_sup <- data.frame(
+  Variable = rownames(cor_sup),
+  PC1 = cor_sup[, 1],
+  PC2 = cor_sup[, 2],
+  PC3 = cor_sup[, 3]
+)
+
+
+# =====================================================
+# 3. CONSTRUIR ESFERA UNITARIA
+# =====================================================
+
+theta <- seq(0, 2*pi, length.out = 60)
+phi <- seq(0, pi, length.out = 60)
+
+x_sphere <- outer(sin(phi), cos(theta))
+y_sphere <- outer(sin(phi), sin(theta))
+z_sphere <- outer(cos(phi), rep(1, length(theta)))
+
+
+# =====================================================
+# 4. INICIALIZAR GRÁFICO
+# =====================================================
+
+fig <- plot_ly() %>%
+
+  add_surface(
+    x = x_sphere,
+    y = y_sphere,
+    z = z_sphere,
+    opacity = 0.15,
+    showscale = FALSE,
+    colorscale = list(
+      c(0, 1),
+      c("#D8C4DD", "#D8C4DD")
+    ),
+    hoverinfo = "skip"
+  )
+
+
+# =====================================================
+# 5. FUNCIÓN PARA AGREGAR VECTORES
+# =====================================================
+
+agregar_vectores <- function(fig, datos, color, tipo_linea) {
+
+  for (i in seq_len(nrow(datos))) {
+
+    fig <- fig %>%
+
+      # Vector desde el origen
+      add_trace(
+        x = c(0, datos$PC1[i]),
+        y = c(0, datos$PC2[i]),
+        z = c(0, datos$PC3[i]),
+        type = "scatter3d",
+        mode = "lines",
+        line = list(
+          color = color,
+          width = 5,
+          dash = tipo_linea
+        ),
+        showlegend = FALSE,
+        hoverinfo = "skip"
+      ) %>%
+
+      # Extremo y etiqueta
+      add_trace(
+        x = datos$PC1[i],
+        y = datos$PC2[i],
+        z = datos$PC3[i],
+        type = "scatter3d",
+        mode = "markers+text",
+        text = datos$Variable[i],
+        textposition = "top center",
+        marker = list(
+          color = color,
+          size = 3
+        ),
+        showlegend = FALSE,
+        hovertemplate = paste0(
+          "<b>", datos$Variable[i], "</b><br>",
+          "PC1: ", round(datos$PC1[i], 3), "<br>",
+          "PC2: ", round(datos$PC2[i], 3), "<br>",
+          "PC3: ", round(datos$PC3[i], 3),
+          "<extra></extra>"
+        )
+      )
+  }
+
+  return(fig)
+}
+
+
+# =====================================================
+# 6. AGREGAR VARIABLES ACTIVAS Y SUPLEMENTARIAS
+# =====================================================
+
+fig <- agregar_vectores(
+  fig,
+  esfera_vars,
+  "#6B1969",
+  "solid"
+)
+
+fig <- agregar_vectores(
+  fig,
+  esfera_sup,
+  "#D18B28",
+  "dash"
+)
+
+
+# =====================================================
+# 7. VARIANZA EXPLICADA
+# =====================================================
+
+var_exp <- pca$sdev^2 / sum(pca$sdev^2) * 100
+
+
+# =====================================================
+# 8. CONFIGURACIÓN FINAL
+# =====================================================
+
+fig <- fig %>%
+
+  layout(
+    title = "Esfera de correlaciones - ACP",
+    scene = list(
+      xaxis = list(
+        title = paste0(
+          "PC1 (", round(var_exp[1], 2), "%)"
+        ),
+        range = c(-1, 1)
+      ),
+      yaxis = list(
+        title = paste0(
+          "PC2 (", round(var_exp[2], 2), "%)"
+        ),
+        range = c(-1, 1)
+      ),
+      zaxis = list(
+        title = paste0(
+          "PC3 (", round(var_exp[3], 2), "%)"
+        ),
+        range = c(-1, 1)
+      ),
+      aspectmode = "cube"
+    )
+  )
+
+fig
 ```
