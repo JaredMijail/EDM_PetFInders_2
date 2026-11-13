@@ -271,8 +271,7 @@ var_exp
 
 ```{r}
 # Proporción de varianza explicada por cada componente
-var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
-var_exp
+var_acum <- (cumsum(eigenvalues) / p) * 100
 ```
 
 ```{r}
