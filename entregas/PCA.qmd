@@ -257,6 +257,8 @@ pca <- prcomp(
 
 ```{r}
 eigenvalues <- pca$sdev^2
+# Número de variables activas
+p <- length(vars_activas)
 eigenvalues
 ```
 
