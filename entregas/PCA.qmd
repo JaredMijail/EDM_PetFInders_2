@@ -329,10 +329,6 @@ fviz_screeplot(
 # Puntuaciones de cada observación
 scores <- as.data.frame(pca$x)
 head(scores)
-```
-
-```{r}
-
 
 # Visualización de los datos utilizando los dos primeros componentes
 ggplot(scores, aes(x = PC1, y = PC2)) +
@@ -347,6 +343,9 @@ ggplot(scores, aes(x = PC1, y = PC2)) +
 
 ```{r}
 # Agregamos color según la variable categórica velocidad de adopción
+petfinder_clean <- petfinder_enriquecido_final[
+  !rownames(petfinder_cuantis) %in% na_ids,
+]
 
 adoption_speed <- petfinder_cuantis_clean$AdoptionSpeed
 scores$grupo <- as.factor(adoption_speed)
