@@ -182,6 +182,9 @@ idx_special <- str_detect(na_sentiment_score_magnitude$Description, patron)
 # Con caracteres especiales
 na_special_ch <- na_sentiment_score_magnitude[which(idx_special), ]
 
+# Sin caracteres especiales
+na_other_ch <- na_sentiment_score_magnitude[!idx_special, ]
+
 tabla_descripciones(na_special_ch)
 ```
 

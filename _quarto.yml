@@ -31,7 +31,9 @@ website:
           - text: "Análisis de Componentes Principales"
             href: entregas/PCA.qmd
           - text: "Análisis de Correspondencias Simple"
-            href: entregas/analisis_correspondencias.qmd
+            href: entregas/ACS.qmd
+          - text: "Análisis de Correspondencias Múltiples"
+            href: entregas/ACM.qmd
       - text: "Acerca de"
         href: about.qmd
   sidebar:
@@ -44,8 +46,9 @@ website:
           - index.qmd
       - section: "Entrega 02"
         contents:
-          - entregas/analisis_correspondencias.qmd
           - entregas/PCA.qmd
+          - entregas/ACS.qmd
+          - entregas/ACM.qmd
       - section: "Información"
         contents:
           - about.qmd

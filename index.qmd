@@ -6,7 +6,15 @@ toc: false
 ::: {.card-grid}
 
 ::: {.card}
-### [Análisis de correspondencias simple](entregas/analisis_correspondencias.qmd)
+### [Análisis de componentes principales](entregas/PCA.qmd)
+:::
+
+::: {.card}
+### [Análisis de correspondencias simple](entregas/ACS.qmd)
+:::
+
+::: {.card}
+### [Análisis de correspondencias múltiples](entregas/ACM.qmd)
 :::
 
 ::: {.card}

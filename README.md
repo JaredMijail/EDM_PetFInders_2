@@ -12,7 +12,9 @@ Sitio Quarto de la segunda entrega de **EDM — Estadística Descriptiva Multiva
 ├── index.qmd                          # Portada
 ├── about.qmd                          # Información del sitio
 ├── entregas/                          # Productos de las entregas
-│   └── analisis_correspondencias.qmd  # EACS: correspondencias simples
+│   ├── PCA.qmd                        # ACP: componentes principales
+│   ├── ACS.qmd                        # ACS: correspondencias simples
+│   └── ACM.qmd                        # ACM: correspondencias múltiples
 ├── proyecto/                          # Componentes del proyecto de investigación (futuro)
 ├── scripts/                           # Código de procesamiento (futuro)
 ├── _borradores/                       # Material de trabajo (no se publica)
