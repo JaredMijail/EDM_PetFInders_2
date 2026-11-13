@@ -83,23 +83,20 @@ Las variables suplementarias *Age*, *Quantity* y *Fee* representan característi
 
 ## Tratamiento de los valores faltantes
 
-Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es importante darles un tratamiento adecuado para que la matriz numérica esté completa. Dentro de nuestras variables cuantitativas.
+Como se evidenció en el diagnóstico univariado de la entrega 01, hay variables que presentan valores faltantes. Para poder ejecutar el análisis de componentes principales, es importante darles un tratamiento adecuado para que la matriz numérica esté completa. A continuación se muestra el conteo de los valores faltantes presentes en la matriz de variables cuantitativas.
 
 ```{r}
-# Número total de valores faltantes
-sum(is.na(petfinder_enriquecido_final))
-
 # Variables con valores faltantes
 vars_na <- names(
   which(colSums(is.na(petfinder_cuantis)) > 0)
 )
 
 na_df <- data.frame(
-  variable = names(petfinder_cuantis),
-  n_na     = colSums(is.na(petfinder_cuantis)),
+  variable = c(names(petfinder_cuantis), 'Total'),
+  n_na     = c(colSums(is.na(petfinder_cuantis)), sum(is.na(petfinder_enriquecido_final))),
   row.names = NULL
 )
-knitr::kable(na_df, col.names = c("Variable", "Valores faltantes"))
+knitr::kable(na_df, col.names = c("Variable", "Valores faltantes"), caption = 'Tabla de conteo de valores faltantes por variable y su total')
 ```
 
 Se identificó que *total_labels*, *total_colors*, *sentiment_score* y *sentiment_magnitude* presentan valores faltantes. Todas las anteriores son variables derivadas del enriquecimiento de imágen y de texto realizado con la API de Google Cloud. Para indagar sobre la ocurrencia de estos valores faltantes y posibles patrones, primero se realiza la prueba estadística de Little para poner a prueba la hipótesis nula H0: los datos faltantes son MCAR (Missing Completely At Random) versus la alternativa Ha: los datos faltantes no son MCAR.
@@ -112,7 +109,7 @@ Se identificó que *total_labels*, *total_colors*, *sentiment_score* y *sentimen
 mcar_test(petfinder_cuantis)
 ```
 
-Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugiere que sí esxiste una aparición sistemática de los valores faltantes, por lo tanto es pertinente realizar una verificación de cómo son estos posibles patrones. Para ello es útil visualizar cuántos valores faltantes existen en cada una de las variables respecto a las otras y respecto al total, y cuántos valores faltantes comparten entre ellas 
+Se obtuvo un valor p de 0 entonces se rechaza que los datos sean MCAR. Esto sugiere que sí existe una aparición sistemática de los valores faltantes, por lo tanto es pertinente realizar una verificación de cómo son estos posibles patrones. Para ello es útil visualizar cuántos valores faltantes existen en cada una de las variables respecto a las otras y respecto al total, y cuántos valores faltantes comparten entre ellas.
 
 ```{r}
 # Patrones de ocurrencia
@@ -121,7 +118,9 @@ gg_miss_upset(petfinder_cuantis[, vars_na])
 
 Se observa que el par de variables *total_labels* y *total_colors* comparten 341 individuos con valores faltantes mientras que el par *sentiment_score* y *sentiment_magnitude* comparten 551. Hay 331 individuos que carecen de observaciones para las variables *total_labels* y *total_colors*, 541 que no tienen valores en *sentiment_score* y *sentiment_magnitude* y 10 individuos que no tienen un valor asignado para ninguna de estas 4 variables. Esto es consistente con el hecho de que las variables *total_labels* y *total_colors* dependen del enriquecimiento de imagen, mientras que las variables *sentiment_socre* y *sentiment_magnitude* dependen del enriquecimiento de texto. Lo anterior sugiere que hubo individuos cuyas imágenes y/o texto no fueron correctamente procesados por la API de Google Cloud. Para verificarlo se visualizó la tabla de los individuos que presentan valores faltantes para estos pares de variables.
 
-### Individuos con valores faltantes de enriquecimiento de texto
+**Individuos con valores faltantes en sentiment_score y sentiment_magnitude**
+
+Se visualizó la matriz de individuos con las columnas *Description*, *sentiment_score* y *sentiment_magnitude* ya que estas dos últimas tienen una relación de dependencia con la primera.
 
 ```{r}
 #| label: tbl-na-sentiment
@@ -138,42 +137,17 @@ na_sentiment_score_magnitude |>
   kbl(
     booktabs  = TRUE,
     align     = c("l", "l", "c", "c"),
-    col.names = c("PetID", "Descripción", "Puntaje", "Magnitud")
+    col.names = c("PetID", "Description", "sentiment_score", "sentiment_magnitude")
   ) |>
   kable_styling(latex_options = c("hold_position", "scale_down"), font_size = 9) |>
   column_spec(2, width = "6cm")
 ```
 
-Al indagar sobre la estructura de estas descripciones con valores faltantes, se encontró que algunas tenían caracteres especiales. A continuación se muestran las descripciones con y sin caracteres especiales.
-
-### Descripciones con caracteres especiales
+Al indagar sobre la estructura de estas descripciones con valores faltantes, se encontró que 64 tenían caracteres especiales mientras que las otras estaban escritas en Malayo, un idioma no reconocido por la API de Google Cloud. Esto explicaría la ocurrencia de los valores faltantes para la descripciones con estas características. A continuación se muestran los diez caracteres especiales más frecuentes encontradas en las descripciones que los contenían.
 
 ```{r}
-#| label: setup-tablas
-#| include: false
-
-# Convierte los nombres de fila en columna PetID, normaliza los espacios
-# (hay saltos de línea y espacios múltiples) y trunca la descripción.
-tabla_descripciones <- function(df, n = 6, ancho = 50, cap = NULL) {
-  df |>
-    tibble::rownames_to_column("PetID") |>
-    select(PetID, Description) |>
-    head(n) |>
-    mutate(Description = str_trunc(str_squish(Description), width = ancho)) |>
-    kbl(
-      booktabs  = TRUE,
-      caption   = cap,
-      col.names = c("PetID", "Descripción"),
-      align     = c("l", "l")
-    ) |>
-    kable_styling(latex_options = "hold_position", font_size = 9) |>
-    column_spec(2, width = "7cm")
-}
-```
-
-```{r}
-#| label: tbl-na-especiales
-#| tbl-cap: "Descripciones sin puntaje de sentimiento que contienen caracteres especiales (primeras seis observaciones)."
+#| label: tbl-frec-especiales
+#| tbl-cap: "Diez caracteres especiales más frecuentes entre las descripciones sin puntaje de sentimiento."
 #| echo: false
 # Descripciones con caracteres especiales (sin contar puntuación)
 patron <- "[^a-zA-Z0-9\\s\\p{P}]"
@@ -181,17 +155,6 @@ idx_special <- str_detect(na_sentiment_score_magnitude$Description, patron)
 
 # Con caracteres especiales
 na_special_ch <- na_sentiment_score_magnitude[which(idx_special), ]
-
-# Sin caracteres especiales
-na_other_ch <- na_sentiment_score_magnitude[!idx_special, ]
-
-tabla_descripciones(na_special_ch)
-```
-
-```{r}
-#| label: tbl-frec-especiales
-#| tbl-cap: "Diez caracteres especiales más frecuentes entre las descripciones sin puntaje de sentimiento."
-#| echo: false
 
 frec_especiales <- na_special_ch$Description |>
   str_extract_all(patron) |>
@@ -214,12 +177,216 @@ frec_especiales |>
   kable_styling(latex_options = "hold_position", full_width = FALSE)
 ```
 
-### Descripciones sin caracteres especiales
+**Individuos con valores faltantes en total_labels y total_colors**
+
+Se visualizó la matriz de individuos con las variables *PhotoAmt*, *total_colors* y *total_labels* ya que estas dos últimas tienen una relación de dependencia con la primera.
 
 ```{r}
-#| label: tbl-na-otros
-#| tbl-cap: "Descripciones sin puntaje de sentimiento y sin caracteres especiales (primeras seis observaciones)."
+#| label: tbl-na-labels-colors
+#| tbl-cap: "Observaciones sin `total_labels` ni `total_colors` (primeras seis)."
+#| echo: false
+na_total_labels_colors <- petfinder_enriquecido_final |> filter(is.na(total_labels)) |> select(PhotoAmt, total_labels, total_colors)
+
+na_total_labels_colors |>
+  tibble::rownames_to_column("PetID") |>
+  head() |>
+  kbl(
+    booktabs  = TRUE,
+    align     = c("l", "r", "r", "r"),
+    col.names = c("PetID", "PhotoAmt", "total_labels", "total_colors")
+  ) |>
+  kable_styling(latex_options = "hold_position", full_width = FALSE)
+```
+
+```{r}
+#| label: tbl-resumen-labels-colors
+#| tbl-cap: "Resumen de las observaciones con `total_labels` faltante."
 #| echo: false
 
-tabla_descripciones(na_other_ch)
+tibble(
+  Variable = c("PhotoAmt", "total_labels", "total_colors"),
+  n        = nrow(na_total_labels_colors),
+  `NA`     = c(sum(is.na(na_total_labels_colors$PhotoAmt)),
+               sum(is.na(na_total_labels_colors$total_labels)),
+               sum(is.na(na_total_labels_colors$total_colors))),
+  Mínimo   = c(min(na_total_labels_colors$PhotoAmt), NA, NA),
+  Máximo   = c(max(na_total_labels_colors$PhotoAmt), NA, NA)
+) |>
+  kbl(booktabs = TRUE, align = c("l", "r", "r", "r", "r")) |>
+  kable_styling(latex_options = "hold_position", full_width = FALSE)
+```
+
+En la tabla resumen se evidencia que los individuos con valores faltantes en las variables *total_colors* y *total_labels* no disponen de ninguna fotografía cargada para el anuncio. Esto explica la ocurrencia de valores faltantes para estas dos variables.
+
+## Decisión 
+
+Identificada la causa de la ocurrencia de los valores faltantes, es claro que no es viable realizar una imputación de los mismos. Por lo tanto, para la construcción de los ejes del nuevo plano factorial solo se tendrán en consideración los individuos asociados con descripciones correctamente procesadas por la API de Google y con imágenes.
+
+
+```{r}
+#| label: número-de-individuos-descartados
+#| echo: false
+
+# Todos los individuos que contienen al menos un valor faltante para las 4 variables de interés
+na_ind <- petfinder_cuantis %>%
+  filter(is.na(sentiment_score) | is.na(total_labels))
+
+n_na <- nrow(na_ind)
+n <- nrow(petfinder_enriquecido_final)
+na_ids <- rownames(na_ind)
+n_na
+n_na/n
+```
+
+Se estarían descartando un total de 882 individuos que representan aproximadamente el 5,8% del total de individuos. En ese orden de ideas, los ejes del nuevo plano factorial se construyen con la información de 1411 individuos.
+
+# ACP: Análisis de Componentes Principales
+
+```{r}
+#| label: implementación pca sobre matriz limpia
+# Conjunto de datos sin individuos con valores faltantes
+petfinder_cuantis_clean <- petfinder_cuantis[
+  !rownames(petfinder_cuantis) %in% na_ids,
+]
+
+# Implementación de ACP
+pca <- prcomp(
+  petfinder_cuantis_clean[, vars_activas],
+  center = TRUE,
+  scale. = TRUE
+)
+```
+
+**Valores propios asociados a la matriz de varianzas y covarianzas**
+
+```{r}
+#| label: valores propios
+
+eigenvalues <- pca$sdev^2
+# Número de variables activas
+p <- length(vars_activas)
+eigenvalues
+```
+
+**Proporción de varianza explicada por cada componente**
+
+```{r}
+#| label: varianza explicada por cada componente
+
+var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
+var_exp
+```
+
+**Proporción de varianza explicada acumulada**
+
+```{r}
+#| label: varianza acumulada
+
+# Proporción de varianza explicada por cada componente
+var_acum <- (cumsum(eigenvalues) / p) * 100
+var_acum
+```
+
+```{r}
+# Gráfico de varianza explicada y acumulada
+fviz_screeplot(
+  pca,
+  addlabels = TRUE,
+  ylim = c(0, 100)
+) +
+  geom_line(
+    aes(x = seq_along(var_acum), y = var_acum, group = 1),
+    color = "firebrick",
+    linetype = "dashed",
+    linewidth = 0.8
+  ) +
+  geom_point(
+    aes(x = seq_along(var_acum), y = var_acum),
+    color = "firebrick",
+    size = 2
+  ) +
+  geom_text(
+    aes(
+      x = seq_along(var_acum),
+      y = var_acum,
+      label = paste0(round(var_acum, 1), "%")
+    ),
+    color = "firebrick",
+    vjust = -0.8,
+    size = 3
+  ) +
+  labs(
+    title = "Varianza explicada por los componentes principales",
+    subtitle = "La línea punteada representa la varianza acumulada",
+    y = "Porcentaje de varianza explicada",
+    x = "Componentes principales"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+# Puntuaciones de cada observación
+scores <- as.data.frame(pca$x)
+
+# Visualización de los datos utilizando los dos primeros componentes
+ggplot(scores, aes(x = PC1, y = PC2)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(
+    title = "Individuos en el plano factorial PC1-PC2",
+    x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
+    y = paste0("PC2 (", round(var_exp[2], 2), "%)")
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+# Agregamos color según la variable categórica velocidad de adopción
+petfinder_clean <- petfinder_enriquecido_final[
+  !rownames(petfinder_cuantis) %in% na_ids,
+]
+
+adoption_speed <- petfinder_clean$AdoptionSpeed
+scores$grupo <- as.factor(adoption_speed)
+
+ggplot(scores, aes(x = PC1, y = PC2, color = grupo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  labs(
+    title = "Individuos en el plano factorial según velocidad de adopción",
+    x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
+    y = paste0("PC2 (", round(var_exp[2], 2), "%)"),
+    color = "Grupo"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+# Visualización de los individuos según los tres primeros componentes principales
+plot_ly(
+  data = scores,
+  x = ~PC1,
+  y = ~PC2,
+  z = ~PC3,
+  color = ~grupo,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(size = 4, opacity = 0.8)
+) %>%
+  layout(
+    title = "Individuos en los tres primeros componentes principales",
+    scene = list(
+      xaxis = list(
+        title = paste0("PC1 (", round(var_exp[1], 2), "%)")
+      ),
+      yaxis = list(
+        title = paste0("PC2 (", round(var_exp[2], 2), "%)")
+      ),
+      zaxis = list(
+        title = paste0("PC3 (", round(var_exp[3], 2), "%)")
+      )
+    )
+  )
+
 ```

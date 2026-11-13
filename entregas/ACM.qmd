@@ -24,9 +24,9 @@ PDF
 datos <- read.csv("../data/datos_afterACS.csv")
 ```
 
-Como continuación del ACS, dado que, por su número de categorías, las variables no nos pudieron aportar mucho, realizaremos dos ACM: uno que agrupe características de condición física y otro que agrupe características físicas.
+Como continuación del ACS, dado que, por su número de categorías, las variables no nos pudieron aportar mucho, realizaremos un ACM: que agrupe características de condición física
 
-No necesariamente se utilizarán estos análisis para realizar la entrega 3; eso se decidirá conforme a los resultados que podamos observar.
+No necesariamente se utilizará este análisis para realizar la entrega 3; eso se decidirá psoteriormente
 
 ## Preparación de los datos
 
@@ -276,219 +276,42 @@ Al hacer la proyeccion de adoption Speed, podemos ver que hay una relacion entre
 
 Aunque esto representa una contradiccion frente a lo que pudimos ver en el ACM donde velocidad de adopcion estava activa, pues se veia una relacion pequena entre no esta desparacitdado y sin adopcion. Pero pensemos que en el anterior ACM, en la dim3 No_dewormed tenia un cos² 0,053, asi que la relacion en realidad era muy debil.
 
+var_sup_quanti \<- c("desc_char_len", "sentiment_score")
+
 ```{r}
-# 1. Definir variables activas (salud) y suplementaria (velocidad de adopción)
+
+# 1. Crear las variables agrupadas (categóricas)
+datos$Age_agrupada <- ifelse(datos$Age <= 3, "<= 3 meses", "> 3 meses")
+datos$desc_char_len_agrupada  <- ifelse(datos$desc_char_len <= 14, "<= 14 char", "> 14 char")
+datos$sentiment_score_agrupada<- ifelse(datos$sentiment_score <= 0, "<= 0 sentiment", "> 0 sentiment")
+
+# 2. Definir variables activas y suplementarias (todas categóricas)
 vars_salud <- c("Vaccinated", "Dewormed", "Sterilized")
-var_sup <- c("AdoptionSpeed_agrupada", "Gender", "Type", "Breed1_agrupada")
+var_sup_cuali <- c("AdoptionSpeed_agrupada", "Gender", "Type", 
+                   "Age_agrupada", "sentiment_score_agrupada", "desc_char_len_agrupada")
 
-# Crear subconjunto dejando la variable suplementaria en la columna 1
-datos_acm <- datos[, c(var_sup, vars_salud)]
+# 3. Crear subconjunto de datos (suplementarias primero, luego activas)
+datos_acm <- datos[, c(var_sup_cuali, vars_salud)]
 
-# 2. Convertir todas las columnas a factor
+# 4. Convertir TODAS las columnas a factor
 datos_acm[] <- lapply(datos_acm, as.factor)
 
-# 3. Ejecutar el ACM indicando quali.sup = 1
-res_acm <- MCA(datos_acm, 
-               quali.sup = 1, 
-               ncp = Inf, 
+# 5. Ejecutar MCA
+# Solo especificamos quali.sup para las primeras 6 columnas
+res_acm <- MCA(datos_acm,
+               quali.sup = 1:length(var_sup_cuali), 
+               ncp = Inf,
                graph = FALSE)
 
-
-# 5. Mapa de categorías (activas + proyección de AdoptionSpeed_agrupada)
 fviz_mca_var(res_acm, 
              repel = TRUE,
              col.var = "steelblue",       # Variables de salud (activas)
              col.quali.sup = "darkred",   # Velocidad de adopción (proyectada)
              title = "ACM de salud con proyección de velocidad de adopción")
-
-# 6. Elipses de confianza y valores test para evaluar asociación significativa
-plotellipses(res_acm, keepvar = "AdoptionSpeed_agrupada")
-round(res_acm$quali.sup$v.test, 2)
 ```
 
-## ACM características físicas
+Finalmente proyectamos nuestras Age, char len, sentiment score, gendey type, para ver si encontramos algunas relaciones interesantes.
 
-Para este ACM tomaremos como variables activas `MaturitySize`, `FurLength`, `Color1`, `Color2`, `Color3`, `Breed1` y `Breed2`; para las que se agruparon, se usa su versión agrupada. Tambien lo realizaremos contruyendo los ejes con AdoptionSpeed como activa y compararemos
+Primero podemos ver que no hay ninguna variable que se acerque a las varaibles deno estas seguro, tambien que menos o igual a 3 meses se asercan a las variables de no en estado de salud y mas de 3 meses a las varaibles de si en estado de salud.
 
-```{r}
-vars_activas <- c("AdoptionSpeed_agrupada","MaturitySize_agrupada", "FurLength", "Color1_agrupada", "Color2_agrupada", "Color3_agrupada", "Breed1_agrupada", "Breed2_agrupada")
-
-
-datos_acm <- datos[, vars_activas]
-
-# 2. Convertir todas las columnas a factor
-datos_acm[] <- lapply(datos_acm, as.factor)
-
-# 3. Ejecutar el ACM
-res_acm <- MCA(datos_acm, ncp = Inf, graph = FALSE)
-
-fviz_eig(res_acm, 
-         ncp = nrow(res_acm$eig),                 # Incluye todas las dimensiones
-         addlabels = TRUE, 
-         xlab = "Dimensiones", 
-         ylab = "% de varianza explicada",
-         main = "Varianza explicada por todas las dimensiones")
-
-### Mapa de calor con valores test ###
-# 1. Extraer la matriz completa de test-values
-vtest_mat <- res_acm$var$v.test
-
-# 2. Convertir a formato largo usando R base
-df_vtest <- as.data.frame(as.table(vtest_mat))
-colnames(df_vtest) <- c("Categoria", "Dimension", "v_test")
-
-# 3. Mapa de calor con todos los valores impresos
-ggplot(df_vtest, aes(x = Dimension, y = Categoria, fill = v_test)) +
-  geom_tile(color = "white") +
-  geom_text(aes(label = round(v_test, 1),
-                fontface = ifelse(abs(v_test) >= 1.96, "bold", "plain")),
-            size = 3) +
-  scale_fill_gradient2(low = "#2b83ba", mid = "white", high = "#d7191c",
-                       midpoint = 0, name = "v-test") +
-  scale_y_discrete(limits = rev(levels(df_vtest$Categoria))) +
-  labs(title = "Test-values (v-test) por categoría y dimensión",
-       subtitle = "En negrita: valores estadísticamente significativos (|v-test| >= 1.96)",
-       x = "Dimensiones",
-       y = "Categorías") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-### Mapa de calor según cos² ###
-
-# 1. Extraer la matriz completa de cos2
-cos2_mat <- res_acm$var$cos2
-
-# 2. Convertir a formato largo usando R base
-df_cos2 <- as.data.frame(as.table(cos2_mat))
-colnames(df_cos2) <- c("Categoria", "Dimension", "cos2")
-
-# 3. Mapa de calor con todos los valores impresos
-ggplot(df_cos2, aes(x = Dimension, y = Categoria, fill = cos2)) +
-  geom_tile(color = "white") +
-  geom_text(aes(label = round(cos2, 2),
-                fontface = ifelse(cos2 >= 0.20, "bold", "plain")),
-            size = 3) +
-  scale_fill_gradient(low = "white", high = "#3182bd",
-                      limits = c(0, max(df_cos2$cos2)),
-                      name = "cos²") +
-  scale_y_discrete(limits = rev(levels(df_cos2$Categoria))) +
-  labs(title = "Calidad de representación (cos²) por categoría y dimensión",
-       subtitle = "En negrita: dimensiones con cos² >= 0.20 (cada fila suma 1.00 en total)",
-       x = "Dimensiones",
-       y = "Categorías") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-s <- ncol(datos_acm)
-l <- res_acm$eig[res_acm$eig[,1] > 1/s, 1]
-tau <- ( s / (s - 1) )^2 * ( l - (1/s) )^2
-ptau <- tau / sum( tau ) * 100
-
-# 1. Guardar las posiciones de las barras y dar margen superior en ylim
-bp <- barplot(ptau, 
-              col = "darkred", 
-              ylim = c(0, max(ptau) + 10),
-              names.arg = paste("Dim", seq_along(ptau)),
-              ylab = "Inercia corregida (%)")
-
-# 2. Añadir el texto con el porcentaje arriba de cada barra
-text(x = bp, 
-     y = ptau, 
-     labels = paste0(round(ptau, 1), "%"), 
-     pos = 3,     # 3 = arriba de la coordenada (x, y)
-     cex = 0.9,   # Tamaño de letra
-     font = 2)    # Negrita
-
-```
-
-```{r}
-vars_activas <- c("MaturitySize_agrupada", "FurLength", "Color1_agrupada", "Color2_agrupada", "Color3_agrupada", "Breed1_agrupada", "Breed2_agrupada")
-
-
-datos_acm <- datos[, vars_activas]
-
-# 2. Convertir todas las columnas a factor
-datos_acm[] <- lapply(datos_acm, as.factor)
-
-# 3. Ejecutar el ACM
-res_acm <- MCA(datos_acm, ncp = Inf, graph = FALSE)
-
-fviz_eig(res_acm, 
-         ncp = nrow(res_acm$eig),                 # Incluye todas las dimensiones
-         addlabels = TRUE, 
-         xlab = "Dimensiones", 
-         ylab = "% de varianza explicada",
-         main = "Varianza explicada por todas las dimensiones")
-
-### Mapa de calor con valores test ###
-# 1. Extraer la matriz completa de test-values
-vtest_mat <- res_acm$var$v.test
-
-# 2. Convertir a formato largo usando R base
-df_vtest <- as.data.frame(as.table(vtest_mat))
-colnames(df_vtest) <- c("Categoria", "Dimension", "v_test")
-
-# 3. Mapa de calor con todos los valores impresos
-ggplot(df_vtest, aes(x = Dimension, y = Categoria, fill = v_test)) +
-  geom_tile(color = "white") +
-  geom_text(aes(label = round(v_test, 1),
-                fontface = ifelse(abs(v_test) >= 1.96, "bold", "plain")),
-            size = 3) +
-  scale_fill_gradient2(low = "#2b83ba", mid = "white", high = "#d7191c",
-                       midpoint = 0, name = "v-test") +
-  scale_y_discrete(limits = rev(levels(df_vtest$Categoria))) +
-  labs(title = "Test-values (v-test) por categoría y dimensión",
-       subtitle = "En negrita: valores estadísticamente significativos (|v-test| >= 1.96)",
-       x = "Dimensiones",
-       y = "Categorías") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-### Mapa de calor según cos² ###
-
-# 1. Extraer la matriz completa de cos2
-cos2_mat <- res_acm$var$cos2
-
-# 2. Convertir a formato largo usando R base
-df_cos2 <- as.data.frame(as.table(cos2_mat))
-colnames(df_cos2) <- c("Categoria", "Dimension", "cos2")
-
-# 3. Mapa de calor con todos los valores impresos
-ggplot(df_cos2, aes(x = Dimension, y = Categoria, fill = cos2)) +
-  geom_tile(color = "white") +
-  geom_text(aes(label = round(cos2, 2),
-                fontface = ifelse(cos2 >= 0.20, "bold", "plain")),
-            size = 3) +
-  scale_fill_gradient(low = "white", high = "#3182bd",
-                      limits = c(0, max(df_cos2$cos2)),
-                      name = "cos²") +
-  scale_y_discrete(limits = rev(levels(df_cos2$Categoria))) +
-  labs(title = "Calidad de representación (cos²) por categoría y dimensión",
-       subtitle = "En negrita: dimensiones con cos² >= 0.20 (cada fila suma 1.00 en total)",
-       x = "Dimensiones",
-       y = "Categorías") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-s <- ncol(datos_acm)
-l <- res_acm$eig[res_acm$eig[,1] > 1/s, 1]
-tau <- ( s / (s - 1) )^2 * ( l - (1/s) )^2
-ptau <- tau / sum( tau ) * 100
-
-# 1. Guardar las posiciones de las barras y dar margen superior en ylim
-bp <- barplot(ptau, 
-              col = "darkred", 
-              ylim = c(0, max(ptau) + 10),
-              names.arg = paste("Dim", seq_along(ptau)),
-              ylab = "Inercia corregida (%)")
-
-# 2. Añadir el texto con el porcentaje arriba de cada barra
-text(x = bp, 
-     y = ptau, 
-     labels = paste0(round(ptau, 1), "%"), 
-     pos = 3,     # 3 = arriba de la coordenada (x, y)
-     cex = 0.9,   # Tamaño de letra
-     font = 2)    # Negrita
-```
-
-Como podemos ver en principio el usar adoption speed como activa o no, no cambia mucho los ejes que se forman, ni su varianza, igual podemos ver eso en el criterio de benzecri
+Lo que tiene sentido pues seesperaria que animales mayores ya hayan sido vacinados, desparazitados y esterilizados, y los de menos de 3 meses no, ademas esto tambien puede ayudar a explciar la relacion del porque se ve una sercania mayor de no estar a velocidades de adopcion mas rapidas, las personas, prefieren adoptar animalesmas jovenes.
