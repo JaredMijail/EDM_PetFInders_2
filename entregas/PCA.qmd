@@ -230,6 +230,7 @@ na_ind <- petfinder_cuantis %>%
 
 n_na <- nrow(na_ind)
 n <- nrow(petfinder_enriquecido_final)
+na_ids <- rownames(na_ind)
 n_na
 n_na/n
 ```
