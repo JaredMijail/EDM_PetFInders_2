@@ -218,7 +218,7 @@ tibble(
 
 En la tabla resumen se evidencia que los individuos con valores faltantes en las variables *total_colors* y *total_labels* no disponen de ninguna fotografía cargada para el anuncio. Esto explica la ocurrencia de valores faltantes para estas dos variables.
 
-## Decisión 
+**Decisión**
 
 Identificada la causa de la ocurrencia de los valores faltantes, es claro que no es viable realizar una imputación de los mismos. Por lo tanto, para la construcción de los ejes del nuevo plano factorial solo se tendrán en consideración los individuos asociados con descripciones correctamente procesadas por la API de Google y con imágenes disponibles.
 
@@ -337,10 +337,9 @@ coord_variables |>
   kable_styling(latex_options = "hold_position", full_width = FALSE)
 ```
 
-Las coordenadas de las variables sobre los ejes principales representan su correlación con estos. Se observa que para el componente principal uno, las variables *PhotoAmt*, *total_labels* y *total_colors* predominan con una correlación de 0,828. En cambio, en el componente principal dos, las variables *desc_char_len* y *desc_word_count* destacan con unas correlaciones de 0,622 y 0,627 respectivamente. Por otro lado, en el último eje la variable *sentiment_score* es la mayormente correlacionada con una correlación de -0,982.
-
+Las coordenadas de las variables sobre los ejes principales representan su correlación con estos. Para los primeros dos componentes principales, las variables no muestran correlaciones (y direcciones) muy similares, sin embargo, se observa que para el componente principal uno, las variables *PhotoAmt*, *total_labels* y *total_colors* predominan con una correlación positiva de 0,828. En cambio, en el componente principal dos, las variables *desc_char_len* y *desc_word_count* destacan con unas correlaciones positivas de 0,622 y 0,627 respectivamente. Por otro lado, en el último eje la variable *sentiment_score* tiene una baja correlación tanto para el primer como el segundo eje mientras que para el tercer componente principal tiene una alta correlación negativa de -0.982. En contraste, el resto de variables tienen una débil correlación con este componente. Lo anterior sugiere que los grupos de variables *PhotoAmt*, *total_labels*, *total_colors* y *desc_char_len*, *desc_word_count* están fuertemente correlacionadas entre sí y tienen un comportamiento similar. Esto podría ser una señal de redundancia en la información que están aportando. Además, el tercer componente está asociado únicamente con la variable *sentiment_score*.
+ 
 **Contribución porcentual de las variables a los componentes principales**
-
 
 ```{r}
 #| label: tbl-contrib-porcentaje
@@ -366,42 +365,7 @@ contrib_porcentaje |>
   kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE)
 ```
 
-**Contribución absoluta de las variables a cada componente principal**
-
-
-```{r}
-contrib_absoluta <- coord_variables^2
-contrib_absoluta |>
-  as.data.frame() |>
-  tibble::rownames_to_column("Variable") |>
-  kbl(
-    booktabs = TRUE,
-    digits   = 2,
-    align    = c("l", rep("r", 3))
-  ) |>
-  kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE)
-```
-
-**Círculo de correlaciones y contribución de las variables en los componentes uno y dos**
-
-::: {layout-ncol=2}
-```{r}
-plot1 <- fviz_pca_var(
-  pca,
-  axes = c(1, 2),
-  col.var = "cos2",
-  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-  repel = TRUE
-) +
-  labs(
-    title = "Círculo de correlaciones: PC1 y PC2",
-    x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
-    y = paste0("PC2 (", round(var_exp[2], 2), "%)")
-  )
-
-plot1
-```
-
+::: {layout-ncol=3}
 ```{r}
 # Para PC1
 fviz_contrib(
@@ -431,10 +395,63 @@ fviz_contrib(
     y = "Contribución (%)"
   )
 ```
+
+```{r}
+# Para PC3
+fviz_contrib(
+  pca,
+  choice = "var",
+  axes = 3,
+  top = 10
+) +
+  labs(
+    title = "Contribución de las variables al PC3",
+    x = "Variables",
+    y = "Contribución (%)"
+  )
+```
+
 :::
 
-**Proyección de las variables suplementarias `Age`, `Quantity` y `Fee`**
+Los gráficos de barras enseñan la contribución porcentual de cada una de las variables en la construcción de los componentes principales. Aquí, la línea roja representa un umbral que indica la contribución esperada si todas las variables aportaran por igual. Se puede ver que para el componente principal uno, las variables `PhotoAmt`, `total_labels` y `total_colors` son las mayores contribuyentes, mientras que para el componente principal dos, las variables cuya participación fue mayor en la construcción del componente fueron `desc_word_count`, `desc_char_len` y `sentiment_magnitude`. En cambio, para el tercer componente principal, se puede decir que la única variable contribuyente es `sentiment_score` ya que las contribuciones de las demás son despreciables.
 
+**Contribución absoluta (cos2) de las variables a cada componente principal**
+
+::: {layout-ncol=2}
+```{r}
+contrib_absoluta <- coord_variables^2
+contrib_absoluta |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Variable") |>
+  kbl(
+    booktabs = TRUE,
+    digits   = 2,
+    align    = c("l", rep("r", 3))
+  ) |>
+  kable_styling(latex_options = c("hold_position", "scale_down"), full_width = FALSE)
+```
+
+```{r}
+plot1 <- fviz_pca_var(
+  pca,
+  axes = c(1, 2),
+  col.var = "cos2",
+  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  repel = TRUE
+) +
+  labs(
+    title = "Círculo de correlaciones: PC1 y PC2",
+    x = paste0("PC1 (", round(var_exp[1], 2), "%)"),
+    y = paste0("PC2 (", round(var_exp[2], 2), "%)")
+  )
+
+plot1
+```
+:::
+
+Los cosenos cuadrados de las variables respecto a cada uno de los componentes principales, reflejan qué tan bien están representadas en cada uno de ellos. Un coseno cuadrado cercano a 1 indica que la variable está muy bien representada en el eje, mientras que un coseno cuadrado cercano a 0 indica que está mal representada allí. En este caso, para el primer componente principal se tiene que la variables peor representada es *sentiment_score* con un coseno cuadrado de 0,01 mientras que el resto de variables alcanzan a ser adecuadamente representadas, esto es evidente porque tienen cosenos cuadrados entre 0,59 y 0,69. Se tiene una situación muy similar para el componente principal dos. En cambio, en el componente principal tres la variable mejor representada es *sentiment_score* con un coseno cuadrado cercano a 1 de 0,96, mientras que el resto de variables tienen una representación pobre en este eje.
+
+**Proyección de las variables suplementarias `Age`, `Quantity` y `Fee` sobre PC1 y PC2**
 
 ```{r}
 scaled_petfinder_cuantis <- scale(petfinder_cuantis_clean)
@@ -477,7 +494,9 @@ plot1 + geom_segment(
   )
 ```
 
-**Círculo de correlaciones de las variables sobre los primeros tres componentes principales**
+En el círculo unitario se tienen las variables suplementarias representadas con sus coordenadas proyectadas sobre el plano factorial construido con las variables activas. Se evidencia que la variable `Age` aparece muy cerca del origen con dirección hacia arriba. Esto sugiere que tiene una relación muy débil con los primeros dos componentes principales, aunque ligeramente positiva con el componente principal dos. La variable `Quantity` se poryecta ligramente hacia la derecha y hacia abajo. Esto indica una asociación positiva débil con PC1 y una asociación negativa débil con PC2. Al estar cerca al origen se puede decir que su representación en este plano es limitada. Por último, en el caso de la variable `Fee` se puede decir que su correlación con PC1 y PC2 es prácticamente nula al estar sobre el origen directamente. Esto nos indica que no es posible realizar interpretaciones sobre las variables suplementarias con la información proporcionada por los primeros dos componentes.
+
+**Correlaciones de las variables sobre los primeros tres componentes principales**
 
 
 ```{r}
