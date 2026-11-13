@@ -332,9 +332,6 @@ ggplot(scores, aes(x = PC1, y = PC2)) +
 
 ```{r}
 # Agregamos color según la variable categórica velocidad de adopción
-petfinder_clean <- petfinder_enriquecido_final[
-  !rownames(petfinder_cuantis) %in% sup_ids,
-]
 
 adoption_speed <- petfinder_clean$AdoptionSpeed
 scores$grupo <- as.factor(adoption_speed)
