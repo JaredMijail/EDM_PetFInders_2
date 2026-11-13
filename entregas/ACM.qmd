@@ -207,7 +207,7 @@ plot_ly(cat_df,
                       zaxis = list(title = "Dim 3")))
 ```
 
-En este gráfico es claro que la dimensión 2 separa las categorías de salud entre los «sí» y los «no». En este gráfico también es difícil ver relaciones entre tiempo de adopción y variables de estado de salud; sin embargo, cuando ponemos la dim 2 vs. la dim 3, podemos ver apenas una relación entre «está esterilizado» y «no está desparasitado» con «sin adopción», aunque esta relación es ínfima. Igual es algo que nos confirma nuestro cos² y valores test, pues en la dimensión 3 sí encontramos una distinción del centro de estas variables y algo de representación.
+En este gráfico es claro que la dimensión 2 separa las categorías de salud entre los «sí» y los «no». Si vemos las dimensiones 1 y 2, podremos notar que las variables de estado de salud en «no» se acercan a velocidades de adopción más rápidas, y las variables de estado de salud en «sí» también se acercan a velocidades más rápidas. Si miramos las dimensiones 2 y 3, podremos ver una pequeña relación entre estar esterilizado, no estar desparasitado y no tener adopción. Podemos confirmar estas pequeñas relaciones al observar los *test values* y el cos².
 
 ```{r}
 s <- ncol(datos_acm)
