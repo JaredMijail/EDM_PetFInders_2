@@ -333,7 +333,7 @@ ggplot(scores, aes(x = PC1, y = PC2)) +
 ```{r}
 # Agregamos color según la variable categórica velocidad de adopción
 
-adoption_speed <- petfinder_clean$AdoptionSpeed
+adoption_speed <- petfinder_cuantis_clean$AdoptionSpeed
 scores$grupo <- as.factor(adoption_speed)
 
 ggplot(scores, aes(x = PC1, y = PC2, color = grupo)) +
