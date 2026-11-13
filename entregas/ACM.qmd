@@ -24,9 +24,9 @@ PDF
 datos <- read.csv("../data/datos_afterACS.csv")
 ```
 
-Como continuación del ACS, dado que, por su número de categorías, las variables no nos pudieron aportar mucho, realizaremos un ACM: que agrupe características de condición física
+Como continuación del ACS, dado que, por su número de categorías, las variables no nos pudieron aportar mucho, realizaremos un ACM que agrupe características de condición física.
 
-No necesariamente se utilizará este análisis para realizar la entrega 3; eso se decidirá psoteriormente
+No necesariamente se utilizará este análisis para realizar la entrega 3; eso se decidirá posteriormente.
 
 ## Preparación de los datos
 
@@ -72,7 +72,7 @@ fviz_eig(res_acm,
          ylab = "% de varianza explicada",
          main = "Varianza explicada por todas las dimensiones")
 
-### Mapa de calor con valores test ###
+### Mapa de calor con valores test
 # 1. Extraer la matriz completa de test-values
 vtest_mat <- res_acm$var$v.test
 
@@ -96,7 +96,7 @@ ggplot(df_vtest, aes(x = Dimension, y = Categoria, fill = v_test)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-### Mapa de calor según cos² ###
+### Mapa de calor según cos²
 
 # 1. Extraer la matriz completa de cos2
 cos2_mat <- res_acm$var$cos2
@@ -123,11 +123,11 @@ ggplot(df_cos2, aes(x = Dimension, y = Categoria, fill = cos2)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-Lo que nos muestras nuestros datos es que adoptionSpeed y velocidad de adopcion, son casi ortogonales, nuestros dos primeros ejes conservan un buen porcentaje de la varianza, pero, como vemos en cos², solamente representan bien las variables de estado de salud, y nuestra variable de interés no se ve bien representada en ningún eje; se ve especialmente en las dimensiones 3, 4 y 5. El unico eje que tiene un poco de la representacion entre las dos, es la dimension 3.
+Lo que nos muestran nuestros datos es que `AdoptionSpeed` y las variables de estado de salud son casi ortogonales. Nuestros dos primeros ejes conservan un buen porcentaje de la varianza, pero, como vemos en cos², solamente representan bien las variables de estado de salud, y nuestra variable de interés no se ve bien representada en los dos primeros ejes; se ve especialmente en las dimensiones 3, 4 y 5. El único eje que tiene un poco de la representación entre ambas es la dimensión 3.
 
-Miremos primero la dim 1 con la dim 3 y la dim 4, y la dim 1 con la dim 2 y la dim 3, donde podríamos ver las mejores representaciones de lo que nos interesa.
+Miremos primero la dim 1 con la dim 3 y la dim 4, y luego la dim 1 con la dim 2 y la dim 3, donde podríamos ver las mejores representaciones de lo que nos interesa.
 
-### REPRESENTACIÓN 1: Dim 1, Dim 3 y Dim 4
+### Representación 1: Dim 1, Dim 3 y Dim 4
 
 ```{r}
 library(plotly)
@@ -169,13 +169,13 @@ plot_ly(cat_df,
                       zaxis = list(title = "Dim 4")))
 ```
 
-Despues de explorar este grafico realmente es dificil ver las relaciones entre velocidad de adopcion y estado de salud, esclaro que todas las variables de no esta seguro estan relacionadasentre si, y se diferencin del resto.
+Después de explorar este gráfico, realmente es difícil ver las relaciones entre velocidad de adopción y estado de salud. Es claro que todas las categorías de «no está seguro» están relacionadas entre sí y se diferencian del resto.
 
-La dimension 3 representa la velocidad de adopcion, sin embargo en este eje, todas las variables de salud no estan bien representadas, se puede ver una relacion pequena entre adopcion rapida y el estar esterilizado, que fue algo que se pudo evidenziar en el ACS. Pero mas alla de eso estan casi centradas las variables.
+La dimensión 3 representa la velocidad de adopción; sin embargo, en este eje todas las variables de salud no están bien representadas. Se puede ver una relación pequeña entre adopción rápida y el estar esterilizado, que fue algo que se pudo evidenciar en el ACS. Pero más allá de eso, las variables están casi centradas.
 
-La dim1 sepera no esta seguro del resto, y la dim 4, no nos deja evidenciar claramente alguna interpretacion, podemos ver que hasta 7 dias y de 31 - 91 dias estan a un lado, sin adopcion centrada, y de 8 - 3 dias en el otro lado, pero es dificil darle a esto algun sentido.
+La dim 1 separa «no está seguro» del resto, y la dim 4 no nos deja evidenciar claramente alguna interpretación. Podemos ver que «hasta 7 días» y «de 31 a 90 días» están a un lado, «sin adopción» centrada, y «de 8 a 30 días» en el otro lado, pero es difícil darle a esto algún sentido.
 
-### REPRESENTACIÓN 2: Dim 1, Dim 2 y Dim 3
+### Representación 2: Dim 1, Dim 2 y Dim 3
 
 ```{r}
 # ==============================================================================
@@ -207,7 +207,7 @@ plot_ly(cat_df,
                       zaxis = list(title = "Dim 3")))
 ```
 
-En este grafico es claro que la dimension 2, separa las variables de salud entra los si y los no. En este grafico tambien es dificl ver relaciones entre tiempo de adopcion y variables de estado de salud, sin embargo, cuando ponemos la dim 2 vs la dim3, podemos ver apenas, una relacion entre esta esterilizado y no esta desparacitado, con sin adopcion, aunque esta ralcion es infima, que igual es algo que nos confirma nuestro cos2 y valores test, pues en la dimension 3, si encontramos una distacion del centro de estas variables, y algo de representacion.
+En este gráfico es claro que la dimensión 2 separa las categorías de salud entre los «sí» y los «no». En este gráfico también es difícil ver relaciones entre tiempo de adopción y variables de estado de salud; sin embargo, cuando ponemos la dim 2 vs. la dim 3, podemos ver apenas una relación entre «está esterilizado» y «no está desparasitado» con «sin adopción», aunque esta relación es ínfima. Igual es algo que nos confirma nuestro cos² y valores test, pues en la dimensión 3 sí encontramos una distinción del centro de estas variables y algo de representación.
 
 ```{r}
 s <- ncol(datos_acm)
@@ -231,7 +231,7 @@ text(x = bp,
      font = 2)    # Negrita
 ```
 
-Segun el criterio de Benzecri, toda nuestra vairanza queda representada en las dimensiones 1 y 2, por ello vamos a contruir el grafico solo con las variables de stado de salud, y vamos a proyectar nuestra variable de interes como una suplementaria.
+Según el criterio de Benzécri, toda nuestra varianza queda representada en las dimensiones 1 y 2; por ello vamos a construir el gráfico solo con las variables de estado de salud y vamos a proyectar nuestra variable de interés como una suplementaria.
 
 ```{r}
 # 1. Definir variables activas (salud) y suplementaria (velocidad de adopción)
@@ -270,13 +270,11 @@ plotellipses(res_acm, keepvar = "AdoptionSpeed_agrupada")
 round(res_acm$quali.sup$v.test, 2)
 ```
 
-En principio vemos que efectivamente al construir el ACM solo con las variables de estado de salud estas entre ellas tienen una fuerte relacion, y tenemos una mejor representacion en las dimensiones 1 y 2.
+En principio vemos que, efectivamente, al construir el ACM solo con las variables de estado de salud, estas tienen una fuerte relación entre ellas y tenemos una mejor representación en las dimensiones 1 y 2.
 
-Al hacer la proyeccion de adoption Speed, podemos ver que hay una relacion entre una adopcion mas lenta cuendo esta esterilizado, desparazitado y vacunado, y lo contrario cuando no lo esta. El eje 1 solo nos representa el no esta seguro.
+Al hacer la proyección de `AdoptionSpeed`, podemos ver que hay una relación entre una adopción más lenta cuando está esterilizado, desparasitado y vacunado, y lo contrario cuando no lo está. El eje 1 solo nos representa el «no está seguro».
 
-Aunque esto representa una contradiccion frente a lo que pudimos ver en el ACM donde velocidad de adopcion estava activa, pues se veia una relacion pequena entre no esta desparacitdado y sin adopcion. Pero pensemos que en el anterior ACM, en la dim3 No_dewormed tenia un cos² 0,053, asi que la relacion en realidad era muy debil.
-
-var_sup_quanti \<- c("desc_char_len", "sentiment_score")
+Aunque esto representa una contradicción frente a lo que pudimos ver en el ACM donde la velocidad de adopción estaba activa, pues se veía una relación pequeña entre «no está desparasitado» y «sin adopción». Pero pensemos que, en el anterior ACM, en la dim 3 `Dewormed_No` tenía un cos² de 0,053, así que la relación en realidad era muy débil.
 
 ```{r}
 
@@ -310,8 +308,8 @@ fviz_mca_var(res_acm,
              title = "ACM de salud con proyección de velocidad de adopción")
 ```
 
-Finalmente proyectamos nuestras Age, char len, sentiment score, gendey type, para ver si encontramos algunas relaciones interesantes.
+Finalmente proyectamos nuestras variables `Age`, `desc_char_len`, `sentiment_score`, `Gender` y `Type` para ver si encontramos algunas relaciones interesantes.
 
-Primero podemos ver que no hay ninguna variable que se acerque a las varaibles deno estas seguro, tambien que menos o igual a 3 meses se asercan a las variables de no en estado de salud y mas de 3 meses a las varaibles de si en estado de salud.
+Primero podemos ver que no hay ninguna variable que se acerque a las categorías de «no está seguro»; también que «menos o igual a 3 meses» se acerca a las categorías de «no» en estado de salud y «más de 3 meses» a las categorías de «sí» en estado de salud.
 
-Lo que tiene sentido pues seesperaria que animales mayores ya hayan sido vacinados, desparazitados y esterilizados, y los de menos de 3 meses no, ademas esto tambien puede ayudar a explciar la relacion del porque se ve una sercania mayor de no estar a velocidades de adopcion mas rapidas, las personas, prefieren adoptar animalesmas jovenes.
+Lo que tiene sentido, pues se esperaría que animales mayores ya hayan sido vacunados, desparasitados y esterilizados, y los de menos de 3 meses no. Además, esto también puede ayudar a explicar la relación por la que se ve una cercanía mayor de «no estar» a velocidades de adopción más rápidas: las personas prefieren adoptar animales más jóvenes.
