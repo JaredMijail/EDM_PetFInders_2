@@ -253,14 +253,64 @@ pca <- prcomp(
 )
 ```
 
-*Valores propios asociados a la matriz de varianzas y covarianzas*
+**Valores propios asociados a la matriz de varianzas y covarianzas**
 
 ```{r}
-# Eigenvalues
 eigenvalues <- pca$sdev^2
 eigenvalues
 ```
 
+**Proporción de varianza explicada por cada componente**
 
+```{r}
+var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
+var_exp
+```
+
+**Proporción de varianza explicada acumulada**
+
+```{r}
+# Proporción de varianza explicada por cada componente
+var_exp <- (pca$sdev^2 / sum(pca$sdev^2)) * 100
+var_exp
+```
+
+```{r}
+# Gráfico de varianza explicada y acumulada
+fviz_screeplot(
+  pca,
+  addlabels = TRUE,
+  ylim = c(0, 100)
+) +
+  geom_line(
+    aes(x = seq_along(var_acum), y = var_acum, group = 1),
+    color = "firebrick",
+    linetype = "dashed",
+    linewidth = 0.8
+  ) +
+  geom_point(
+    aes(x = seq_along(var_acum), y = var_acum),
+    color = "firebrick",
+    size = 2
+  ) +
+  geom_text(
+    aes(
+      x = seq_along(var_acum),
+      y = var_acum,
+      label = paste0(round(var_acum, 1), "%")
+    ),
+    color = "firebrick",
+    vjust = -0.8,
+    size = 3
+  ) +
+  labs(
+    title = "Varianza explicada por los componentes principales",
+    subtitle = "La línea punteada representa la varianza acumulada",
+    y = "Porcentaje de varianza explicada",
+    x = "Componentes principales"
+  ) +
+  theme_minimal()
+
+```
 
 
