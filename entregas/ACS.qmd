@@ -126,6 +126,8 @@ par(mfrow = c(1, 1))
 
 En estos gráficos podemos destacar que la raza 307 tiene una alta tasa de no adopción, y que «Otros» y la 265 presentan mayor adopción, lo que nos indica que, probablemente, mientras menos común sea una raza, más probable es que sea adoptada, aunque esta es una suposición débil.
 
+Los porcentajes permiten dimensionar esa lectura. En «Sin adopción», el 48,39 % de los anuncios corresponde a la raza 307, el 23,25 % a la 266, el 20,92 % a «Otros» y el 7,43 % a la 265; el marginal de la variable es 39,53 %, 24,24 %, 27,84 % y 8,39 %, respectivamente. En «Hasta 7 días» el patrón se invierte: la 307 baja a 26,86 % y «Otros» sube a 37,40 %. Las desviaciones más grandes respecto al marginal son la 307 en «Hasta 7 días» (−12,67 pp) y en «Sin adopción» (+8,86 pp), y «Otros» en «Hasta 7 días» (+9,56 pp) y en «Sin adopción» (−6,92 pp). Esos cuatro cruces concentran cerca del 89 % del χ² (30,6 %, 24,7 %, 17,9 % y 15,5 %), y la V de Cramér es 0,102: la asociación es débil, aunque es la más marcada de las cuatro variables.
+
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada, datos$Color1_agrupada)
 resultado <- chisq.test(tabla)
@@ -159,6 +161,8 @@ par(mfrow = c(1, 1))
 ```
 
 En estos gráficos podemos ver, en los perfiles fila, que todos son muy similares al marginal, excepto «Hasta 7 días», que presenta más de «Otros». Esto también nos puede indicar que, mientras menos común sea un color, la adopción va a ser más rápida; igualmente, en «Sin adopción» podemos ver que la categoría más pequeña es la de «Otros».
+
+Los porcentajes concretos muestran que la diferencia es pequeña. El marginal del color es 49,54 % para el 1, 25,01 % para el 2, 6,32 % para el 3 y 19,14 % para «Otros»; en «Hasta 7 días» los perfiles son 47,74 %, 23,09 %, 6,86 % y 22,31 %, y en «Sin adopción» 49,73 %, 26,97 %, 5,67 % y 17,63 %. La desviación máxima frente al marginal es de apenas 3,18 pp («Otros» en «Hasta 7 días»), y los residuales estandarizados más altos son +5,46 («Hasta 7 días» × «Otros») y +3,46 («Sin adopción» × color 2), con −3,00 («Hasta 7 días» × color 2) y −2,92 («Sin adopción» × «Otros»). Esas cuatro celdas concentran el 63,3 % del χ² (33,3 %, 11,6 %, 9,4 % y 9,0 %), de modo que la idea de que un color menos común se adopta más rápido descansa casi por completo en la categoría «Otros»; con una V de Cramér de 0,035, la asociación es la más débil de las cuatro y no permite ir más allá de una descripción.
 
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada, datos$Vaccinated)
@@ -194,6 +198,8 @@ par(mfrow = c(1, 1))
 
 En este caso los datos son muy interesantes, pues parecería que los no vacunados se adoptan más rápido y los que están en «No está seguro», menos.
 
+Las cifras respaldan esa impresión y la matizan. El marginal es 48,20 % «No», 12,46 % «No está seguro» y 39,34 % «Sí»; en «Hasta 7 días» el perfil es 56,66 %, 11,60 % y 31,74 %, y en «Sin adopción» 39,86 %, 14,99 % y 45,15 %. Así, «No» sube 8,46 pp en la adopción rápida y baja 8,34 pp en la no adopción, mientras que «Sí» hace lo contrario (−7,60 pp y +5,81 pp). Los residuales estandarizados llegan a +11,43 («Hasta 7 días» × «No») y −10,51 («Hasta 7 días» × «Sí»), y a −12,74 («Sin adopción» × «No») y +9,08 («Sin adopción» × «Sí»). Cuatro celdas explican el 72,6 % del χ² (22,0 %, 18,9 %, 18,7 % y 13,1 %), y la V de Cramér es 0,096: la asociación es débil, pero es la segunda más fuerte después de Breed1. «No está seguro» se mantiene entre 11,2 % y 15,0 % en todos los perfiles y aporta poco, así que su efecto es más de matiz que de patrón.
+
 ```{r}
 tabla <- table(datos$AdoptionSpeed_agrupada , datos$Gender)
 resultado <- chisq.test(tabla)
@@ -227,6 +233,8 @@ par(mfrow = c(1, 1))
 ```
 
 En este podemos ver que los machos son adoptados más rápido y con más seguridad que las hembras, y que «Mixto» parece tener también adopciones menos rápidas y menos seguras.
+
+En números, el marginal es 48,54 % hembras, 36,92 % machos y 14,54 % mixtos. En «Hasta 7 días» el perfil es 44,86 %, 41,23 % y 13,91 %, y en «Sin adopción» 50,63 %, 33,50 % y 15,87 %; el macho gana 4,30 pp en la adopción rápida y pierde 3,42 pp en la no adopción, mientras que la hembra pierde 3,68 pp y gana 2,10 pp. Los residuales estandarizados más altos son +6,03 («Hasta 7 días» × macho), −5,42 («Sin adopción» × macho) y −4,97 («Hasta 7 días» × hembra). Visto por columna, el 26 % de los machos termina en «Hasta 7 días» y el 25 % en «Sin adopción», frente al 22 % y 29 % de las hembras y al 22 % y 31 % de los mixtos. Cuatro celdas reúnen el 66,8 % del χ² (24,4 %, 18,5 %, 13,6 % y 10,3 %), con una V de Cramér de 0,049: el patrón va en la dirección descrita, pero es muy débil y «Mixto» apenas se diferencia del marginal.
 
 ## Análisis de correspondencias simple {#sec-acs}
 
