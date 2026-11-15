@@ -238,7 +238,7 @@ n_na
 n_na/n
 ```
 
-Se estarían descartando un total de 882 individuos que representan aproximadamente el 5,8% del total de individuos. En ese orden de ideas, los ejes del nuevo plano factorial se construyen con la información de 1411 individuos.
+Se estarían descartando un total de 882 individuos que representan aproximadamente el 5,8% del total de individuos. En ese orden de ideas, los ejes del nuevo plano factorial se construyen con la información de 14111 individuos.
 
 # ACP normado
 Una vez filtrada la matriz numérica, se realiza la respectiva implementación del algoritmo para la construcción de los siete ejes. Como se cuenta con variables cuantitativas medidas en diferentes escalas, fue necesario hacer la respectiva estandarización de la matriz numérica. En ese orden de ideas, los valores y vectores propios se calculan a partir de la matriz correlaciones.
