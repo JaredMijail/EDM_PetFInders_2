@@ -46,8 +46,6 @@ datos$MaturitySize_agrupada <- fct_lump_n(as.factor(datos$MaturitySize), n = 2, 
 
 Para este ACM también será de interés la variable `AdoptionSpeed`, así que tomaremos como variables activas `AdoptionSpeed_agrupada`, `Vaccinated`, `Dewormed` y `Sterilized`. Se intentó usar `Health`, pero es una variable que concentra demasiada masa en «sano» y dañaba los análisis.
 
-`Type`, `Gender`, `FurLength`, `MaturitySize`, `Color1`, `Color2`, `Color3`, `Breed1`, `Breed2` y `State` se usarán como variables suplementarias. De las cuantitativas, usaremos como suplementarias `sentiment_score`, `sentiment_magnitude` y `desc_char_len`.
-
 ```{r}
 library(FactoMineR)
 library(factoextra)
