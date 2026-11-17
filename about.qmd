@@ -3,7 +3,3 @@ title: "Acerca de"
 ---
 
 Acerca de este sitio
-
-```{r}
-1 + 1
-```
