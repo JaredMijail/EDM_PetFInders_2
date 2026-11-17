@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>EACS: Análisis de correspondencias simple – EDM_segundaEntrega</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../entregas/ACM.html" rel="next">
+<link href="../entregas/PCA.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6453f418aeef366c23116eb9cb0b6816.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-5c1318cf63eba56dbef7ba16bc7d56f5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-74d19e79992467fccd1882236d97e988.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-070e54764458ee5734a9f7e2965ee2d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-74d19e79992467fccd1882236d97e988.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 30,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": true,
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<meta name="author" content="Jared Mijail Ramírez Escalante, María Paula Silva Capera">
+<meta name="keywords" content="PetFinder, adopción de mascotas, EDM, R, Quarto">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">EDM_segundaEntrega</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-entrega-02" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Entrega 02</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-entrega-02">    
+        <li>
+    <a class="dropdown-item" href="../entregas/PCA.html">
+ <span class="dropdown-text">Análisis de Componentes Principales</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../entregas/ACS.html">
+ <span class="dropdown-text">Análisis de Correspondencias Simple</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../entregas/ACM.html">
+ <span class="dropdown-text">Análisis de Correspondencias Múltiples</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">Acerca de</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo oscuro"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../entregas/PCA.html">Entrega 02</a></li><li class="breadcrumb-item"><a href="../entregas/ACS.html">EACS: Análisis de correspondencias simple</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Inicio</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">EDM_segundaEntrega</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Entrega 02</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entregas/PCA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ACP: Análisis de Componentes Principales</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entregas/ACS.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">EACS: Análisis de correspondencias simple</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../entregas/ACM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ACM: Análisis de correspondencias múltiples</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Información</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../about.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Acerca de</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#selección-de-las-variables-cualitativas" id="toc-selección-de-las-variables-cualitativas" class="nav-link active" data-scroll-target="#selección-de-las-variables-cualitativas">Selección de las variables cualitativas</a></li>
+  <li><a href="#preparación-de-variables" id="toc-preparación-de-variables" class="nav-link" data-scroll-target="#preparación-de-variables">Preparación de variables</a></li>
+  <li><a href="#visualización-de-perfiles-fila-y-columna" id="toc-visualización-de-perfiles-fila-y-columna" class="nav-link" data-scroll-target="#visualización-de-perfiles-fila-y-columna">Visualización de perfiles fila y columna</a></li>
+  <li><a href="#sec-acs" id="toc-sec-acs" class="nav-link" data-scroll-target="#sec-acs">Análisis de correspondencias simple</a>
+  <ul class="collapse">
+  <li><a href="#resumen-del-acs" id="toc-resumen-del-acs" class="nav-link" data-scroll-target="#resumen-del-acs">Resumen del ACS</a></li>
+  <li><a href="#adoptionspeed-breed1" id="toc-adoptionspeed-breed1" class="nav-link" data-scroll-target="#adoptionspeed-breed1">AdoptionSpeed × Breed1</a></li>
+  <li><a href="#adoptionspeed-color1" id="toc-adoptionspeed-color1" class="nav-link" data-scroll-target="#adoptionspeed-color1">AdoptionSpeed × Color1</a></li>
+  <li><a href="#adoptionspeed-vaccinated" id="toc-adoptionspeed-vaccinated" class="nav-link" data-scroll-target="#adoptionspeed-vaccinated">AdoptionSpeed × Vaccinated</a></li>
+  <li><a href="#adoptionspeed-gender" id="toc-adoptionspeed-gender" class="nav-link" data-scroll-target="#adoptionspeed-gender">AdoptionSpeed × Gender</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../entregas/PCA.html">Entrega 02</a></li><li class="breadcrumb-item"><a href="../entregas/ACS.html">EACS: Análisis de correspondencias simple</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">EACS: Análisis de correspondencias simple</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Código</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostrar todo el código</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Ocultar todo el código</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Ver el código fuente</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="autor-pdf-row">
+<div class="autor-info">
+<p><strong>AUTORES</strong></p>
+<p>Jared Mijail Ramírez Escalante · María Paula Silva Capera</p>
+</div>
+<div class="action-bar">
+<button class="btn-print" onclick="window.print()">
+<p>PDF</p>
+</button>
+</div>
+</div>
+<!-- Este comentario no se verá en la página renderizada: analizar la descripción entre dos variables cualitativas, entre las variables fila y columna a través de sus perfiles -->
+<section id="selección-de-las-variables-cualitativas" class="level2">
+<h2 class="anchored" data-anchor-id="selección-de-las-variables-cualitativas">Selección de las variables cualitativas</h2>
+<p>Para seleccionar nuestras variables tenemos que pensar, primero, en que sean de interés y en que posiblemente encontremos una relación interesante entre las dos; y segundo, en que tengan categorías suficientes para realizar el análisis.</p>
+<p>Tenemos primero <code>AdoptionSpeed</code>, que, para este conjunto de datos y su objetivo inicial, es una variable principal; recordemos un poco de sus estadísticas univariadas.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>AdoptionSpeed, <span class="st">"Velocidad de adopción"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Velocidad de adopción</th>
+<th style="text-align: right;">Frecuencia absoluta</th>
+<th style="text-align: right;">Frecuencia relativa</th>
+<th style="text-align: right;">Frecuencia acumulada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Sin adopción</td>
+<td style="text-align: right;">4.197</td>
+<td style="text-align: right;">28,0%</td>
+<td style="text-align: right;">28,0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8–30 días</td>
+<td style="text-align: right;">4.037</td>
+<td style="text-align: right;">26,9%</td>
+<td style="text-align: right;">54,9%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">31–90 días</td>
+<td style="text-align: right;">3.259</td>
+<td style="text-align: right;">21,7%</td>
+<td style="text-align: right;">76,7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1–7 días</td>
+<td style="text-align: right;">3.090</td>
+<td style="text-align: right;">20,6%</td>
+<td style="text-align: right;">97,3%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mismo día</td>
+<td style="text-align: right;">410</td>
+<td style="text-align: right;">2,7%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">graficos_cuali</span>(datos<span class="sc">$</span>AdoptionSpeed, <span class="st">"Velocidad de adopción"</span>, <span class="at">pastel =</span> <span class="cn">TRUE</span>, <span class="at">n_top =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="ACS_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-1-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="ACS_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Ahora tenemos que elegir una segunda variable. La primera solo tiene cinco categorías, de las cuales agruparemos las últimas dos para evitar frecuencias bajas.</p>
+<p>Como son variables con relativamente pocas categorías, escogeremos otras cuatro variables para explorar su relación con la velocidad de adopción; el ACS se aplicará a las cuatro.</p>
+<p>De estas cuatro variables exploraremos <code>Breed1</code>, <code>Color1</code>, <code>Vaccinated</code> y <code>Gender</code>, en las que a priori podemos pensar que existan relaciones interesantes.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Breed1, <span class="st">"Raza principal"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Raza principal</th>
+<th style="text-align: right;">Frecuencia absoluta</th>
+<th style="text-align: right;">Frecuencia relativa</th>
+<th style="text-align: right;">Frecuencia acumulada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">307</td>
+<td style="text-align: right;">5.927</td>
+<td style="text-align: right;">39,5%</td>
+<td style="text-align: right;">39,5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">266</td>
+<td style="text-align: right;">3.634</td>
+<td style="text-align: right;">24,2%</td>
+<td style="text-align: right;">63,8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">265</td>
+<td style="text-align: right;">1.258</td>
+<td style="text-align: right;">8,4%</td>
+<td style="text-align: right;">72,2%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">299</td>
+<td style="text-align: right;">342</td>
+<td style="text-align: right;">2,3%</td>
+<td style="text-align: right;">74,4%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">264</td>
+<td style="text-align: right;">296</td>
+<td style="text-align: right;">2,0%</td>
+<td style="text-align: right;">76,4%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">292</td>
+<td style="text-align: right;">264</td>
+<td style="text-align: right;">1,8%</td>
+<td style="text-align: right;">78,2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">285</td>
+<td style="text-align: right;">221</td>
+<td style="text-align: right;">1,5%</td>
+<td style="text-align: right;">79,7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">141</td>
+<td style="text-align: right;">205</td>
+<td style="text-align: right;">1,4%</td>
+<td style="text-align: right;">81,0%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">205</td>
+<td style="text-align: right;">190</td>
+<td style="text-align: right;">1,3%</td>
+<td style="text-align: right;">82,3%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Otras (167 categorías)</td>
+<td style="text-align: right;">2.656</td>
+<td style="text-align: right;">17,7%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Color1, <span class="st">"Color principal"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Color principal</th>
+<th style="text-align: right;">Frecuencia absoluta</th>
+<th style="text-align: right;">Frecuencia relativa</th>
+<th style="text-align: right;">Frecuencia acumulada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">7.427</td>
+<td style="text-align: right;">49,5%</td>
+<td style="text-align: right;">49,5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">3.750</td>
+<td style="text-align: right;">25,0%</td>
+<td style="text-align: right;">74,5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">947</td>
+<td style="text-align: right;">6,3%</td>
+<td style="text-align: right;">80,9%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">884</td>
+<td style="text-align: right;">5,9%</td>
+<td style="text-align: right;">86,8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">684</td>
+<td style="text-align: right;">4,6%</td>
+<td style="text-align: right;">91,3%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">7</td>
+<td style="text-align: right;">667</td>
+<td style="text-align: right;">4,4%</td>
+<td style="text-align: right;">95,8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">634</td>
+<td style="text-align: right;">4,2%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Vaccinated, <span class="st">"Estado de vacunación"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estado de vacunación</th>
+<th style="text-align: right;">Frecuencia absoluta</th>
+<th style="text-align: right;">Frecuencia relativa</th>
+<th style="text-align: right;">Frecuencia acumulada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">No</td>
+<td style="text-align: right;">7.227</td>
+<td style="text-align: right;">48,2%</td>
+<td style="text-align: right;">48,2%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sí</td>
+<td style="text-align: right;">5.898</td>
+<td style="text-align: right;">39,3%</td>
+<td style="text-align: right;">87,5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">No está seguro</td>
+<td style="text-align: right;">1.868</td>
+<td style="text-align: right;">12,5%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Gender, <span class="st">"Género"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 29%">
+<col style="width: 29%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Género</th>
+<th style="text-align: right;">Frecuencia absoluta</th>
+<th style="text-align: right;">Frecuencia relativa</th>
+<th style="text-align: right;">Frecuencia acumulada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Hembra</td>
+<td style="text-align: right;">7.277</td>
+<td style="text-align: right;">48,5%</td>
+<td style="text-align: right;">48,5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Macho</td>
+<td style="text-align: right;">5.536</td>
+<td style="text-align: right;">36,9%</td>
+<td style="text-align: right;">85,5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mixto</td>
+<td style="text-align: right;">2.180</td>
+<td style="text-align: right;">14,5%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Como se puede ver, es necesario agrupar categorías tanto para color como para raza.</p>
+</section>
+<section id="preparación-de-variables" class="level2">
+<h2 class="anchored" data-anchor-id="preparación-de-variables">Preparación de variables</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>AdoptionSpeed_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>AdoptionSpeed), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Hasta 7 días"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Realizamos esta agrupación porque «mismo día» tiene una frecuencia relativa muy pequeña y tiene sentido unirlo con «1–7 días» en una sola categoría, «Hasta 7 días».</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>Breed1_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>Breed1), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Otros"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Lo realizamos de esta manera para que nos queden cuatro categorías, igual que en <code>AdoptionSpeed</code>. Cabe resaltar que, tanto en raza como en color, no tiene sentido crear varias categorías de agrupación: tomar todas las menos frecuentes y llamarlas «Otras» tiene sentido, pero no crear varios «otros» basados solo en la frecuencia, pues no se sabría qué se está agrupando realmente y sería casi del azar lo que puede representar cada agrupación.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>Color1_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>Color1), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Otros"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Igual que en la anterior, nos conviene dejar cuatro categorías, y el punto de corte para ellas es una frecuencia relativa significativa, aunque en esta variable sí sería posible dejar más categorías, pues desde la tercera la frecuencia es parecida.</p>
+</section>
+<section id="visualización-de-perfiles-fila-y-columna" class="level2">
+<h2 class="anchored" data-anchor-id="visualización-de-perfiles-fila-y-columna">Visualización de perfiles fila y columna</h2>
+<p>Primero que todo realizaremos pruebas de chi cuadrado que, como vimos en clase, no son un requisito; igualmente, para ver si las dos variables aleatorias son independientes podemos fijarnos en los perfiles fila y columna. Sin embargo, también es útil ver los datos cualitativos antes de realizar cualquier gráfico.</p>
+<p>También veremos nuevamente los perfiles fila y columna entre estas variables, que ya vimos en el análisis bivariado, pero es bueno recordarlas y analizarlas un poco más.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoClass)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Tabla de contingencia ----</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Breed1_agrupada)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Prueba chi-cuadrado ----</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tabla
+X-squared = 465.15, df = 9, p-value &lt; 2.2e-16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Perfiles fila y columna (numéricos) ----</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(perfil_fila, <span class="dv">2</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+                 265   266   307 Otros
+  8–30 días     8.42 25.59 39.01 26.98
+  31–90 días    6.97 23.11 42.37 27.55
+  Sin adopción  7.43 23.25 48.39 20.92
+  Hasta 7 días 10.83 24.91 26.86 37.40</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(perfil_columna, <span class="dv">2</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+                 265   266   307 Otros
+  8–30 días    27.03 28.43 26.57 26.09
+  31–90 días   18.04 20.72 23.30 21.51
+  Sin adopción 24.80 26.86 34.27 21.03
+  Hasta 7 días 30.13 24.00 15.86 31.36</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="ACS_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>En estos gráficos podemos destacar que la raza 307 tiene una alta tasa de no adopción, y que «Otros» y la 265 presentan mayor adopción, lo que nos indica que, probablemente, mientras menos común sea una raza, más probable es que sea adoptada, aunque esta es una suposición débil.</p>
+<p>Los porcentajes permiten dimensionar esa lectura. En «Sin adopción», el 48,39 % de los anuncios corresponde a la raza 307, el 23,25 % a la 266, el 20,92 % a «Otros» y el 7,43 % a la 265; el marginal de la variable es 39,53 %, 24,24 %, 27,84 % y 8,39 %, respectivamente. En «Hasta 7 días» el patrón se invierte: la 307 baja a 26,86 % y «Otros» sube a 37,40 %. Las desviaciones más grandes respecto al marginal son la 307 en «Hasta 7 días» (−12,67 pp) y en «Sin adopción» (+8,86 pp), y «Otros» en «Hasta 7 días» (+9,56 pp) y en «Sin adopción» (−6,92 pp). Esos cuatro cruces concentran cerca del 89 % del χ² (30,6 %, 24,7 %, 17,9 % y 15,5 %), y la V de Cramér es 0,102: la asociación es débil, aunque es la más marcada de las cuatro variables.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Color1_agrupada)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tabla
+X-squared = 55.443, df = 9, p-value = 1.003e-08</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+                   1     2     3 Otros
+  8–30 días    50.43 23.68  7.06 18.83
+  31–90 días   50.11 26.20  5.65 18.04
+  Sin adopción 49.73 26.97  5.67 17.63
+  Hasta 7 días 47.74 23.09  6.86 22.31</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+                1  2  3 Otros
+  8–30 días    27 25 30    26
+  31–90 días   22 23 19    20
+  Sin adopción 28 30 25    26
+  Hasta 7 días 22 22 25    27</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="ACS_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>En estos gráficos podemos ver, en los perfiles fila, que todos son muy similares al marginal, excepto «Hasta 7 días», que presenta más de «Otros». Esto también nos puede indicar que, mientras menos común sea un color, la adopción va a ser más rápida; igualmente, en «Sin adopción» podemos ver que la categoría más pequeña es la de «Otros».</p>
+<p>Los porcentajes concretos muestran que la diferencia es pequeña. El marginal del color es 49,54 % para el 1, 25,01 % para el 2, 6,32 % para el 3 y 19,14 % para «Otros»; en «Hasta 7 días» los perfiles son 47,74 %, 23,09 %, 6,86 % y 22,31 %, y en «Sin adopción» 49,73 %, 26,97 %, 5,67 % y 17,63 %. La desviación máxima frente al marginal es de apenas 3,18 pp («Otros» en «Hasta 7 días»), y los residuales estandarizados más altos son +5,46 («Hasta 7 días» × «Otros») y +3,46 («Sin adopción» × color 2), con −3,00 («Hasta 7 días» × color 2) y −2,92 («Sin adopción» × «Otros»). Esas cuatro celdas concentran el 63,3 % del χ² (33,3 %, 11,6 %, 9,4 % y 9,0 %), de modo que la idea de que un color menos común se adopta más rápido descansa casi por completo en la categoría «Otros»; con una V de Cramér de 0,035, la asociación es la más débil de las cuatro y no permite ir más allá de una descripción.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Vaccinated)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tabla
+X-squared = 275.28, df = 6, p-value &lt; 2.2e-16</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+                  Sí    No No está seguro
+  8–30 días    36.49 52.32          11.20
+  31–90 días   43.54 44.77          11.69
+  Sin adopción 45.15 39.86          14.99
+  Hasta 7 días 31.74 56.66          11.60</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+               Sí No No está seguro
+  8–30 días    25 29             24
+  31–90 días   24 20             20
+  Sin adopción 32 23             34
+  Hasta 7 días 19 27             22</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="ACS_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>En este caso los datos son muy interesantes, pues parecería que los no vacunados se adoptan más rápido y los que están en «No está seguro», menos.</p>
+<p>Las cifras respaldan esa impresión y la matizan. El marginal es 48,20 % «No», 12,46 % «No está seguro» y 39,34 % «Sí»; en «Hasta 7 días» el perfil es 56,66 %, 11,60 % y 31,74 %, y en «Sin adopción» 39,86 %, 14,99 % y 45,15 %. Así, «No» sube 8,46 pp en la adopción rápida y baja 8,34 pp en la no adopción, mientras que «Sí» hace lo contrario (−7,60 pp y +5,81 pp). Los residuales estandarizados llegan a +11,43 («Hasta 7 días» × «No») y −10,51 («Hasta 7 días» × «Sí»), y a −12,74 («Sin adopción» × «No») y +9,08 («Sin adopción» × «Sí»). Cuatro celdas explican el 72,6 % del χ² (22,0 %, 18,9 %, 18,7 % y 13,1 %), y la V de Cramér es 0,096: la asociación es débil, pero es la segunda más fuerte después de Breed1. «No está seguro» se mantiene entre 11,2 % y 15,0 % en todos los perfiles y aporta poco, así que su efecto es más de matiz que de patrón.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada , datos<span class="sc">$</span>Gender)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  tabla
+X-squared = 71.873, df = 6, p-value = 1.687e-13</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+               Macho Hembra Mixto
+  8–30 días    39.09  47.34 13.57
+  31–90 días   34.03  51.27 14.70
+  Sin adopción 33.50  50.63 15.87
+  Hasta 7 días 41.23  44.86 13.91</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>              
+               Macho Hembra Mixto
+  8–30 días       29     26    25
+  31–90 días      20     23    22
+  Sin adopción    25     29    31
+  Hasta 7 días    26     22    22</code></pre>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="ACS_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>En este podemos ver que los machos son adoptados más rápido y con más seguridad que las hembras, y que «Mixto» parece tener también adopciones menos rápidas y menos seguras.</p>
+<p>En números, el marginal es 48,54 % hembras, 36,92 % machos y 14,54 % mixtos. En «Hasta 7 días» el perfil es 44,86 %, 41,23 % y 13,91 %, y en «Sin adopción» 50,63 %, 33,50 % y 15,87 %; el macho gana 4,30 pp en la adopción rápida y pierde 3,42 pp en la no adopción, mientras que la hembra pierde 3,68 pp y gana 2,10 pp.&nbsp;Los residuales estandarizados más altos son +6,03 («Hasta 7 días» × macho), −5,42 («Sin adopción» × macho) y −4,97 («Hasta 7 días» × hembra). Visto por columna, el 26 % de los machos termina en «Hasta 7 días» y el 25 % en «Sin adopción», frente al 22 % y 29 % de las hembras y al 22 % y 31 % de los mixtos. Cuatro celdas reúnen el 66,8 % del χ² (24,4 %, 18,5 %, 13,6 % y 10,3 %), con una V de Cramér de 0,049: el patrón va en la dirección descrita, pero es muy débil y «Mixto» apenas se diferencia del marginal.</p>
+</section>
+<section id="sec-acs" class="level2">
+<h2 class="anchored" data-anchor-id="sec-acs">Análisis de correspondencias simple</h2>
+<section id="resumen-del-acs" class="level3">
+<h3 class="anchored" data-anchor-id="resumen-del-acs">Resumen del ACS</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Contraste de independencia y resumen del ACS para las variables candidatas</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: right;">χ²</th>
+<th style="text-align: right;">gl</th>
+<th style="text-align: right;">p</th>
+<th style="text-align: right;">V de Cramér</th>
+<th style="text-align: right;">Inercia total</th>
+<th style="text-align: right;">Dim. 1 (%)</th>
+<th style="text-align: right;">Dim. 2 (%)</th>
+<th style="text-align: left;">ACS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Breed1 (agrupada)</td>
+<td style="text-align: right;">465,15</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">&lt; 0,001</td>
+<td style="text-align: right;">0,102</td>
+<td style="text-align: right;">0,0310</td>
+<td style="text-align: right;">96,9%</td>
+<td style="text-align: right;">2,4%</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Color1 (agrupada)</td>
+<td style="text-align: right;">55,44</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">&lt; 0,001</td>
+<td style="text-align: right;">0,035</td>
+<td style="text-align: right;">0,0037</td>
+<td style="text-align: right;">84,6%</td>
+<td style="text-align: right;">14,8%</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Vaccinated</td>
+<td style="text-align: right;">275,28</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">&lt; 0,001</td>
+<td style="text-align: right;">0,096</td>
+<td style="text-align: right;">0,0184</td>
+<td style="text-align: right;">95,0%</td>
+<td style="text-align: right;">5,0%</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gender</td>
+<td style="text-align: right;">71,87</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">&lt; 0,001</td>
+<td style="text-align: right;">0,049</td>
+<td style="text-align: right;">0,0048</td>
+<td style="text-align: right;">95,8%</td>
+<td style="text-align: right;">4,2%</td>
+<td style="text-align: left;">Sí</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Lectura de la tabla.</strong> Las cuatro variables se asocian con <code>AdoptionSpeed</code> (<code>p &lt; 0,001</code>), pero el tamaño del efecto es pequeño: la V de Cramér va de 0,035 a 0,102 y la inercia total —que equivale a χ²/n— es baja en todos los casos. <code>Breed1</code> y <code>Vaccinated</code> son las que más aportan; <code>Color1</code> y <code>Gender</code> quedan cerca del umbral de asociación débil. La significancia se apoya en el tamaño de la muestra (14.993 anuncios), no en una relación fuerte.</p>
+</section>
+<section id="adoptionspeed-breed1" class="level3">
+<h3 class="anchored" data-anchor-id="adoptionspeed-breed1">AdoptionSpeed × Breed1</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_breed, <span class="st">"Inercia del ACS — velocidad de adopción y Breed1"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inercia del ACS — velocidad de adopción y Breed1</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Dimensión</th>
+<th style="text-align: right;">Valor propio</th>
+<th style="text-align: right;">% de inercia</th>
+<th style="text-align: right;">% acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0,0300</td>
+<td style="text-align: right;">96,9%</td>
+<td style="text-align: right;">96,9%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: right;">0,0007</td>
+<td style="text-align: right;">2,4%</td>
+<td style="text-align: right;">99,2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: right;">0,0002</td>
+<td style="text-align: right;">0,8%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_breed, <span class="st">"ACS: velocidad de adopción y raza (Breed1)"</span>,</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Raza (código)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/acs-breed-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="ACS_files/figure-html/acs-breed-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Lectura.</strong> El primer eje explica el 96,9% de la inercia, así que el plano se lee casi en una sola dirección. Hacia el lado positivo quedan «Hasta 7 días» (0,284) y, en las columnas, «Otros» (0,210) y el código 265; hacia el lado negativo quedan «Sin adopción» (-0,195) y el código 307 (-0,198). «Hasta 7 días» aporta el 62,6% de la inercia del eje y «Sin adopción» el 35,5%; entre las columnas, el código 307 aporta el 51,5% y «Otros» el 41,0%. La lectura es que la adopción rápida se asocia con las razas agrupadas en «Otros» y con el código 265, mientras que la no adopción se asocia con el código 307; el código 266 queda cerca del centro y apenas discrimina. Es la asociación más fuerte de las cuatro (V = 0,102), aunque su magnitud sigue siendo baja.</p>
+<p>De forma que efectivamente podríamos pensar que, mientras menos común sea una raza, más fácil es la adopción de la misma, como se supuso en la sección de perfiles fila y columna, pero aquí podemos ver esta suposición con más claridad. O, sin ir tan lejos, es claro que la raza 307 queda en el eje 1 casi en el mismo punto que «Sin adopción».</p>
+<p>Respecto a la interpretación de los ejes, tendríamos que el eje 1 es la velocidad de adopción y el eje 2 separa «8–30 días» y «31–90 días», pero, como se dijo, el segundo eje tiene muy poca inercia y su interpretación no es muy clara.</p>
+</section>
+<section id="adoptionspeed-color1" class="level3">
+<h3 class="anchored" data-anchor-id="adoptionspeed-color1">AdoptionSpeed × Color1</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_color, <span class="st">"Inercia del ACS — velocidad de adopción y Color1"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inercia del ACS — velocidad de adopción y Color1</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Dimensión</th>
+<th style="text-align: right;">Valor propio</th>
+<th style="text-align: right;">% de inercia</th>
+<th style="text-align: right;">% acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0,0031</td>
+<td style="text-align: right;">84,6%</td>
+<td style="text-align: right;">84,6%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: right;">0,0005</td>
+<td style="text-align: right;">14,8%</td>
+<td style="text-align: right;">99,5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: right;">0,0000</td>
+<td style="text-align: right;">0,5%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_color, <span class="st">"ACS: velocidad de adopción y color (Color1)"</span>,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Color (código)"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/acs-color-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="ACS_files/figure-html/acs-color-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Lectura.</strong> El primer eje concentra el 84,6% de la inercia y el segundo el 14,8%, por lo que el plano necesita dos direcciones para leerse completo. En el eje 1, «Hasta 7 días» (0,086) se opone a «Sin adopción» (-0,057) y a «31–90 días» (-0,043); en las columnas, «Otros» (0,090) y el código 3 (0,089) quedan del lado de la adopción rápida, mientras que el código 2 (-0,063) queda del lado de la adopción lenta o nula. Las contribuciones del eje 1 son 55,0% para «Hasta 7 días», 28,9% para «Sin adopción», 49,4% para «Otros» y 31,5% para el código 2. El eje 2 separa sobre todo «8–30 días» y el código 3 del resto; es un eje secundario. La asociación es débil (V = 0,035; inercia 0,0037), así que la lectura es descriptiva y no permite concluir que el color sea un factor determinante.</p>
+<p>Dicho lo anterior, el eje 1 representa la velocidad de adopción: podemos ver que «Sin adopción» y el color 2 son muy cercanos, igual que «Otros» y «Hasta 7 días», de forma que sería posible interpretar que, mientras más raro un color, más rápida es la adopción en general, pues vemos que el color 2 se relaciona mucho con la no adopción.</p>
+<p>Por otro lado, el eje 2, que tiene un porcentaje considerable de la inercia, casi que separa el color 3 de los demás y, un poco, el 1, así como «8–30 días»; la interpretación de este eje es difícil, más allá de pensar que el color 3 y «8–30 días» están relacionados.</p>
+</section>
+<section id="adoptionspeed-vaccinated" class="level3">
+<h3 class="anchored" data-anchor-id="adoptionspeed-vaccinated">AdoptionSpeed × Vaccinated</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_vac, <span class="st">"Inercia del ACS — velocidad de adopción y Vaccinated"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inercia del ACS — velocidad de adopción y Vaccinated</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Dimensión</th>
+<th style="text-align: right;">Valor propio</th>
+<th style="text-align: right;">% de inercia</th>
+<th style="text-align: right;">% acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0,0174</td>
+<td style="text-align: right;">95,0%</td>
+<td style="text-align: right;">95,0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: right;">0,0009</td>
+<td style="text-align: right;">5,0%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_vac, <span class="st">"ACS: velocidad de adopción y estado de vacunación"</span>,</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Vacunación"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/acs-vac-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="ACS_files/figure-html/acs-vac-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Lectura.</strong> El primer eje explica el 95,0% de la inercia. Del lado positivo quedan «Hasta 7 días» (0,172) y «8–30 días» (0,081), junto con «No» vacunado (0,136); del lado negativo quedan «Sin adopción» (-0,165) y «31–90 días» (-0,073), junto con «Sí» (-0,135) y «No está seguro» (-0,101). «Sin adopción» aporta el 43,7% y «Hasta 7 días» el 39,5%; en las columnas, «No» aporta el 51,5% y «Sí» el 41,2%. La lectura es que los anuncios de animales no vacunados se asocian con adopciones más rápidas, y los vacunados o con estado incierto con la no adopción. Es una asociación descriptiva y podría estar confundida con la edad, la salud o el tipo de rescatista; no implica causalidad.</p>
+<p>Más allá de esto, la dimensión 2 aporta muy poca inercia y parece, tal vez, separar «No está seguro» de las demás categorías.</p>
+</section>
+<section id="adoptionspeed-gender" class="level3">
+<h3 class="anchored" data-anchor-id="adoptionspeed-gender">AdoptionSpeed × Gender</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_gender, <span class="st">"Inercia del ACS — velocidad de adopción y Gender"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Inercia del ACS — velocidad de adopción y Gender</caption>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Dimensión</th>
+<th style="text-align: right;">Valor propio</th>
+<th style="text-align: right;">% de inercia</th>
+<th style="text-align: right;">% acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: right;">0,0046</td>
+<td style="text-align: right;">95,8%</td>
+<td style="text-align: right;">95,8%</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: right;">0,0002</td>
+<td style="text-align: right;">4,2%</td>
+<td style="text-align: right;">100,0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_gender, <span class="st">"ACS: velocidad de adopción y género"</span>,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Género"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="ACS_files/figure-html/acs-gender-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="ACS_files/figure-html/acs-gender-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Lectura.</strong> El primer eje explica el 95,8% de la inercia. Del lado positivo quedan «Hasta 7 días» (0,089) y «8–30 días» (0,045), junto con «Macho» (0,089); del lado negativo quedan «Sin adopción» (-0,071) y «31–90 días» (-0,060), junto con «Hembra» (-0,051) y «Mixto» (-0,054). «Hasta 7 días» aporta el 40,3% de la inercia del eje y «Sin adopción» el 30,9%; entre las columnas, «Macho» aporta el 63,1%, «Hembra» el 27,7% y «Mixto» el 9,2%. La lectura es que los anuncios de machos se asocian con adopciones más rápidas, mientras que los de hembras y mixtos se asocian con adopciones más lentas o sin adopción. Es una asociación débil (V = 0,049; inercia 0,0048), así que la lectura es descriptiva. Conviene recordar que «Mixto» agrupa anuncios con varios animales, de modo que parte de la asociación puede reflejar el tipo de anuncio y no solo el sexo.</p>
+<p>Como también se pudo leer aproximadamente en los perfiles fila y columna, parece que hay una asociación fuerte entre «Macho» y una adopción más rápida, y que «Hembra» y «Mixto» son muy similares en adopciones más lentas, pero «Mixto» tiene una relación más fuerte con «Sin adopción».</p>
+<p>Se resalta que «Macho» es básicamente el eje 1, y que «Hembra» y «Mixto» quedan casi en el mismo punto de ese eje, de forma que podemos pensar que el eje 2 separa a hembras de mixto.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Ver código</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(datos, <span class="at">file =</span> <span class="st">"../data/datos_afterACS.csv"</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Volver arriba</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../entregas/PCA.html" class="pagination-link" aria-label="ACP: Análisis de Componentes Principales">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">ACP: Análisis de Componentes Principales</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../entregas/ACM.html" class="pagination-link" aria-label="ACM: Análisis de correspondencias múltiples">
+        <span class="nav-page-text">ACM: Análisis de correspondencias múltiples</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "EACS: Análisis de correspondencias simple"</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>::::: autor-pdf-row</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>::: autor-info</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>**AUTORES**</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>Jared Mijail Ramírez Escalante · María Paula Silva Capera</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>::: action-bar</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">button</span><span class="ot"> class</span><span class="op">=</span><span class="st">"btn-print"</span><span class="ot"> onclick</span><span class="op">=</span><span class="st">"window.print()"</span><span class="dt">&gt;</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>PDF</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>:::::</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga de datos y ayudantes comunes del sitio</span></span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"_setup.R"</span>))</span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- Este comentario no se verá en la página renderizada: analizar la descripción entre dos variables cualitativas, entre las variables fila y columna a través de sus perfiles --&gt;</span></span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## Selección de las variables cualitativas</span></span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>Para seleccionar nuestras variables tenemos que pensar, primero, en que sean de interés y en que posiblemente encontremos una relación interesante entre las dos; y segundo, en que tengan categorías suficientes para realizar el análisis.</span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>Tenemos primero <span class="in">`AdoptionSpeed`</span>, que, para este conjunto de datos y su objetivo inicial, es una variable principal; recordemos un poco de sus estadísticas univariadas.</span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>AdoptionSpeed, <span class="st">"Velocidad de adopción"</span>)</span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a><span class="fu">graficos_cuali</span>(datos<span class="sc">$</span>AdoptionSpeed, <span class="st">"Velocidad de adopción"</span>, <span class="at">pastel =</span> <span class="cn">TRUE</span>, <span class="at">n_top =</span> <span class="dv">10</span>)</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a>Ahora tenemos que elegir una segunda variable. La primera solo tiene cinco categorías, de las cuales agruparemos las últimas dos para evitar frecuencias bajas.</span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>Como son variables con relativamente pocas categorías, escogeremos otras cuatro variables para explorar su relación con la velocidad de adopción; el ACS se aplicará a las cuatro.</span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>De estas cuatro variables exploraremos <span class="in">`Breed1`</span>, <span class="in">`Color1`</span>, <span class="in">`Vaccinated`</span> y <span class="in">`Gender`</span>, en las que a priori podemos pensar que existan relaciones interesantes.</span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Breed1, <span class="st">"Raza principal"</span>)</span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Color1, <span class="st">"Color principal"</span>)</span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Vaccinated, <span class="st">"Estado de vacunación"</span>)</span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_frecuencias</span>(datos<span class="sc">$</span>Gender, <span class="st">"Género"</span>)</span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>Como se puede ver, es necesario agrupar categorías tanto para color como para raza.</span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preparación de variables</span></span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>AdoptionSpeed_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>AdoptionSpeed), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Hasta 7 días"</span>)</span>
+<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a>Realizamos esta agrupación porque «mismo día» tiene una frecuencia relativa muy pequeña y tiene sentido unirlo con «1–7 días» en una sola categoría, «Hasta 7 días».</span>
+<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>Breed1_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>Breed1), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Otros"</span>)</span>
+<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a>Lo realizamos de esta manera para que nos queden cuatro categorías, igual que en <span class="in">`AdoptionSpeed`</span>. Cabe resaltar que, tanto en raza como en color, no tiene sentido crear varias categorías de agrupación: tomar todas las menos frecuentes y llamarlas «Otras» tiene sentido, pero no crear varios «otros» basados solo en la frecuencia, pues no se sabría qué se está agrupando realmente y sería casi del azar lo que puede representar cada agrupación.</span>
+<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a>datos<span class="sc">$</span>Color1_agrupada <span class="ot">&lt;-</span> <span class="fu">fct_lump_n</span>(<span class="fu">as.factor</span>(datos<span class="sc">$</span>Color1), <span class="at">n =</span> <span class="dv">3</span>, <span class="at">other_level =</span> <span class="st">"Otros"</span>)</span>
+<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a>Igual que en la anterior, nos conviene dejar cuatro categorías, y el punto de corte para ellas es una frecuencia relativa significativa, aunque en esta variable sí sería posible dejar más categorías, pues desde la tercera la frecuencia es parecida.</span>
+<span id="cb52-95"><a href="#cb52-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-96"><a href="#cb52-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Visualización de perfiles fila y columna</span></span>
+<span id="cb52-97"><a href="#cb52-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-98"><a href="#cb52-98" aria-hidden="true" tabindex="-1"></a>Primero que todo realizaremos pruebas de chi cuadrado que, como vimos en clase, no son un requisito; igualmente, para ver si las dos variables aleatorias son independientes podemos fijarnos en los perfiles fila y columna. Sin embargo, también es útil ver los datos cualitativos antes de realizar cualquier gráfico.</span>
+<span id="cb52-99"><a href="#cb52-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-100"><a href="#cb52-100" aria-hidden="true" tabindex="-1"></a>También veremos nuevamente los perfiles fila y columna entre estas variables, que ya vimos en el análisis bivariado, pero es bueno recordarlas y analizarlas un poco más.</span>
+<span id="cb52-101"><a href="#cb52-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-104"><a href="#cb52-104" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-105"><a href="#cb52-105" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoClass)</span>
+<span id="cb52-106"><a href="#cb52-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-107"><a href="#cb52-107" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Tabla de contingencia ----</span></span>
+<span id="cb52-108"><a href="#cb52-108" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Breed1_agrupada)</span>
+<span id="cb52-109"><a href="#cb52-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-110"><a href="#cb52-110" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Prueba chi-cuadrado ----</span></span>
+<span id="cb52-111"><a href="#cb52-111" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb52-112"><a href="#cb52-112" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span>
+<span id="cb52-113"><a href="#cb52-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-114"><a href="#cb52-114" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Perfiles fila y columna (numéricos) ----</span></span>
+<span id="cb52-115"><a href="#cb52-115" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-116"><a href="#cb52-116" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(perfil_fila, <span class="dv">2</span>))</span>
+<span id="cb52-117"><a href="#cb52-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-118"><a href="#cb52-118" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-119"><a href="#cb52-119" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(perfil_columna, <span class="dv">2</span>))</span>
+<span id="cb52-120"><a href="#cb52-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-121"><a href="#cb52-121" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb52-122"><a href="#cb52-122" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb52-123"><a href="#cb52-123" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb52-124"><a href="#cb52-124" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb52-125"><a href="#cb52-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-126"><a href="#cb52-126" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb52-127"><a href="#cb52-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-128"><a href="#cb52-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb52-129"><a href="#cb52-129" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb52-130"><a href="#cb52-130" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-131"><a href="#cb52-131" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb52-132"><a href="#cb52-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-133"><a href="#cb52-133" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb52-134"><a href="#cb52-134" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb52-135"><a href="#cb52-135" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-136"><a href="#cb52-136" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span>
+<span id="cb52-137"><a href="#cb52-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-138"><a href="#cb52-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb52-139"><a href="#cb52-139" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb52-140"><a href="#cb52-140" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-141"><a href="#cb52-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-142"><a href="#cb52-142" aria-hidden="true" tabindex="-1"></a>En estos gráficos podemos destacar que la raza 307 tiene una alta tasa de no adopción, y que «Otros» y la 265 presentan mayor adopción, lo que nos indica que, probablemente, mientras menos común sea una raza, más probable es que sea adoptada, aunque esta es una suposición débil.</span>
+<span id="cb52-143"><a href="#cb52-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-144"><a href="#cb52-144" aria-hidden="true" tabindex="-1"></a>Los porcentajes permiten dimensionar esa lectura. En «Sin adopción», el 48,39 % de los anuncios corresponde a la raza 307, el 23,25 % a la 266, el 20,92 % a «Otros» y el 7,43 % a la 265; el marginal de la variable es 39,53 %, 24,24 %, 27,84 % y 8,39 %, respectivamente. En «Hasta 7 días» el patrón se invierte: la 307 baja a 26,86 % y «Otros» sube a 37,40 %. Las desviaciones más grandes respecto al marginal son la 307 en «Hasta 7 días» (−12,67 pp) y en «Sin adopción» (+8,86 pp), y «Otros» en «Hasta 7 días» (+9,56 pp) y en «Sin adopción» (−6,92 pp). Esos cuatro cruces concentran cerca del 89 % del χ² (30,6 %, 24,7 %, 17,9 % y 15,5 %), y la V de Cramér es 0,102: la asociación es débil, aunque es la más marcada de las cuatro variables.</span>
+<span id="cb52-145"><a href="#cb52-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-148"><a href="#cb52-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-149"><a href="#cb52-149" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Color1_agrupada)</span>
+<span id="cb52-150"><a href="#cb52-150" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb52-151"><a href="#cb52-151" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span>
+<span id="cb52-152"><a href="#cb52-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-153"><a href="#cb52-153" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-154"><a href="#cb52-154" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span>
+<span id="cb52-155"><a href="#cb52-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-156"><a href="#cb52-156" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-157"><a href="#cb52-157" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span>
+<span id="cb52-158"><a href="#cb52-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-159"><a href="#cb52-159" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb52-160"><a href="#cb52-160" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb52-161"><a href="#cb52-161" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb52-162"><a href="#cb52-162" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb52-163"><a href="#cb52-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-164"><a href="#cb52-164" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb52-165"><a href="#cb52-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-166"><a href="#cb52-166" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb52-167"><a href="#cb52-167" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb52-168"><a href="#cb52-168" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-169"><a href="#cb52-169" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb52-170"><a href="#cb52-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-171"><a href="#cb52-171" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb52-172"><a href="#cb52-172" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb52-173"><a href="#cb52-173" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-174"><a href="#cb52-174" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span>
+<span id="cb52-175"><a href="#cb52-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-176"><a href="#cb52-176" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb52-177"><a href="#cb52-177" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb52-178"><a href="#cb52-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-179"><a href="#cb52-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-180"><a href="#cb52-180" aria-hidden="true" tabindex="-1"></a>En estos gráficos podemos ver, en los perfiles fila, que todos son muy similares al marginal, excepto «Hasta 7 días», que presenta más de «Otros». Esto también nos puede indicar que, mientras menos común sea un color, la adopción va a ser más rápida; igualmente, en «Sin adopción» podemos ver que la categoría más pequeña es la de «Otros».</span>
+<span id="cb52-181"><a href="#cb52-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-182"><a href="#cb52-182" aria-hidden="true" tabindex="-1"></a>Los porcentajes concretos muestran que la diferencia es pequeña. El marginal del color es 49,54 % para el 1, 25,01 % para el 2, 6,32 % para el 3 y 19,14 % para «Otros»; en «Hasta 7 días» los perfiles son 47,74 %, 23,09 %, 6,86 % y 22,31 %, y en «Sin adopción» 49,73 %, 26,97 %, 5,67 % y 17,63 %. La desviación máxima frente al marginal es de apenas 3,18 pp («Otros» en «Hasta 7 días»), y los residuales estandarizados más altos son +5,46 («Hasta 7 días» × «Otros») y +3,46 («Sin adopción» × color 2), con −3,00 («Hasta 7 días» × color 2) y −2,92 («Sin adopción» × «Otros»). Esas cuatro celdas concentran el 63,3 % del χ² (33,3 %, 11,6 %, 9,4 % y 9,0 %), de modo que la idea de que un color menos común se adopta más rápido descansa casi por completo en la categoría «Otros»; con una V de Cramér de 0,035, la asociación es la más débil de las cuatro y no permite ir más allá de una descripción.</span>
+<span id="cb52-183"><a href="#cb52-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-186"><a href="#cb52-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-187"><a href="#cb52-187" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Vaccinated)</span>
+<span id="cb52-188"><a href="#cb52-188" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb52-189"><a href="#cb52-189" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span>
+<span id="cb52-190"><a href="#cb52-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-191"><a href="#cb52-191" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-192"><a href="#cb52-192" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span>
+<span id="cb52-193"><a href="#cb52-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-194"><a href="#cb52-194" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-195"><a href="#cb52-195" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span>
+<span id="cb52-196"><a href="#cb52-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-197"><a href="#cb52-197" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb52-198"><a href="#cb52-198" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb52-199"><a href="#cb52-199" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb52-200"><a href="#cb52-200" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb52-201"><a href="#cb52-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-202"><a href="#cb52-202" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb52-203"><a href="#cb52-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-204"><a href="#cb52-204" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb52-205"><a href="#cb52-205" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb52-206"><a href="#cb52-206" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-207"><a href="#cb52-207" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb52-208"><a href="#cb52-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-209"><a href="#cb52-209" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb52-210"><a href="#cb52-210" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb52-211"><a href="#cb52-211" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-212"><a href="#cb52-212" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span>
+<span id="cb52-213"><a href="#cb52-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-214"><a href="#cb52-214" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb52-215"><a href="#cb52-215" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb52-216"><a href="#cb52-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-217"><a href="#cb52-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-218"><a href="#cb52-218" aria-hidden="true" tabindex="-1"></a>En este caso los datos son muy interesantes, pues parecería que los no vacunados se adoptan más rápido y los que están en «No está seguro», menos.</span>
+<span id="cb52-219"><a href="#cb52-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-220"><a href="#cb52-220" aria-hidden="true" tabindex="-1"></a>Las cifras respaldan esa impresión y la matizan. El marginal es 48,20 % «No», 12,46 % «No está seguro» y 39,34 % «Sí»; en «Hasta 7 días» el perfil es 56,66 %, 11,60 % y 31,74 %, y en «Sin adopción» 39,86 %, 14,99 % y 45,15 %. Así, «No» sube 8,46 pp en la adopción rápida y baja 8,34 pp en la no adopción, mientras que «Sí» hace lo contrario (−7,60 pp y +5,81 pp). Los residuales estandarizados llegan a +11,43 («Hasta 7 días» × «No») y −10,51 («Hasta 7 días» × «Sí»), y a −12,74 («Sin adopción» × «No») y +9,08 («Sin adopción» × «Sí»). Cuatro celdas explican el 72,6 % del χ² (22,0 %, 18,9 %, 18,7 % y 13,1 %), y la V de Cramér es 0,096: la asociación es débil, pero es la segunda más fuerte después de Breed1. «No está seguro» se mantiene entre 11,2 % y 15,0 % en todos los perfiles y aporta poco, así que su efecto es más de matiz que de patrón.</span>
+<span id="cb52-221"><a href="#cb52-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-224"><a href="#cb52-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-225"><a href="#cb52-225" aria-hidden="true" tabindex="-1"></a>tabla <span class="ot">&lt;-</span> <span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada , datos<span class="sc">$</span>Gender)</span>
+<span id="cb52-226"><a href="#cb52-226" aria-hidden="true" tabindex="-1"></a>resultado <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(tabla)</span>
+<span id="cb52-227"><a href="#cb52-227" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(resultado)</span>
+<span id="cb52-228"><a href="#cb52-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-229"><a href="#cb52-229" aria-hidden="true" tabindex="-1"></a>perfil_fila <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-230"><a href="#cb52-230" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_fila, <span class="dv">2</span>)</span>
+<span id="cb52-231"><a href="#cb52-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-232"><a href="#cb52-232" aria-hidden="true" tabindex="-1"></a>perfil_columna <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tabla, <span class="at">margin =</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb52-233"><a href="#cb52-233" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(perfil_columna)</span>
+<span id="cb52-234"><a href="#cb52-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-235"><a href="#cb52-235" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Gráficos con plotct ----</span></span>
+<span id="cb52-236"><a href="#cb52-236" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajustamos los colores al número real de filas de cada tabla</span></span>
+<span id="cb52-237"><a href="#cb52-237" aria-hidden="true" tabindex="-1"></a>n_filas_tc  <span class="ot">&lt;-</span> <span class="fu">nrow</span>(tabla)          <span class="co"># filas de tc</span></span>
+<span id="cb52-238"><a href="#cb52-238" aria-hidden="true" tabindex="-1"></a>n_filas_ttc <span class="ot">&lt;-</span> <span class="fu">ncol</span>(tabla)          <span class="co"># filas de t(tc) = columnas de tc</span></span>
+<span id="cb52-239"><a href="#cb52-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-240"><a href="#cb52-240" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">mai =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>))</span>
+<span id="cb52-241"><a href="#cb52-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-242"><a href="#cb52-242" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de t(tc): cada fila suma 100%</span></span>
+<span id="cb52-243"><a href="#cb52-243" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(<span class="fu">t</span>(tabla), <span class="st">"row"</span>,</span>
+<span id="cb52-244"><a href="#cb52-244" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_ttc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-245"><a href="#cb52-245" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (t(tc))"</span>)</span>
+<span id="cb52-246"><a href="#cb52-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-247"><a href="#cb52-247" aria-hidden="true" tabindex="-1"></a><span class="co"># Perfil fila de tc</span></span>
+<span id="cb52-248"><a href="#cb52-248" aria-hidden="true" tabindex="-1"></a><span class="fu">plotct</span>(tabla, <span class="st">"row"</span>,</span>
+<span id="cb52-249"><a href="#cb52-249" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="dv">2</span><span class="sc">:</span>(n_filas_tc <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb52-250"><a href="#cb52-250" aria-hidden="true" tabindex="-1"></a>       <span class="at">main =</span> <span class="st">"Perfil fila (tc)"</span>)</span>
+<span id="cb52-251"><a href="#cb52-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-252"><a href="#cb52-252" aria-hidden="true" tabindex="-1"></a><span class="co"># Restaurar parámetros gráficos</span></span>
+<span id="cb52-253"><a href="#cb52-253" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb52-254"><a href="#cb52-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-255"><a href="#cb52-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-256"><a href="#cb52-256" aria-hidden="true" tabindex="-1"></a>En este podemos ver que los machos son adoptados más rápido y con más seguridad que las hembras, y que «Mixto» parece tener también adopciones menos rápidas y menos seguras.</span>
+<span id="cb52-257"><a href="#cb52-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-258"><a href="#cb52-258" aria-hidden="true" tabindex="-1"></a>En números, el marginal es 48,54 % hembras, 36,92 % machos y 14,54 % mixtos. En «Hasta 7 días» el perfil es 44,86 %, 41,23 % y 13,91 %, y en «Sin adopción» 50,63 %, 33,50 % y 15,87 %; el macho gana 4,30 pp en la adopción rápida y pierde 3,42 pp en la no adopción, mientras que la hembra pierde 3,68 pp y gana 2,10 pp. Los residuales estandarizados más altos son +6,03 («Hasta 7 días» × macho), −5,42 («Sin adopción» × macho) y −4,97 («Hasta 7 días» × hembra). Visto por columna, el 26 % de los machos termina en «Hasta 7 días» y el 25 % en «Sin adopción», frente al 22 % y 29 % de las hembras y al 22 % y 31 % de los mixtos. Cuatro celdas reúnen el 66,8 % del χ² (24,4 %, 18,5 %, 13,6 % y 10,3 %), con una V de Cramér de 0,049: el patrón va en la dirección descrita, pero es muy débil y «Mixto» apenas se diferencia del marginal.</span>
+<span id="cb52-259"><a href="#cb52-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-260"><a href="#cb52-260" aria-hidden="true" tabindex="-1"></a><span class="fu">## Análisis de correspondencias simple {#sec-acs}</span></span>
+<span id="cb52-261"><a href="#cb52-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-262"><a href="#cb52-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### Resumen del ACS</span></span>
+<span id="cb52-263"><a href="#cb52-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-266"><a href="#cb52-266" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-267"><a href="#cb52-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-calculo</span></span>
+<span id="cb52-268"><a href="#cb52-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb52-269"><a href="#cb52-269" aria-hidden="true" tabindex="-1"></a>res_breed  <span class="ot">&lt;-</span> <span class="fu">acs</span>(<span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Breed1_agrupada))</span>
+<span id="cb52-270"><a href="#cb52-270" aria-hidden="true" tabindex="-1"></a>res_color  <span class="ot">&lt;-</span> <span class="fu">acs</span>(<span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Color1_agrupada))</span>
+<span id="cb52-271"><a href="#cb52-271" aria-hidden="true" tabindex="-1"></a>res_vac    <span class="ot">&lt;-</span> <span class="fu">acs</span>(<span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Vaccinated))</span>
+<span id="cb52-272"><a href="#cb52-272" aria-hidden="true" tabindex="-1"></a>res_gender <span class="ot">&lt;-</span> <span class="fu">acs</span>(<span class="fu">table</span>(datos<span class="sc">$</span>AdoptionSpeed_agrupada, datos<span class="sc">$</span>Gender))</span>
+<span id="cb52-273"><a href="#cb52-273" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-274"><a href="#cb52-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-277"><a href="#cb52-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-278"><a href="#cb52-278" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-resumen</span></span>
+<span id="cb52-279"><a href="#cb52-279" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb52-280"><a href="#cb52-280" aria-hidden="true" tabindex="-1"></a>resumen <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb52-281"><a href="#cb52-281" aria-hidden="true" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">c</span>(<span class="st">"Breed1 (agrupada)"</span>, <span class="st">"Color1 (agrupada)"</span>, <span class="st">"Vaccinated"</span>, <span class="st">"Gender"</span>),</span>
+<span id="cb52-282"><a href="#cb52-282" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">χ²</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">fmt</span>(<span class="fu">c</span>(res_breed<span class="sc">$</span>chi<span class="sc">$</span>statistic, res_color<span class="sc">$</span>chi<span class="sc">$</span>statistic,</span>
+<span id="cb52-283"><a href="#cb52-283" aria-hidden="true" tabindex="-1"></a>               res_vac<span class="sc">$</span>chi<span class="sc">$</span>statistic, res_gender<span class="sc">$</span>chi<span class="sc">$</span>statistic), <span class="dv">2</span>),</span>
+<span id="cb52-284"><a href="#cb52-284" aria-hidden="true" tabindex="-1"></a>  <span class="at">gl =</span> <span class="fu">c</span>(res_breed<span class="sc">$</span>chi<span class="sc">$</span>parameter, res_color<span class="sc">$</span>chi<span class="sc">$</span>parameter,</span>
+<span id="cb52-285"><a href="#cb52-285" aria-hidden="true" tabindex="-1"></a>         res_vac<span class="sc">$</span>chi<span class="sc">$</span>parameter, res_gender<span class="sc">$</span>chi<span class="sc">$</span>parameter),</span>
+<span id="cb52-286"><a href="#cb52-286" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">p</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">pval</span>(res_breed<span class="sc">$</span>chi<span class="sc">$</span>p.value), <span class="fu">pval</span>(res_color<span class="sc">$</span>chi<span class="sc">$</span>p.value),</span>
+<span id="cb52-287"><a href="#cb52-287" aria-hidden="true" tabindex="-1"></a>          <span class="fu">pval</span>(res_vac<span class="sc">$</span>chi<span class="sc">$</span>p.value), <span class="fu">pval</span>(res_gender<span class="sc">$</span>chi<span class="sc">$</span>p.value)),</span>
+<span id="cb52-288"><a href="#cb52-288" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">V de Cramér</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">fmt</span>(<span class="fu">c</span>(res_breed<span class="sc">$</span>cramer, res_color<span class="sc">$</span>cramer,</span>
+<span id="cb52-289"><a href="#cb52-289" aria-hidden="true" tabindex="-1"></a>                        res_vac<span class="sc">$</span>cramer, res_gender<span class="sc">$</span>cramer), <span class="dv">3</span>),</span>
+<span id="cb52-290"><a href="#cb52-290" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Inercia total</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">fmt</span>(<span class="fu">c</span>(res_breed<span class="sc">$</span>inercia, res_color<span class="sc">$</span>inercia,</span>
+<span id="cb52-291"><a href="#cb52-291" aria-hidden="true" tabindex="-1"></a>                           res_vac<span class="sc">$</span>inercia, res_gender<span class="sc">$</span>inercia), <span class="dv">4</span>),</span>
+<span id="cb52-292"><a href="#cb52-292" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Dim. 1 (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">pct</span>(<span class="fu">c</span>(res_breed<span class="sc">$</span>pct[<span class="dv">1</span>], res_color<span class="sc">$</span>pct[<span class="dv">1</span>],</span>
+<span id="cb52-293"><a href="#cb52-293" aria-hidden="true" tabindex="-1"></a>                        res_vac<span class="sc">$</span>pct[<span class="dv">1</span>], res_gender<span class="sc">$</span>pct[<span class="dv">1</span>])),</span>
+<span id="cb52-294"><a href="#cb52-294" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Dim. 2 (%)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">pct</span>(<span class="fu">c</span>(res_breed<span class="sc">$</span>pct[<span class="dv">2</span>], res_color<span class="sc">$</span>pct[<span class="dv">2</span>],</span>
+<span id="cb52-295"><a href="#cb52-295" aria-hidden="true" tabindex="-1"></a>                        res_vac<span class="sc">$</span>pct[<span class="dv">2</span>], res_gender<span class="sc">$</span>pct[<span class="dv">2</span>])),</span>
+<span id="cb52-296"><a href="#cb52-296" aria-hidden="true" tabindex="-1"></a>  <span class="at">ACS =</span> <span class="fu">c</span>(<span class="st">"Sí"</span>, <span class="st">"Sí"</span>, <span class="st">"Sí"</span>, <span class="st">"Sí"</span>)</span>
+<span id="cb52-297"><a href="#cb52-297" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-298"><a href="#cb52-298" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(resumen, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">"l"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"r"</span>, <span class="st">"l"</span>),</span>
+<span id="cb52-299"><a href="#cb52-299" aria-hidden="true" tabindex="-1"></a>             <span class="at">caption =</span> <span class="st">"Contraste de independencia y resumen del ACS para las variables candidatas"</span>)</span>
+<span id="cb52-300"><a href="#cb52-300" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-301"><a href="#cb52-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-302"><a href="#cb52-302" aria-hidden="true" tabindex="-1"></a>**Lectura de la tabla.** Las cuatro variables se asocian con <span class="in">`AdoptionSpeed`</span> (<span class="in">`p &lt; 0,001`</span>), pero el tamaño del efecto es pequeño: la V de Cramér va de <span class="in">`r fmt(res_color$cramer, 3)`</span> a <span class="in">`r fmt(res_breed$cramer, 3)`</span> y la inercia total —que equivale a χ²/n— es baja en todos los casos. <span class="in">`Breed1`</span> y <span class="in">`Vaccinated`</span> son las que más aportan; <span class="in">`Color1`</span> y <span class="in">`Gender`</span> quedan cerca del umbral de asociación débil. La significancia se apoya en el tamaño de la muestra (<span class="in">`r ent(nrow(datos))`</span> anuncios), no en una relación fuerte.</span>
+<span id="cb52-303"><a href="#cb52-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-304"><a href="#cb52-304" aria-hidden="true" tabindex="-1"></a><span class="fu">### AdoptionSpeed × Breed1</span></span>
+<span id="cb52-305"><a href="#cb52-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-308"><a href="#cb52-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-309"><a href="#cb52-309" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-breed</span></span>
+<span id="cb52-310"><a href="#cb52-310" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_breed, <span class="st">"Inercia del ACS — velocidad de adopción y Breed1"</span>)</span>
+<span id="cb52-311"><a href="#cb52-311" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_breed, <span class="st">"ACS: velocidad de adopción y raza (Breed1)"</span>,</span>
+<span id="cb52-312"><a href="#cb52-312" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Raza (código)"</span>)</span>
+<span id="cb52-313"><a href="#cb52-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-314"><a href="#cb52-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-315"><a href="#cb52-315" aria-hidden="true" tabindex="-1"></a>**Lectura.** El primer eje explica el <span class="in">`r pct(res_breed$pct[1])`</span> de la inercia, así que el plano se lee casi en una sola dirección. Hacia el lado positivo quedan «Hasta 7 días» (<span class="in">`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Hasta 7 días"], 3)`</span>) y, en las columnas, «Otros» (<span class="in">`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "Otros"], 3)`</span>) y el código 265; hacia el lado negativo quedan «Sin adopción» (<span class="in">`r fmt(res_breed$filas$dim1[res_breed$filas$categoria == "Sin adopción"], 3)`</span>) y el código 307 (<span class="in">`r fmt(res_breed$columnas$dim1[res_breed$columnas$categoria == "307"], 3)`</span>). «Hasta 7 días» aporta el <span class="in">`r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Hasta 7 días"])`</span> de la inercia del eje y «Sin adopción» el <span class="in">`r pct(res_breed$filas$contrib1[res_breed$filas$categoria == "Sin adopción"])`</span>; entre las columnas, el código 307 aporta el <span class="in">`r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "307"])`</span> y «Otros» el <span class="in">`r pct(res_breed$columnas$contrib1[res_breed$columnas$categoria == "Otros"])`</span>. La lectura es que la adopción rápida se asocia con las razas agrupadas en «Otros» y con el código 265, mientras que la no adopción se asocia con el código 307; el código 266 queda cerca del centro y apenas discrimina. Es la asociación más fuerte de las cuatro (V = <span class="in">`r fmt(res_breed$cramer, 3)`</span>), aunque su magnitud sigue siendo baja.</span>
+<span id="cb52-316"><a href="#cb52-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-317"><a href="#cb52-317" aria-hidden="true" tabindex="-1"></a>De forma que efectivamente podríamos pensar que, mientras menos común sea una raza, más fácil es la adopción de la misma, como se supuso en la sección de perfiles fila y columna, pero aquí podemos ver esta suposición con más claridad. O, sin ir tan lejos, es claro que la raza 307 queda en el eje 1 casi en el mismo punto que «Sin adopción».</span>
+<span id="cb52-318"><a href="#cb52-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-319"><a href="#cb52-319" aria-hidden="true" tabindex="-1"></a>Respecto a la interpretación de los ejes, tendríamos que el eje 1 es la velocidad de adopción y el eje 2 separa «8–30 días» y «31–90 días», pero, como se dijo, el segundo eje tiene muy poca inercia y su interpretación no es muy clara.</span>
+<span id="cb52-320"><a href="#cb52-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-321"><a href="#cb52-321" aria-hidden="true" tabindex="-1"></a><span class="fu">### AdoptionSpeed × Color1</span></span>
+<span id="cb52-322"><a href="#cb52-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-325"><a href="#cb52-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-326"><a href="#cb52-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-color</span></span>
+<span id="cb52-327"><a href="#cb52-327" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_color, <span class="st">"Inercia del ACS — velocidad de adopción y Color1"</span>)</span>
+<span id="cb52-328"><a href="#cb52-328" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_color, <span class="st">"ACS: velocidad de adopción y color (Color1)"</span>,</span>
+<span id="cb52-329"><a href="#cb52-329" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Color (código)"</span>)</span>
+<span id="cb52-330"><a href="#cb52-330" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-331"><a href="#cb52-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-332"><a href="#cb52-332" aria-hidden="true" tabindex="-1"></a>**Lectura.** El primer eje concentra el <span class="in">`r pct(res_color$pct[1])`</span> de la inercia y el segundo el <span class="in">`r pct(res_color$pct[2])`</span>, por lo que el plano necesita dos direcciones para leerse completo. En el eje 1, «Hasta 7 días» (<span class="in">`r fmt(res_color$filas$dim1[res_color$filas$categoria == "Hasta 7 días"], 3)`</span>) se opone a «Sin adopción» (<span class="in">`r fmt(res_color$filas$dim1[res_color$filas$categoria == "Sin adopción"], 3)`</span>) y a «31–90 días» (<span class="in">`r fmt(res_color$filas$dim1[res_color$filas$categoria == "31–90 días"], 3)`</span>); en las columnas, «Otros» (<span class="in">`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "Otros"], 3)`</span>) y el código 3 (<span class="in">`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "3"], 3)`</span>) quedan del lado de la adopción rápida, mientras que el código 2 (<span class="in">`r fmt(res_color$columnas$dim1[res_color$columnas$categoria == "2"], 3)`</span>) queda del lado de la adopción lenta o nula. Las contribuciones del eje 1 son <span class="in">`r pct(res_color$filas$contrib1[res_color$filas$categoria == "Hasta 7 días"])`</span> para «Hasta 7 días», <span class="in">`r pct(res_color$filas$contrib1[res_color$filas$categoria == "Sin adopción"])`</span> para «Sin adopción», <span class="in">`r pct(res_color$columnas$contrib1[res_color$columnas$categoria == "Otros"])`</span> para «Otros» y <span class="in">`r pct(res_color$columnas$contrib1[res_color$columnas$categoria == "2"])`</span> para el código 2. El eje 2 separa sobre todo «8–30 días» y el código 3 del resto; es un eje secundario. La asociación es débil (V = <span class="in">`r fmt(res_color$cramer, 3)`</span>; inercia <span class="in">`r fmt(res_color$inercia, 4)`</span>), así que la lectura es descriptiva y no permite concluir que el color sea un factor determinante.</span>
+<span id="cb52-333"><a href="#cb52-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-334"><a href="#cb52-334" aria-hidden="true" tabindex="-1"></a>Dicho lo anterior, el eje 1 representa la velocidad de adopción: podemos ver que «Sin adopción» y el color 2 son muy cercanos, igual que «Otros» y «Hasta 7 días», de forma que sería posible interpretar que, mientras más raro un color, más rápida es la adopción en general, pues vemos que el color 2 se relaciona mucho con la no adopción.</span>
+<span id="cb52-335"><a href="#cb52-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-336"><a href="#cb52-336" aria-hidden="true" tabindex="-1"></a>Por otro lado, el eje 2, que tiene un porcentaje considerable de la inercia, casi que separa el color 3 de los demás y, un poco, el 1, así como «8–30 días»; la interpretación de este eje es difícil, más allá de pensar que el color 3 y «8–30 días» están relacionados.</span>
+<span id="cb52-337"><a href="#cb52-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-338"><a href="#cb52-338" aria-hidden="true" tabindex="-1"></a><span class="fu">### AdoptionSpeed × Vaccinated</span></span>
+<span id="cb52-339"><a href="#cb52-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-342"><a href="#cb52-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-343"><a href="#cb52-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-vac</span></span>
+<span id="cb52-344"><a href="#cb52-344" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_vac, <span class="st">"Inercia del ACS — velocidad de adopción y Vaccinated"</span>)</span>
+<span id="cb52-345"><a href="#cb52-345" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_vac, <span class="st">"ACS: velocidad de adopción y estado de vacunación"</span>,</span>
+<span id="cb52-346"><a href="#cb52-346" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Vacunación"</span>)</span>
+<span id="cb52-347"><a href="#cb52-347" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-348"><a href="#cb52-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-349"><a href="#cb52-349" aria-hidden="true" tabindex="-1"></a>**Lectura.** El primer eje explica el <span class="in">`r pct(res_vac$pct[1])`</span> de la inercia. Del lado positivo quedan «Hasta 7 días» (<span class="in">`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "Hasta 7 días"], 3)`</span>) y «8–30 días» (<span class="in">`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "8–30 días"], 3)`</span>), junto con «No» vacunado (<span class="in">`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "No"], 3)`</span>); del lado negativo quedan «Sin adopción» (<span class="in">`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "Sin adopción"], 3)`</span>) y «31–90 días» (<span class="in">`r fmt(res_vac$filas$dim1[res_vac$filas$categoria == "31–90 días"], 3)`</span>), junto con «Sí» (<span class="in">`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "Sí"], 3)`</span>) y «No está seguro» (<span class="in">`r fmt(res_vac$columnas$dim1[res_vac$columnas$categoria == "No está seguro"], 3)`</span>). «Sin adopción» aporta el <span class="in">`r pct(res_vac$filas$contrib1[res_vac$filas$categoria == "Sin adopción"])`</span> y «Hasta 7 días» el <span class="in">`r pct(res_vac$filas$contrib1[res_vac$filas$categoria == "Hasta 7 días"])`</span>; en las columnas, «No» aporta el <span class="in">`r pct(res_vac$columnas$contrib1[res_vac$columnas$categoria == "No"])`</span> y «Sí» el <span class="in">`r pct(res_vac$columnas$contrib1[res_vac$columnas$categoria == "Sí"])`</span>. La lectura es que los anuncios de animales no vacunados se asocian con adopciones más rápidas, y los vacunados o con estado incierto con la no adopción. Es una asociación descriptiva y podría estar confundida con la edad, la salud o el tipo de rescatista; no implica causalidad.</span>
+<span id="cb52-350"><a href="#cb52-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-351"><a href="#cb52-351" aria-hidden="true" tabindex="-1"></a>Más allá de esto, la dimensión 2 aporta muy poca inercia y parece, tal vez, separar «No está seguro» de las demás categorías.</span>
+<span id="cb52-352"><a href="#cb52-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-353"><a href="#cb52-353" aria-hidden="true" tabindex="-1"></a><span class="fu">### AdoptionSpeed × Gender</span></span>
+<span id="cb52-354"><a href="#cb52-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-357"><a href="#cb52-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-358"><a href="#cb52-358" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: acs-gender</span></span>
+<span id="cb52-359"><a href="#cb52-359" aria-hidden="true" tabindex="-1"></a><span class="fu">tabla_acs</span>(res_gender, <span class="st">"Inercia del ACS — velocidad de adopción y Gender"</span>)</span>
+<span id="cb52-360"><a href="#cb52-360" aria-hidden="true" tabindex="-1"></a><span class="fu">grafico_acs</span>(res_gender, <span class="st">"ACS: velocidad de adopción y género"</span>,</span>
+<span id="cb52-361"><a href="#cb52-361" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Velocidad de adopción"</span>, <span class="st">"Género"</span>)</span>
+<span id="cb52-362"><a href="#cb52-362" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb52-363"><a href="#cb52-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-364"><a href="#cb52-364" aria-hidden="true" tabindex="-1"></a>**Lectura.** El primer eje explica el <span class="in">`r pct(res_gender$pct[1])`</span> de la inercia. Del lado positivo quedan «Hasta 7 días» (<span class="in">`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "Hasta 7 días"], 3)`</span>) y «8–30 días» (<span class="in">`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "8–30 días"], 3)`</span>), junto con «Macho» (<span class="in">`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Macho"], 3)`</span>); del lado negativo quedan «Sin adopción» (<span class="in">`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "Sin adopción"], 3)`</span>) y «31–90 días» (<span class="in">`r fmt(res_gender$filas$dim1[res_gender$filas$categoria == "31–90 días"], 3)`</span>), junto con «Hembra» (<span class="in">`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Hembra"], 3)`</span>) y «Mixto» (<span class="in">`r fmt(res_gender$columnas$dim1[res_gender$columnas$categoria == "Mixto"], 3)`</span>). «Hasta 7 días» aporta el <span class="in">`r pct(res_gender$filas$contrib1[res_gender$filas$categoria == "Hasta 7 días"])`</span> de la inercia del eje y «Sin adopción» el <span class="in">`r pct(res_gender$filas$contrib1[res_gender$filas$categoria == "Sin adopción"])`</span>; entre las columnas, «Macho» aporta el <span class="in">`r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Macho"])`</span>, «Hembra» el <span class="in">`r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Hembra"])`</span> y «Mixto» el <span class="in">`r pct(res_gender$columnas$contrib1[res_gender$columnas$categoria == "Mixto"])`</span>. La lectura es que los anuncios de machos se asocian con adopciones más rápidas, mientras que los de hembras y mixtos se asocian con adopciones más lentas o sin adopción. Es una asociación débil (V = <span class="in">`r fmt(res_gender$cramer, 3)`</span>; inercia <span class="in">`r fmt(res_gender$inercia, 4)`</span>), así que la lectura es descriptiva. Conviene recordar que «Mixto» agrupa anuncios con varios animales, de modo que parte de la asociación puede reflejar el tipo de anuncio y no solo el sexo.</span>
+<span id="cb52-365"><a href="#cb52-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-366"><a href="#cb52-366" aria-hidden="true" tabindex="-1"></a>Como también se pudo leer aproximadamente en los perfiles fila y columna, parece que hay una asociación fuerte entre «Macho» y una adopción más rápida, y que «Hembra» y «Mixto» son muy similares en adopciones más lentas, pero «Mixto» tiene una relación más fuerte con «Sin adopción».</span>
+<span id="cb52-367"><a href="#cb52-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-368"><a href="#cb52-368" aria-hidden="true" tabindex="-1"></a>Se resalta que «Macho» es básicamente el eje 1, y que «Hembra» y «Mixto» quedan casi en el mismo punto de ese eje, de forma que podemos pensar que el eje 2 separa a hembras de mixto.</span>
+<span id="cb52-369"><a href="#cb52-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-372"><a href="#cb52-372" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb52-373"><a href="#cb52-373" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(datos, <span class="at">file =</span> <span class="st">"../data/datos_afterACS.csv"</span>, <span class="at">row.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb52-374"><a href="#cb52-374" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code></pre></div><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>EDM_segundaEntrega · Universidad Nacional de Colombia</p>
+</div>   
+    <div class="nav-footer-center">
+<p>EDM — Estadística Descriptiva Multivariada</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
